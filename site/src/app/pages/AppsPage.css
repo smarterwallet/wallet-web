@@ -1,0 +1,49 @@
+.apps-page {
+  padding: 10px 35px;
+}
+
+.apps-page-header {
+  display: flex;
+  align-items: center;
+  font-size: 2.2em;
+  height: 70px;
+}
+
+.apps-page-title {
+  font-size: 1.2em;
+  margin: 15px 0;
+}
+
+.apps-page-app-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 20px;
+}
+
+.apps-page-app-row {
+  text-align: center;
+  cursor: pointer;
+  padding: 5px;
+  /* background-color: red; */
+}
+
+.apps-page-app-row:hover {
+  border-radius: 20px;
+  background-color: var(--gray-color);
+  box-shadow: 5px 5px 20px 0px #00000040;
+}
+
+.apps-page-app-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.apps-page-app-name {
+  font-size: 0.9em;
+}
+
+@media (max-width: 600px) {
+  .apps-page {
+    padding: 10px 25px;
+  }
+}

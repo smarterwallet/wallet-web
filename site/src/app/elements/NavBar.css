@@ -1,0 +1,32 @@
+.navbar-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.navbar-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar-button-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.navbar-text {
+  margin-top: 0px;
+}
+
+.navbar-link, .navbar-link-active {
+  width: 100px;
+  height: 60px;
+  padding: 10px 0;
+  color: black;
+  text-decoration: none;
+}
+
+.navbar-link-active {
+  background-color: var(--body-color);
+  color: white;
+}
