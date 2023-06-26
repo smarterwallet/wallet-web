@@ -5,7 +5,7 @@
 .welcome-page-header {
   display: flex;
   align-items: center;
-  height: 70px;
+  height: 80px;
 }
 
 .welcome-page-header-icon {
@@ -15,28 +15,35 @@
 }
 
 .welcome-page-header-text {
-  font-size: 1.5em;
+  font-size: 36px;
+  font-weight: 700;
 }
 
 .welcome-page-title {
-  font-size: 1.2em;
+  font-size: 20px;
+  font-weight: 600;
   margin-top: 30px;
   margin-bottom: 60px;
-  line-height: 32px;
+  line-height: 28px;
 }
 
 .welcome-page-action-container {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   border-radius: 30px;
   background-color: #D9D9D9;
   padding: 15px;
-  font-size: 1.3em;
   align-items: center;
   cursor: pointer;
   box-shadow: 5px 5px 20px 0px #00000040;
   color: black;
   text-decoration: none;
+}
+
+.welcome-page-action-text {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 30px;
 }
 
 .welcome-page-action-icon {

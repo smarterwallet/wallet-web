@@ -1,6 +1,7 @@
 import React from 'react';
 import './RegisterPage.css';
 import { NavLink } from 'react-router-dom';
+import HeaderBar from '../elements/HeaderBar';
 
 class RegisterPage extends React.Component {
 
@@ -9,7 +10,7 @@ class RegisterPage extends React.Component {
       <NavLink className={`register-page-menu-container ${shadow && 'shadow'}`} to={to}>
         <img className="register-page-menu-icon" src={icon} />
         <div className="register-page-menu-text">{text}</div>
-        <img className="register-page-menu-icon" src="/icon/arrow-right.png" />
+        <img className="register-page-menu-arrow" src="/icon/arrow-right.png" />
       </NavLink>
     );
   }
@@ -17,10 +18,7 @@ class RegisterPage extends React.Component {
   render() {
     return (
       <div className="register-page">
-        <div className="register-page-header" onClick={()=> window.history.back()}>
-          <img className="register-page-header-icon" src="/icon/arrow-left.png" />
-          <div className="register-page-header-text">Welcome</div>
-        </div>
+        <HeaderBar text='Welcome' />
 
         <div className="register-page-title">
           Choose a way to register your account:

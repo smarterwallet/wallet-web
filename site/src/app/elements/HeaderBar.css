@@ -1,0 +1,17 @@
+
+.header-bar {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  cursor: pointer;
+}
+
+.header-bar-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.header-bar-text {
+  font-size: 30px;
+  font-weight: 700;
+}

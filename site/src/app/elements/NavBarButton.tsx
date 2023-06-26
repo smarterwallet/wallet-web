@@ -19,7 +19,7 @@ class NavBarButton extends React.Component<NavBarButtonProps, {}> {
       <NavLink className={({ isActive }) => (isActive ? "navbar-link-active" : "navbar-link")} to={this.props.to}>
         <div className="navbar-button">
           <img className="navbar-button-icon" src={this.props.icon}></img>
-          <div className="navbar-text">{this.props.text}</div>
+          <div className="navbar-button-text">{this.props.text}</div>
         </div>
       </NavLink>
     );

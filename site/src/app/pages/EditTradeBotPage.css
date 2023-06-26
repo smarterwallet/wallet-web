@@ -1,0 +1,53 @@
+.etb-page {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding: 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.etb-page-step-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.etb-page-step-select {
+  width: 70px;
+}
+
+.etb-page-edit-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 15px;
+  text-align: center;
+}
+
+.etb-page-edit-input {
+  width: 120px;
+}
+
+.etb-page-edit-select {
+  width: 140px;
+}
+
+.etb-page-button-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+  margin-top: 20px;
+}
+
+.etb-page-button {
+  width: 150px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 20px;
+  background-color: #D9D9D9;
+  box-shadow: 5px 5px 20px 0px #00000040;
+}

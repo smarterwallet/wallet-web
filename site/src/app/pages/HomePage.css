@@ -1,12 +1,12 @@
 .home-page {
-  padding: 10px 35px;
+  padding: 0 20px;
 }
 
 .home-page-header {
   display: grid;
-  grid-template-columns: 70px 1fr 120px 50px;
+  grid-template-columns: 60px 1fr 130px 30px;
   align-items: center;
-  height: 70px;
+  height: 80px;
 }
 
 .home-page-header-icon {
@@ -15,21 +15,28 @@
   /* margin-right: 15px; */
 }
 
+.home-page-icon-logout {
+  width: 30px;
+  height: 30px;
+}
+
 .home-page-header-username {
-  font-size: 1.2em;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .home-page-header-address {
-  font-size: 0.9em;
+  font-size: 15px;
+  font-weight: 400;
   color: gray;
 }
 
 .home-page-header-select {
   height: 50px;
   border: none;
-  border-radius: 30px;
+  border-radius: 20px;
   background-color: #D9D9D9;
-  padding: 0 15px;
+  padding: 0 10px;
   align-items: center;
   margin-right: 20px;
 }
@@ -39,12 +46,14 @@
 }
 
 .home-page-balance-title {
-  font-size: 1.1em;
+  font-size: 16px;
+  font-weight: 700;
   margin-top: 20px;
 }
 
 .home-page-balance {
-  font-size: 2em;
+  font-size: 40px;
+  font-weight: 700;
   margin-top: 15px;
   margin-bottom: 30px;
 }
@@ -62,19 +71,23 @@
   height: 40px;
 }
 
+.home-page-asset-name {
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .home-page-asset-amount {
-  font-size: 1.4em;
+  font-size: 22px;
+  font-weight: 600;
   text-align: right;
-  /* background-color: red; */
 }
 
 .home-page-asset-usd {
+  font-size: 16px;
+  font-weight: 400;
   text-align: right;
   color: gray;
 }
 
-@media (max-width: 600px) {
-  .home-page {
-    padding: 10px 25px;
-  }
+@media (max-width: 500px) {
 }

@@ -13,6 +13,10 @@ import RegisterPwdPage from './pages/RegisterPwdPage';
 import CreateAccountPage from './pages/CreateAccountPage';
 import WelcomePage from './pages/WelcomePage';
 import AppsPage from './pages/AppsPage';
+import AutoTradePage from './pages/AutoTradePage';
+import AddTradeBotPage from './pages/AddTradeBotPage';
+import EditTradeBotPage from './pages/EditTradeBotPage';
+import RunBotPage from './pages/RunBotPage';
 
 interface AppState {
   allowAccess: boolean;
@@ -88,6 +92,10 @@ class App extends React.Component<{}, AppState> {
             <Route path='/registerPwd' element={<RegisterPwdPage />} />
             <Route path='/createAccount' element={<CreateAccountPage />} />
             <Route path='/apps' element={<AppsPage />} />
+            <Route path='/autoTrade' element={<AutoTradePage />} />
+            <Route path='/addTradeBot' element={<AddTradeBotPage />} />
+            <Route path='/editTradeBot' element={<EditTradeBotPage />} />
+            <Route path='/runBot' element={<RunBotPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

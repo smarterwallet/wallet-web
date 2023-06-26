@@ -1,16 +1,18 @@
 .apps-page {
-  padding: 10px 35px;
+  padding: 0 20px;
 }
 
 .apps-page-header {
   display: flex;
   align-items: center;
-  font-size: 2.2em;
-  height: 70px;
+  font-size: 36px;
+  font-weight: 700;
+  height: 80px;
 }
 
 .apps-page-title {
-  font-size: 1.2em;
+  font-size: 22px;
+  font-weight: 700;
   margin: 15px 0;
 }
 
@@ -24,7 +26,8 @@
   text-align: center;
   cursor: pointer;
   padding: 5px;
-  /* background-color: red; */
+  color: black;
+  text-decoration: none;
 }
 
 .apps-page-app-row:hover {
@@ -34,16 +37,15 @@
 }
 
 .apps-page-app-icon {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
 }
 
 .apps-page-app-name {
-  font-size: 0.9em;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
 }
 
 @media (max-width: 600px) {
-  .apps-page {
-    padding: 10px 25px;
-  }
 }

@@ -10,12 +10,14 @@
 }
 
 .navbar-button-icon {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 }
 
-.navbar-text {
-  margin-top: 0px;
+.navbar-button-text {
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .navbar-link, .navbar-link-active {
@@ -27,6 +29,6 @@
 }
 
 .navbar-link-active {
-  background-color: var(--body-color);
+  background-color: rgb(156, 168, 157);
   color: white;
 }

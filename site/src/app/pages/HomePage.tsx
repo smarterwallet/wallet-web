@@ -35,7 +35,7 @@ class HomePage extends React.Component {
             <option value="main">Main</option>
             <option value="testnet">Testnet</option>
           </select>
-          <img className="home-page-header-icon" src="/icon/logout.png" />
+          <img className="home-page-icon-logout" src="/icon/logout.png" />
         </div>
 
         <div className='home-page-balance-container'>

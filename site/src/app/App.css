@@ -13,7 +13,7 @@
 }
 
 html {
-  font-family: Lato;
+  font-family: Inter;
   font-size: 110%;
   line-height: 25px;
 }
@@ -21,7 +21,6 @@ html {
 body {
   background: var(--body-color);
   margin: 0px;
-  /* color: black; */
 }
 
 input {
@@ -31,7 +30,12 @@ input {
   min-height: 40px;
   border-radius: 6px;
   border: 1px solid gray;
-  padding: 2px 10px;
+  padding: 0 10px;
+}
+
+.input:disabled, input[disabled] {
+  border: 1px solid lightgray;
+  cursor: not-allowed;
 }
 
 textarea {
@@ -50,7 +54,6 @@ button {
   font-size: inherit;
   font-family: inherit;
   background-color: var(--button-color);
-  color: white;
   border-radius: 10px;
   border: 0px;
   cursor: pointer;
@@ -69,6 +72,12 @@ select {
   font-family: inherit;
   height: 40px;
   border-radius: 6px;
+  padding: 0 10px;
+}
+
+.select:disabled, select[disabled] {
+  background-color: var(--page-color);
+  cursor: not-allowed;
 }
 
 p {
@@ -108,7 +117,7 @@ a {
   height: calc(100vh - 80px);
   overflow-y: auto;
   background-color: var(--page-color);
-} 
+}
 
 .app-navbar {
   background-color: var(--gray-color);

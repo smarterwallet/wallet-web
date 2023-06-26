@@ -1,6 +1,7 @@
 import React from 'react';
 import './CreateAccountPage.css';
 import { NavLink, Navigate } from 'react-router-dom';
+import HeaderBar from '../elements/HeaderBar';
 
 interface CreateAccountPageState {
   create: boolean;
@@ -41,16 +42,13 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
 
     return (
       <div className="ca-page">
-        <div className="ca-page-header" onClick={()=> window.history.back()}>
-          <img className="ca-page-header-icon" src="/icon/arrow-left.png" />
-          <div className="ca-page-header-text">DeStorage</div>
-        </div>
-
+        <div style={{paddingLeft: '20px'}}><HeaderBar text='DeStorage' /></div>
+        
         <div className={`ca-page-menu-container ${this.state.create && 'extend'}`}>
           <div className='ca-page-menu-header' onClick={()=> this.toggleCreate()}>
             <img className="ca-page-menu-icon" src="/icon/user.png" />
             <div>Create New Account</div>
-            <img className="ca-page-menu-icon" src={`/icon/arrow-${this.state.create ? 'up' : 'down'}.png`} />
+            <img className="ca-page-menu-arrow" src={`/icon/arrow-${this.state.create ? 'up' : 'down'}.png`} />
           </div>
 
           {this.state.create && 
@@ -60,7 +58,7 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
               <div style={{height: '10px'}} />
               <div>Password</div>
               <input />
-              <button className='ca-page-menu-button' onClick={()=>this.onRegister()}>Register</button>
+              <button className='ca-page-button' onClick={()=>this.onRegister()}>Register</button>
             </div>
           }
         </div>
@@ -69,7 +67,7 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
           <div className='ca-page-menu-header' onClick={()=> this.toggleLogin()}>
             <img className="ca-page-menu-icon" src="/icon/user.png" />
             <div>Login</div>
-            <img className="ca-page-menu-icon" src={`/icon/arrow-${this.state.login ? 'up' : 'down'}.png`} />
+            <img className="ca-page-menu-arrow" src={`/icon/arrow-${this.state.login ? 'up' : 'down'}.png`} />
           </div>
 
           {this.state.login && 
@@ -79,7 +77,7 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
               <div style={{height: '10px'}} />
               <div>Password</div>
               <input />
-              <button className='ca-page-menu-button' onClick={()=>this.onLogin()}>Login</button>
+              <button className='ca-page-button' onClick={()=>this.onLogin()}>Login</button>
             </div>
           }
         </div>

@@ -6,10 +6,10 @@ class AppsPage extends React.Component {
 
   renderApp(icon: string, name: string, to: string) {
     return (
-      <div className='apps-page-app-row'>
+      <NavLink className='apps-page-app-row' to={to}>
         <img className="apps-page-app-icon" src={icon} />
         <div className="apps-page-app-name">{name}</div>
-      </div>
+      </NavLink>
     );
   }
 
@@ -19,7 +19,7 @@ class AppsPage extends React.Component {
         <div className="apps-page-header">Apps</div>
         <div className='apps-page-title'>Account Interaction Apps</div>
         <div className='apps-page-app-container'>
-          {this.renderApp('/icon/auto-trading.png', 'Automatic Trading', '')}
+          {this.renderApp('/icon/auto-trading.png', 'Automatic Trading', '/autoTrade')}
           {this.renderApp('/icon/batch.png', 'Batch Transactions', '')}
           {this.renderApp('/icon/p2p.png', 'P2P Matching & Trading', '')}
         </div>
