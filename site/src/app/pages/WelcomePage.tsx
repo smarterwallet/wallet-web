@@ -12,14 +12,17 @@ class WelcomePage extends React.Component {
         </div>
 
         <div className="welcome-page-title">
-          Enjoy countless capable and decentralized third-party smart contract account applications here
+          Enjoy countless capable and decentralized third-party account applications via account abstraction!
         </div>
 
-        <NavLink className="welcome-page-action-container" to='/register'>
-          <div className="welcome-page-action-text">
-            Choose a way to register with any account applications
-          </div>
-          <img className="welcome-page-action-icon" src="/icon/arrow-right.png" />
+        <NavLink className="welcome-page-button-container" to='/register'>
+          <div className="welcome-page-button-text">Register a smart contract account</div>
+          <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
+        </NavLink>
+
+        <NavLink className="welcome-page-button-container" to='/login'>
+          <div className="welcome-page-button-text">Login</div>
+          <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
       </div>
     );

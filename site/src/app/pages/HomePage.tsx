@@ -6,14 +6,14 @@ class HomePage extends React.Component {
 
   renderAsset(icon: string, name: string, amount: number, usd: number) {
     return (
-      <div className='home-page-asset-row'>
+      <NavLink className='home-page-asset-row' to={'/asset/' + name}>
         <img className="home-page-asset-icon" src={icon} />
         <div className="home-page-asset-name">{name}</div>
         <div>
           <div className="home-page-asset-amount">{amount.toFixed(2)}</div>
           <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
         </div>
-      </div>
+      </NavLink>
     );
   }
 

@@ -17,6 +17,8 @@ import AutoTradePage from './pages/AutoTradePage';
 import AddTradeBotPage from './pages/AddTradeBotPage';
 import EditTradeBotPage from './pages/EditTradeBotPage';
 import RunBotPage from './pages/RunBotPage';
+import AssetPage from './pages/AssetPage';
+import LoginPage from './pages/LoginPage';
 
 interface AppState {
   allowAccess: boolean;
@@ -87,7 +89,9 @@ class App extends React.Component<{}, AppState> {
         <Routes>
           <Route path='/' element={<SitePage />}>
             <Route index element={<WelcomePage />} />
+            <Route path='/login' element={<LoginPage />} />
             <Route path='/home' element={<HomePage />} />
+            <Route path='/asset/:id' element={<AssetPage />} />
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/registerPwd' element={<RegisterPwdPage />} />
             <Route path='/createAccount' element={<CreateAccountPage />} />

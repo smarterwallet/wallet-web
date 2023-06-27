@@ -63,6 +63,8 @@
   grid-template-columns: 55px 110px 1fr;
   align-items: center;
   padding: 15px 0;
+  color: black;
+  text-decoration: none;
   border-bottom: 0.5px solid lightgray;
 }
 
