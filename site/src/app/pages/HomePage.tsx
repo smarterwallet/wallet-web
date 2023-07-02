@@ -1,8 +1,59 @@
 import React from 'react';
 import './HomePage.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
+import { Server } from '../../server/server';
+import QuestionModal from '../modals/QuestionModal';
+import { BsFiles } from 'react-icons/bs';
 
-class HomePage extends React.Component {
+interface HomePageState {
+  message: string;
+  question: string;
+  alert: string;
+  matic: string;
+  usdtpm: string;
+}
+
+class HomePage extends React.Component<{}, HomePageState> {
+
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      message: '',
+      question: '',
+      alert: '',
+      matic: '',
+      usdtpm: '',
+    };
+
+    this.onQuestionYes = this.onQuestionYes.bind(this);
+    this.onQuestionNo = this.onQuestionNo.bind(this);
+  }
+
+  componentDidMount(): void {
+    this.getBalance();
+  }
+
+  async getBalance() {
+    let address  = localStorage.getItem('address');
+    console.log("address:", address)
+
+    if (address) {
+      let matic  = await Server.account.balanceOfMATIC(address);
+      let usdtpm = await Server.account.balanceOfUSDTPM(address);
+      console.log("matic:", matic)
+      console.log("usdtpm:", usdtpm)
+      this.setState({ matic, usdtpm });
+    }
+  }
+
+  onQuestionYes() {
+    localStorage.setItem('isLoggedIn', '0');
+    this.forceUpdate();
+  }
+
+  onQuestionNo() {
+    this.setState({question: ''});
+  }
 
   renderAsset(icon: string, name: string, amount: number, usd: number) {
     return (
@@ -17,14 +68,35 @@ class HomePage extends React.Component {
     );
   }
 
+  onLogout() {
+    this.setState({question: 'Are you sure you want to log out?'});
+  }
+
+  async copyUrl() {
+    await navigator.clipboard.writeText(localStorage.getItem('address'));
+  }
+
   render() {
+    if(!Server.account.isLoggedIn())
+      return <Navigate to="/" replace />;
+      
+    let address = '';
+    let username = localStorage.getItem('username');
+    let val = localStorage.getItem('address');
+    if (val) address = val;
+    if (address.length > 10)
+      address = address.substring(0, 5) + '...' + address.substring(address.length - 4);
+
     return (
       <div className="home-page">
         <div className="home-page-header">
           <img className="home-page-header-icon" src="/icon/portrait.png" />
           <div>
-            <div className="home-page-header-username">Username</div>
-            <div className="home-page-header-address">0x6...ae4</div>
+            <div className="home-page-header-username">{username}</div>
+            <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => this.copyUrl()}>
+              <div className="home-page-header-address">{address}</div>
+              <BsFiles color='gray' />
+            </div>
           </div>
           <select
             className="home-page-header-select" 
@@ -32,10 +104,10 @@ class HomePage extends React.Component {
             // onChange={this.onCategoryChange}
             // disabled={this.state.loading}
           >
-            <option value="main">Main</option>
-            <option value="testnet">Testnet</option>
+            <option value="main">Mumbai</option>
+            <option value="testnet">Mainnet</option>
           </select>
-          <img className="home-page-icon-logout" src="/icon/logout.png" />
+          <img className="home-page-icon-logout" src="/icon/logout.png" onClick={()=>this.onLogout()} />
         </div>
 
         <div className='home-page-balance-container'>
@@ -44,13 +116,14 @@ class HomePage extends React.Component {
         </div>
 
         <div>
-          {this.renderAsset('/icon/btc.png', 'BTC', 0, 0)}
-          {this.renderAsset('/icon/eth.png', 'ETH', 0, 0)}
-          {this.renderAsset('/icon/usdc.png', 'USDC', 0, 0)}
+          {this.renderAsset('/icon/matic.png', 'MATIC', Number(this.state.matic), 0)}
+          {this.renderAsset('/icon/usdc.png', 'USDTPM', Number(this.state.usdtpm), 0)}
         </div>
 
         <br/>
         {/* <div>Transactions</div> */}
+
+        <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo} />
       </div>
     );
   }

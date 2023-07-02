@@ -2,11 +2,14 @@ import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import { Navigate } from 'react-router-dom';
+import { Server } from '../../server/server';
+import AlertModal from '../modals/AlertModal';
 
 interface LoginPageState {
   username: string;
   password: string;
   navigate: string;
+  alert: string;
 }
 
 class LoginPage extends React.Component<{}, LoginPageState> {
@@ -17,14 +20,37 @@ class LoginPage extends React.Component<{}, LoginPageState> {
       username: '',
       password: '',
       navigate: '',
+      alert: '',
     }
+
+    this.onUsernameChange = this.onUsernameChange.bind(this);
+    this.onPasswordChange = this.onPasswordChange.bind(this);
   }
+
+  onUsernameChange(e: any) {
+    this.setState({username: e.currentTarget.value});
+  };
+
+  onPasswordChange(e: any) {
+    this.setState({password: e.currentTarget.value});
+  };
 
   componentDidMount(): void {
   }
 
   onLogin() {
-    this.setState({navigate: '/home'});
+    let aakey    = localStorage.getItem('aakey');
+    let loginkey = localStorage.getItem('loginkey');
+
+    let str = this.state.username + this.state.password + aakey;
+    let tryLogin = window.btoa(str); // encrypt
+
+    if (tryLogin === loginkey) {
+      localStorage.setItem('isLoggedIn', '1');
+      this.setState({navigate: '/home'});
+    }
+    else
+      this.setState({alert: 'Username or Password incorrect.'});
   }
 
   render() {
@@ -37,12 +63,14 @@ class LoginPage extends React.Component<{}, LoginPageState> {
 
         <br />
         <div>Username</div>
-        <input />
+        <input value={this.state.username} onChange={this.onUsernameChange} />
         <br />
         <div>Password</div>
-        <input />
+        <input type="password" value={this.state.password} onChange={this.onPasswordChange} />
         <br /><br />
         <button className='login-page-button' onClick={()=>this.onLogin()}>Login</button>
+
+        <AlertModal message={this.state.alert} button="OK" onClose={()=>this.setState({alert: ''})}/>
       </div>
     );
   }

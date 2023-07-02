@@ -30,36 +30,23 @@ export class Service {
     })
   }
 
-  protected async sendCommand(method:string, command:string, params:any = null) {
-    let response = await this.postCommand(method, command, params);
-
-    // if(response.status == 500) {
-    //   let refreshResponse = await Server.refreshServiceLogin();
-    //   if(!refreshResponse.success)
-    //     return response;
-    //   response = await this.postCommand(method, command, params);
-    // }
-    
-    return response;
-  }
-
-  protected postCommand(method:string, command:string, params:any = null): Promise<{status:number, body?:any}> {
+  protected sendCommand(api:string, params:any): Promise<{status:number, body?:any}> {
     return new Promise((resolve, reject)=>{
       var request = new XMLHttpRequest();
-      request.open('POST', 'https://kkccr95wfl.execute-api.us-west-2.amazonaws.com/dev/v2/' + method);
+      request.open('POST', api);
       request.setRequestHeader('Content-Type', 'application/json');
 
-      if(Service.authorizationToken != '')
-        request.setRequestHeader('Authorization', Service.authorizationToken);
+      // if(Service.authorizationToken != '')
+      //   request.setRequestHeader('Authorization', Service.authorizationToken);
   
-      let payload = {command};
+      // let payload = {command};
 
-      if(params) {
-        payload = {...params};
-        payload.command = command;
-      }
+      // if(params) {
+      //   payload = {...params};
+      //   payload.command = command;
+      // }
 
-      let body = JSON.stringify(payload);
+      let body = JSON.stringify(params);
       console.log('==> ' + body);
       request.send(body);
   

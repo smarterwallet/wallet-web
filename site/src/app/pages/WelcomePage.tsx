@@ -1,9 +1,13 @@
 import React from 'react';
 import './WelcomePage.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
+import { Server } from '../../server/server';
 
 class WelcomePage extends React.Component {
   render() {
+    if (Server.account.isLoggedIn())
+      return <Navigate to="/home" replace />;
+
     return (
       <div className="welcome-page">
         <div className="welcome-page-header">

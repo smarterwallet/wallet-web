@@ -29,6 +29,10 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       assetIcon = '/icon/eth.png';
     else if (assetId === "USDC")
       assetIcon = '/icon/usdc.png';
+    else if (assetId === "USDTPM")
+      assetIcon = '/icon/usdc.png';
+    else if (assetId === "MATIC")
+      assetIcon = '/icon/matic.png';
 
     this.setState({assetId, assetIcon});
   }
