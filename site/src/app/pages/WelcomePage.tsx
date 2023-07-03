@@ -20,7 +20,7 @@ class WelcomePage extends React.Component {
         </div>
 
         <NavLink className="welcome-page-button-container" to='/register'>
-          <div className="welcome-page-button-text">Register a smart contract account</div>
+          <div className="welcome-page-button-text">Register an account</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
 

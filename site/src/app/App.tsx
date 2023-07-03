@@ -81,8 +81,8 @@ class App extends React.Component<{}, AppState> {
     if (!this.state.initialized)
       return (<LoadingPage maintenance={this.state.maintenance} setInitialized={this.setInitialized} />);
 
-    if(!this.state.allowAccess)
-      return (<PasswordPage setPassword={this.setSecretPassword} />);
+    // if(!this.state.allowAccess)
+    //   return (<PasswordPage setPassword={this.setSecretPassword} />);
 
     return (
       <BrowserRouter>

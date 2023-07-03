@@ -18,7 +18,8 @@ export class AccountService extends Service {
   async createAccount(params:any) {
     let api = 'https://smarter-api.web3-idea.xyz/be/account/onchain/create';
     let response = await this.sendCommand(api, params);
-    console.log("createAccount response:", response)
+    console.log("createAccount response:", response);
+    return response;
   }
 
   async getAddress(eoaAddress: string, salt: number) {

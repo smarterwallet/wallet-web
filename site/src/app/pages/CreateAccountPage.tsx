@@ -63,14 +63,14 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
     let account = Server.web3.eth.accounts.create();
     console.log("account:", account)
 
-    // 
     this.encryptKey(account.privateKey, this.state.username, this.state.password);
     
-    // What's purpose of the createAccount api?
-    // let params = {
-    //   "address": account.address
-    // }
-    // let address = Server.account.createAccount(params);
+    // create smart contract account on chain
+    let params = {
+      "address": account.address
+    }
+    let tx = await Server.account.createAccount(params);
+    await Server.checkTransactionStatus(tx.body["result"]);
 
     let address = await Server.account.getAddress(account.address, 0);
     console.log("address:", address)

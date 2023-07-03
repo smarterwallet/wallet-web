@@ -24,14 +24,14 @@ class RegisterPwdPage extends React.Component {
           Choose an account register application:
         </div>
 
-        {this.renderMenu('/icon/phone.png', 'Decentralized Storage (IPFS)', '/createAccount', true)}
+          {this.renderMenu('/icon/device.png', 'Local Device', '/createAccount', true)}
 
         <div className="register-page-title small">
           Will support in the next version:
         </div>
 
         <div>
-          {this.renderMenu('/icon/device.png', 'Local Device', '')}
+          {this.renderMenu('/icon/phone.png', 'Decentralized Storage (IPFS)','')}
           {this.renderMenu('/icon/cloud.png', 'Cloud Drive', '')}
           {this.renderMenu('/icon/others.png', 'Others', '')}
         </div>
