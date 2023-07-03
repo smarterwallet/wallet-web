@@ -2,6 +2,13 @@ import {AccountService} from './accountService';
 import Web3 from 'web3';
 import {ethers} from 'ethers';
 
+// system contract address
+export const ADDRESS_SIMPLE_ACCOUNT_FACTORY = "0x6ACF75E7EA53E85fb97ee62575B4410c27346dDE";
+export const ADDRESS_TOKEN_PAYMASTER = "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED";
+export const ADDRESS_ENTRYPOINT = "0x6FdC82b4500b5B82504DaA465B8CDB9E9dBC48Ef";
+
+// support ERC20 contract address
+export const ADDRESS_USDTPM = "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED";
 
 export class Server {
   public static account: AccountService = new AccountService();

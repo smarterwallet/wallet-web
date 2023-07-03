@@ -34,7 +34,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async getBalance() {
-    let address  = localStorage.getItem('address');
+    let address  = Server.account.contractAddress;
     console.log("address:", address)
 
     if (address) {
@@ -73,7 +73,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
-    await navigator.clipboard.writeText(localStorage.getItem('address'));
+    await navigator.clipboard.writeText(Server.account.contractAddress);
   }
 
   render() {
@@ -82,7 +82,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       
     let address = '';
     let username = localStorage.getItem('username');
-    let val = localStorage.getItem('address');
+    let val = Server.account.contractAddress;
     if (val) address = val;
     if (address.length > 10)
       address = address.substring(0, 5) + '...' + address.substring(address.length - 4);

@@ -1,0 +1,17 @@
+.simple-transaction-page {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding: 0 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.simple-transaction-page-button {
+  height: 50px;
+  font-size: 22px;
+  font-weight: 700;
+  border-radius: 20px;
+  background-color: #D9D9D9;
+  box-shadow: 5px 5px 20px 0px #00000040;
+}

@@ -1,3 +1,13 @@
+import {ethers} from "ethers";
+
+export const ETH = (value: string) => {
+  return ethers.utils.parseEther(value);
+};
+export const ETHUnits = (value: string) => {
+  // @ts-ignore
+  return ethers.utils.parseUnits(ETH(value).toBigInt().toString());
+};
+
 /**
  * check the input if is a valid number
  * @param value 

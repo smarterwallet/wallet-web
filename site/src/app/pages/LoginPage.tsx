@@ -38,15 +38,20 @@ class LoginPage extends React.Component<{}, LoginPageState> {
   componentDidMount(): void {
   }
 
-  onLogin() {
+  async onLogin() {
     let aakey    = localStorage.getItem('aakey');
     let loginkey = localStorage.getItem('loginkey');
 
     let str = this.state.username + this.state.password + aakey;
+    // console.log(window.atob(str))
     let tryLogin = window.btoa(str); // encrypt
 
     if (tryLogin === loginkey) {
       localStorage.setItem('isLoggedIn', '1');
+      let key = window.atob(aakey);
+      key = key.substring(this.state.username.length + this.state.password.length,key.length);
+      console.log(key);
+      await Server.account.initWalletAndContractAddress(key);
       this.setState({navigate: '/home'});
     }
     else
@@ -68,7 +73,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
         <div>Password</div>
         <input type="password" value={this.state.password} onChange={this.onPasswordChange} />
         <br /><br />
-        <button className='login-page-button' onClick={()=>this.onLogin()}>Login</button>
+        <button className='login-page-button' onClick={async () => await this.onLogin()}>Login</button>
 
         <AlertModal message={this.state.alert} button="OK" onClose={()=>this.setState({alert: ''})}/>
       </div>

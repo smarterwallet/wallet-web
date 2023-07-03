@@ -19,6 +19,7 @@ import EditTradeBotPage from './pages/EditTradeBotPage';
 import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
+import SimpleTransactionPage from "./pages/SimpleTransaction";
 
 interface AppState {
   allowAccess: boolean;
@@ -100,6 +101,7 @@ class App extends React.Component<{}, AppState> {
             <Route path='/addTradeBot' element={<AddTradeBotPage />} />
             <Route path='/editTradeBot' element={<EditTradeBotPage />} />
             <Route path='/runBot' element={<RunBotPage />} />
+            <Route path='/simpleTransaction' element={<SimpleTransactionPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
