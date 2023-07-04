@@ -1,9 +1,7 @@
 import {
-  ADDRESS_SIMPLE_ACCOUNT_FACTORY,
-  ADDRESS_USDTPM,
-  BUNDLER_API,
-  ERC20_TX_LIST_API,
-  MATIC_TX_LIST_API,
+  ADDRESS_SIMPLE_ACCOUNT_FACTORY, ADDRESS_USDTPM,
+  BUNDLER_API, ERC20_TX_FROM_LIST_API,
+  ERC20_TX_TO_LIST_API, MATIC_TX_LIST_API,
   Server
 } from './server';
 import {Service} from './service';
@@ -219,8 +217,13 @@ export class AccountService extends Service {
     console.log("getMaticTxList response:", response);
     return response;
   }
-  async getTokenTxList(address: string) {
-    let response = await this.getRequest(ERC20_TX_LIST_API + address);
+  async getTokenTxListByFromAddr(address: string) {
+    let response = await this.getRequest(ERC20_TX_FROM_LIST_API + address.substring(2));
+    console.log("getTokenTxList response:", response);
+    return response;
+  }
+  async getTokenTxListByToAddr(address: string) {
+    let response = await this.getRequest(ERC20_TX_TO_LIST_API + address.substring(2));
     console.log("getTokenTxList response:", response);
     return response;
   }
