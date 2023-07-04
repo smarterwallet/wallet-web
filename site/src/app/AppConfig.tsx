@@ -1,5 +1,5 @@
 export class AppConfig {
-  public static siteName = 'AA Wallet';
+  public static siteName = 'Smarter Wallet';
   public static secretPassword = 'ploy';
 
   public static menu = [
