@@ -4,7 +4,7 @@ class NotFoundPage extends React.Component {
   render() {
     return (
       <div>
-        <div style={{textAlign: 'center', marginTop: '20px'}}>This is not the page you are looking for...</div>
+        <div style={{textAlign: 'center', marginTop: '20px'}}>Coming Soon...</div>
       </div>
     )
   }
