@@ -61,7 +61,6 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
     this.setState({message: 'Registering...'});
 
     let account = Server.web3.eth.accounts.create();
-    console.log("account:", account)
 
     this.encryptKey(account.privateKey, this.state.username, this.state.password);
     
@@ -73,11 +72,10 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
     await Server.checkTransactionStatus(tx.body["result"]);
 
     let address = await Server.account.getAddress(account.address, 0);
-    console.log("address:", address)
-    
+
     localStorage.setItem('username', this.state.username);
     localStorage.setItem('address', address);
-    localStorage.setItem('isLoggedIn', '1');
+    Server.account.loggedIn();
 
     this.setState({navigate: '/home', message: ''});
   }

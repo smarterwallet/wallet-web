@@ -66,7 +66,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     render() {
 
         return (
-            <div className="simple-transaction-page">
+            <div className="login-page">
                 <HeaderBar text='Send Transaction'/>
                 <br/>
                 <div>Asset</div>

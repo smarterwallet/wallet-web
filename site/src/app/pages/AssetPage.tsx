@@ -2,8 +2,9 @@ import React from 'react';
 import './AssetPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {Server} from "../../server/server";
-import {ETH, formatTimestamp} from "../util/util";
+import {ETH, formatTimestamp, handlerNumberStr} from "../util/util";
 import {ethers} from "ethers";
+import {Navigate} from "react-router-dom";
 
 interface AssetPageState {
   assetId: string;
@@ -53,7 +54,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
         this.setState({txDataToShow: e.mergedArray});
       })
       Server.account.balanceOfUSDTPM(Server.account.contractAddress).then((e)=>{
-        this.setState({balance:e})
+        this.setState({balance: handlerNumberStr(e).toString()})
       })
     } else if (assetId === "MATIC") {
       assetIcon = '/icon/matic.png';
@@ -64,7 +65,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
         this.setState({txDataToShow: e.mergedArray});
       })
       Server.account.balanceOfMATIC(Server.account.contractAddress).then((e)=>{
-        this.setState({balance:e})
+        this.setState({balance: handlerNumberStr(e).toString()})
       })
     }
 
@@ -79,42 +80,45 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let txListTo: any[] = [];
 
     txListResponse.body["result"].forEach((item: any) => {
+      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(item.value));
+      if (valueStr == 0){
+        return;
+      }
+      let data = {
+        ...item,
+        valueShow: valueStr,
+        txTimeShow: formatTimestamp(item.timeStamp, true),
+        txHashShow: item.hash,
+      };
       if (item.from.toLowerCase() === Server.account.contractAddress.toLowerCase()) {
-
-        txListFrom.push({
-          ...item,
-          txType: "Sent",
-          valueShow: Server.web3.utils.fromWei(item.value),
-          txTimeShow: formatTimestamp(item.timeStamp, true),
-          txHashShow: item.hash,
-        })
-        console.log("txListFrom:",txListFrom);
+        data.txType = "Sent";
+        txListFrom.push(data);
       } else if (item.to.toLowerCase() === Server.account.contractAddress.toLowerCase()) {
-        txListTo.push({
-          ...item,
-          txType: "Received",
-          valueShow: Server.web3.utils.fromWei(item.value),
-          txTimeShow: formatTimestamp(item.timeStamp, true),
-          txHashShow: item.hash,
-        })
-        console.log("txListTo:",txListTo);
+        data.txType = "Received";
+        txListTo.push(data);
       }
     })
 
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
 
-    console.log("mergedArray:",mergedArray);
+    txListFrom = txListFrom.filter((item:any) => item != null)
+    txListTo = txListTo.filter((item:any) => item != null)
+    mergedArray = mergedArray.filter((item:any) => item != null)
     return {txListTo, txListFrom, mergedArray}
   }
 
   async getTokenTxList() {
     let txListFromResponse = await Server.account.getTokenTxListByFromAddr(Server.account.contractAddress);
     let txListFrom = txListFromResponse.body["result"].map((item: any) => {
+      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)));
+      if (valueStr == 0) {
+        return;
+      }
       return {
         ...item,
         txType: "Sent",
-        valueShow: Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)),
+        valueShow: valueStr,
         txTimeShow: formatTimestamp(parseInt(item.timeStamp, 16), true),
         txHashShow: item.transactionHash,
       };
@@ -122,10 +126,14 @@ class AssetPage extends React.Component<{}, AssetPageState> {
 
     let txListToResponse = await Server.account.getTokenTxListByToAddr(Server.account.contractAddress);
     let txListTo = txListToResponse.body["result"].map((item: any) => {
+      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)));
+      if (valueStr == 0) {
+        return;
+      }
       return {
         ...item,
         txType: "Received",
-        valueShow: Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)),
+        valueShow: valueStr,
         txTimeShow: formatTimestamp(parseInt(item.timeStamp, 16), true),
         txHashShow: item.transactionHash,
       };
@@ -134,13 +142,15 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
 
+    txListFrom = txListFrom.filter((item:any) => item != null)
+    txListTo = txListTo.filter((item:any) => item != null)
+    mergedArray = mergedArray.filter((item:any) => item != null)
     return {txListTo, txListFrom, mergedArray}
   }
 
 
   handleFilterChange(filter: number) {
     this.setState({filter}, () => {
-      console.log("filter: ", filter);
       if (filter === 0) {
         this.setState({txDataToShow: this.state.txData});
       } else if (filter === 1) {
@@ -152,6 +162,9 @@ class AssetPage extends React.Component<{}, AssetPageState> {
   }
 
   render() {
+    if (!Server.account.isLoggedIn())
+      return <Navigate to="/" replace/>;
+
     return (
         <div className="asset-page">
           <HeaderBar text={this.state.assetId}/>

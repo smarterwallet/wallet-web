@@ -8,10 +8,14 @@ export const ETHUnits = (value: string) => {
   return ethers.utils.parseUnits(ETH(value).toBigInt().toString());
 };
 
+export function handlerNumberStr(numStr: string) {
+  return parseFloat(numStr.match(/^\d+(?:\.\d{0,4})?/)[0]);
+}
+
 /**
  * check the input if is a valid number
- * @param value 
- * @returns 
+ * @param value
+ * @returns
  */
 export function checkNumber(value: string) {
   const regex = /^[0-9]*$/; // 0-9 number

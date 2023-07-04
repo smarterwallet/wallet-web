@@ -35,19 +35,16 @@ class HomePage extends React.Component<{}, HomePageState> {
 
   async getBalance() {
     let address  = Server.account.contractAddress;
-    console.log("address:", address)
 
     if (address) {
       let matic  = await Server.account.balanceOfMATIC(address);
       let usdtpm = await Server.account.balanceOfUSDTPM(address);
-      console.log("matic:", matic)
-      console.log("usdtpm:", usdtpm)
       this.setState({ matic, usdtpm });
     }
   }
 
   onQuestionYes() {
-    localStorage.setItem('isLoggedIn', '0');
+    Server.account.loggedOut()
     this.forceUpdate();
   }
 

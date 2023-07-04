@@ -1,8 +1,8 @@
 import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
-import { Navigate } from 'react-router-dom';
-import { Server } from '../../server/server';
+import {Navigate} from 'react-router-dom';
+import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
 
 interface LoginPageState {
@@ -47,10 +47,9 @@ class LoginPage extends React.Component<{}, LoginPageState> {
     let tryLogin = window.btoa(str); // encrypt
 
     if (tryLogin === loginkey) {
-      localStorage.setItem('isLoggedIn', '1');
+      Server.account.loggedIn();
       let key = window.atob(aakey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
-      console.log(key);
       await Server.account.initWalletAndContractAddress(key);
       this.setState({navigate: '/home'});
     }
@@ -66,13 +65,13 @@ class LoginPage extends React.Component<{}, LoginPageState> {
       <div className="login-page">
         <HeaderBar text='Login' />
 
-        <br />
+        <br/>
         <div>Username</div>
-        <input value={this.state.username} onChange={this.onUsernameChange} />
-        <br />
+        <input value={this.state.username} onChange={this.onUsernameChange}/>
+        <br/>
         <div>Password</div>
-        <input type="password" value={this.state.password} onChange={this.onPasswordChange} />
-        <br /><br />
+        <input type="password" value={this.state.password} onChange={this.onPasswordChange}/>
+        <br/><br/>
         <button className='login-page-button' onClick={async () => await this.onLogin()}>Login</button>
 
         <AlertModal message={this.state.alert} button="OK" onClose={()=>this.setState({alert: ''})}/>

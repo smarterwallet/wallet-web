@@ -1,7 +1,10 @@
 import {
-  ADDRESS_SIMPLE_ACCOUNT_FACTORY, ADDRESS_USDTPM,
-  BUNDLER_API, ERC20_TX_FROM_LIST_API,
-  ERC20_TX_TO_LIST_API, MATIC_TX_LIST_API,
+  ADDRESS_SIMPLE_ACCOUNT_FACTORY,
+  ADDRESS_USDTPM,
+  BUNDLER_API,
+  ERC20_TX_FROM_LIST_API,
+  ERC20_TX_TO_LIST_API,
+  MATIC_TX_LIST_API,
   Server
 } from './server';
 import {Service} from './service';
@@ -19,13 +22,23 @@ const erc20Abi = require('../data/IERC20.json');
 export class AccountService extends Service {
   public contractAddress: string;
   public ethersWallet: ethers.Wallet;
+  // gasPrice = gasPriceOnChain * feeRate / 100
+  private feeRate = 110;
 
   constructor() {
     super();
   }
 
   isLoggedIn() {
-    return localStorage.getItem('isLoggedIn') === '1';
+    return Server.isLoggedIn;
+  }
+
+  loggedIn() {
+    Server.isLoggedIn = true;
+  }
+
+  loggedOut() {
+    Server.isLoggedIn = false;
   }
 
   async initWalletAndContractAddress(eoaKey: string) {
@@ -35,19 +48,16 @@ export class AccountService extends Service {
 
   async createAccount(params: any) {
     let api = 'https://smarter-api.web3-idea.xyz/be/account/onchain/create';
-    let response = await this.sendCommand(api, params);
-    console.log("createAccount response:", response);
-    return response;
+    return await this.sendCommand(api, params);
   }
 
   async getAddress(eoaAddress: string, salt: number) {
-    console.log("eoaAddress: ", eoaAddress);
+    console.log("EOA Address: ", eoaAddress);
     let contract = new Server.web3.eth.Contract(factoryAbi, ADDRESS_SIMPLE_ACCOUNT_FACTORY);
 
     try {
       let address = await contract.methods.getAddress(eoaAddress, salt).call();
       this.contractAddress = address;
-      console.log("this.contractAddress:", this.contractAddress)
       return address;
     } catch (error) {
       console.error(error);
@@ -88,7 +98,9 @@ export class AccountService extends Service {
   }
 
   async getGasPrice() {
-    return await Server.ethersProvider.getGasPrice();
+    let gasPrice = await Server.ethersProvider.getGasPrice();
+    console.log("gasPrice:",gasPrice.toBigInt().toString());
+    return gasPrice.mul(BigNumber.from(this.feeRate)).div(BigNumber.from(100))
   }
 
   sendMainTokenCall(toAddress: string, amount: BigNumber) {
@@ -101,7 +113,6 @@ export class AccountService extends Service {
   sendERC20TokenCall(contractAddress: string, toAddress: string, amount: BigNumber) {
     const contract = new ethers.Contract(contractAddress, erc20Abi, Server.ethersProvider);
     const transferCalldata = contract.interface.encodeFunctionData('transfer', [toAddress, amount]);
-    console.log("transferCalldata:", transferCalldata);
 
     let ABI = ["function execute(address dest, uint256 value, bytes calldata func)"];
     let iface = new ethers.utils.Interface(ABI);
@@ -109,7 +120,6 @@ export class AccountService extends Service {
   }
 
   async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
-    console.log("sendMainToken");
     const senderAddress = Server.account.contractAddress;
     const nonce = await this.contractAccountNonce(senderAddress);
     const initCode = "0x";
@@ -178,7 +188,6 @@ export class AccountService extends Service {
 
   async sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
     let op = await this.buildTx(null, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    console.log("op:", op)
     await this.sendUserOperation({
       "jsonrpc": "2.0",
       "id": 1,
@@ -192,7 +201,6 @@ export class AccountService extends Service {
 
   async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
     let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    console.log("op:", op)
     await this.sendUserOperation({
       "jsonrpc": "2.0",
       "id": 1,
@@ -205,27 +213,18 @@ export class AccountService extends Service {
   }
 
   async sendUserOperation(params: any) {
-    console.log("sendUserOperation:", params);
-    let response = await this.sendCommand(BUNDLER_API, params);
-    console.log("createAccount response:", response);
-    return response;
+    return await this.sendCommand(BUNDLER_API, params);
   }
 
 
   async getMaticTxList(address: string) {
-    let response = await this.getRequest(MATIC_TX_LIST_API + address);
-    console.log("getMaticTxList response:", response);
-    return response;
+    return await this.getRequest(MATIC_TX_LIST_API + address);
   }
   async getTokenTxListByFromAddr(address: string) {
-    let response = await this.getRequest(ERC20_TX_FROM_LIST_API + address.substring(2));
-    console.log("getTokenTxList response:", response);
-    return response;
+    return await this.getRequest(ERC20_TX_FROM_LIST_API + address.substring(2));
   }
   async getTokenTxListByToAddr(address: string) {
-    let response = await this.getRequest(ERC20_TX_TO_LIST_API + address.substring(2));
-    console.log("getTokenTxList response:", response);
-    return response;
+    return await this.getRequest(ERC20_TX_TO_LIST_API + address.substring(2));
   }
 }
 
