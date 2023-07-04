@@ -2,6 +2,7 @@ import React from 'react';
 import './AssetPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {Server} from "../../server/server";
+import {NavLink} from "react-router-dom";
 
 interface AssetPageState {
   assetId: string;
@@ -87,7 +88,17 @@ class AssetPage extends React.Component<{}, AssetPageState> {
             </div>
           </div>
 
-          <div className='asset-page-trans'>None</div>
+          <div className='asset-page-trans'>
+            {/*<NavLink className='home-page-asset-row' to={'/tx/'}>*/}
+            {/*  /!*<img className="home-page-asset-icon" src={icon} />*!/*/}
+            {/*  <div className="home-page-asset-name">123</div>*/}
+            {/*  <div>*/}
+            {/*    <div className="home-page-asset-amount">2</div>*/}
+            {/*    <div className="home-page-asset-usd">1</div>*/}
+            {/*  </div>*/}
+            {/*</NavLink>*/}
+            Coming Soon
+          </div>
         </div>
     );
   }

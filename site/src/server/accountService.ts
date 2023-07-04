@@ -1,4 +1,11 @@
-import {ADDRESS_SIMPLE_ACCOUNT_FACTORY, ADDRESS_USDTPM, ERC20_TX_LIST_API, MATIC_TX_LIST_API, Server} from './server';
+import {
+  ADDRESS_SIMPLE_ACCOUNT_FACTORY,
+  ADDRESS_USDTPM,
+  BUNDLER_API,
+  ERC20_TX_LIST_API,
+  MATIC_TX_LIST_API,
+  Server
+} from './server';
 import {Service} from './service';
 import {BigNumber, ethers} from "ethers";
 import {ETH} from '../app/util/util';
@@ -201,9 +208,7 @@ export class AccountService extends Service {
 
   async sendUserOperation(params: any) {
     console.log("sendUserOperation:", params);
-    let api = 'http://127.0.0.1:4337';
-    // let api = 'https://smarter-api.web3-idea.xyz/bundler/';
-    let response = await this.sendCommand(api, params);
+    let response = await this.sendCommand(BUNDLER_API, params);
     console.log("createAccount response:", response);
     return response;
   }
