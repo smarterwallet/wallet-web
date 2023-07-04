@@ -3,11 +3,12 @@ import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {ADDRESS_ENTRYPOINT, ADDRESS_TOKEN_PAYMASTER, ADDRESS_USDTPM, Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
+import {BigNumber} from "ethers";
 
 interface SimpleTransactionState {
     txTo: string;
     txValue: string;
-    gasFee: string;
+    gasPrice: BigNumber;
     alert: string;
     selectedAsset: string;
 }
@@ -16,10 +17,13 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
     constructor(props: any) {
         super(props);
+        Server.account.getGasPrice().then(
+            (e) => this.setState({gasPrice: e})
+        );
         this.state = {
             txTo: '',
             txValue: '',
-            gasFee: '',
+            gasPrice: BigNumber.from(0),
             alert: '',
             selectedAsset: 'Matic-Matic'
         }
@@ -39,7 +43,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     };
 
     onGasFeeChange(e: any) {
-        this.setState({gasFee: e.currentTarget.value});
+        this.setState({gasPrice: e.currentTarget.value});
     };
 
     onAssetChange(e: any) {
@@ -50,11 +54,13 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     }
 
     async onSend() {
+        this.setState({alert: this.state.selectedAsset + " sending..."});
         if (this.state.selectedAsset == "Matic-Matic") {
-            await Server.account.sendMainToken(this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT)
+            await Server.account.sendMainToken(this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT, this.state.gasPrice);
         } else if (this.state.selectedAsset == "Matic-USDTMP") {
-            await Server.account.sendERC20Token(ADDRESS_USDTPM, this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT)
+            await Server.account.sendERC20Token(ADDRESS_USDTPM, this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT, this.state.gasPrice)
         }
+        this.setState({alert: "send " + this.state.selectedAsset + " success"});
     }
 
     render() {
@@ -75,8 +81,8 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <div>Amount</div>
                 <input type="string" value={this.state.txValue} onChange={this.onValueChange}/>
                 <br/>
-                <div>Gas Fee</div>
-                <input type="string" value={this.state.gasFee} onChange={this.onGasFeeChange}/>
+                <div>Gas Price(Wei)</div>
+                <input type="string" value={this.state.gasPrice.toString()} onChange={this.onGasFeeChange}/>
                 <br/><br/>
                 <button className='simple-transaction-page-button' onClick={async () => await this.onSend()}>Send
                 </button>

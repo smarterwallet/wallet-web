@@ -10,6 +10,9 @@ export const ADDRESS_ENTRYPOINT = "0x6FdC82b4500b5B82504DaA465B8CDB9E9dBC48Ef";
 // support ERC20 contract address
 export const ADDRESS_USDTPM = "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED";
 
+export const MATIC_TX_LIST_API = "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=asc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=";
+export const ERC20_TX_LIST_API = "https://api-testnet.polygonscan.com/api?module=account&action=tokentx&startblock=0&endblock=99999999&sort=asc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=";
+
 export class Server {
   public static account: AccountService = new AccountService();
   public static initialized: boolean = false;

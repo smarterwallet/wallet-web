@@ -1,4 +1,4 @@
-import {ADDRESS_SIMPLE_ACCOUNT_FACTORY, ADDRESS_USDTPM, Server} from './server';
+import {ADDRESS_SIMPLE_ACCOUNT_FACTORY, ADDRESS_USDTPM, ERC20_TX_LIST_API, MATIC_TX_LIST_API, Server} from './server';
 import {Service} from './service';
 import {BigNumber, ethers} from "ethers";
 import {ETH} from '../app/util/util';
@@ -82,6 +82,10 @@ export class AccountService extends Service {
     return await Server.ethersProvider.getTransactionCount(address);
   }
 
+  async getGasPrice() {
+    return await Server.ethersProvider.getGasPrice();
+  }
+
   sendMainTokenCall(toAddress: string, amount: BigNumber) {
     // https://github.com/ethers-io/ethers.js/issues/478#issuecomment-495814010
     let ABI = ["function execute(address dest, uint256 value, bytes calldata func)"];
@@ -99,7 +103,7 @@ export class AccountService extends Service {
     return iface.encodeFunctionData("execute", [contractAddress, 0, transferCalldata]);
   }
 
-  async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string) {
+  async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
     console.log("sendMainToken");
     const senderAddress = Server.account.contractAddress;
     const nonce = await this.contractAccountNonce(senderAddress);
@@ -114,8 +118,8 @@ export class AccountService extends Service {
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;
     const preVerificationGas = 210000;
-    const maxFeePerGas = 6000000000;
-    const maxPriorityFeePerGas = 6000000000;
+    const maxFeePerGas = gasPrice;
+    const maxPriorityFeePerGas = gasPrice;
     let paymasterAndData;
     let signature = "0x";
 
@@ -167,8 +171,8 @@ export class AccountService extends Service {
     return userOperation;
   }
 
-  async sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string) {
-    let op = await this.buildTx(null, amount, toAddress, tokenPaymasterAddress, entryPointAddress);
+  async sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
+    let op = await this.buildTx(null, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
     console.log("op:", op)
     await this.sendUserOperation({
       "jsonrpc": "2.0",
@@ -181,8 +185,8 @@ export class AccountService extends Service {
     });
   }
 
-  async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string) {
-    let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress);
+  async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
+    let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
     console.log("op:", op)
     await this.sendUserOperation({
       "jsonrpc": "2.0",
@@ -201,6 +205,18 @@ export class AccountService extends Service {
     // let api = 'https://smarter-api.web3-idea.xyz/bundler/';
     let response = await this.sendCommand(api, params);
     console.log("createAccount response:", response);
+    return response;
+  }
+
+
+  async getMaticTxList(address: string) {
+    let response = await this.getRequest(MATIC_TX_LIST_API + address);
+    console.log("getMaticTxList response:", response);
+    return response;
+  }
+  async getTokenTxList(address: string) {
+    let response = await this.getRequest(ERC20_TX_LIST_API + address);
+    console.log("getTokenTxList response:", response);
     return response;
   }
 }
