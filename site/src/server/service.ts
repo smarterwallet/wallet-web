@@ -53,16 +53,13 @@ export class Service {
       // }
 
       let body = JSON.stringify(params);
-      console.log('==> ' + body);
       request.send(body);
 
       request.onload = () => {
-        console.log('<== ' + request.status + ' ' + request.responseText);
-
         let body = null;
-        if (request.responseText != '')
+        if (request.responseText != '') {
           body = JSON.parse(request.responseText);
-
+        }
         resolve({
           status: request.status,
           body: body
@@ -70,7 +67,6 @@ export class Service {
       };
 
       request.onerror = (e) => {
-        console.log('<== ERROR');
         resolve({
           status: 500,
           body: {message: 'Internal service error!'}

@@ -1,13 +1,12 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import { Server } from '../server/server';
+import {Server} from '../server/server';
 import HomePage from './pages/HomePage';
 import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
-import PasswordPage from './pages/PasswordPage';
 import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
-import { AppConfig } from './AppConfig';
+import {AppConfig} from './AppConfig';
 import RegisterPage from './pages/RegisterPage';
 import RegisterPwdPage from './pages/RegisterPwdPage';
 import CreateAccountPage from './pages/CreateAccountPage';
@@ -20,13 +19,16 @@ import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
+import {Config} from "../server/config";
+const polygonConfig = require('./config/polygon.json');
+const polygonMumbaiConfig = require('./config/polygon-mumbai.json');
 
 interface AppState {
   allowAccess: boolean;
   postLoginPage: string;
   initialized: boolean;
   maintenance: boolean;
-};
+}
 
 class App extends React.Component<{}, AppState> {
   constructor(props = {}) {
@@ -39,8 +41,10 @@ class App extends React.Component<{}, AppState> {
       maintenance: false
     }
 
-    if(!this.state.maintenance)
+    if (!this.state.maintenance) {
+      Config.init(JSON.stringify(polygonMumbaiConfig));
       Server.init();
+    }
 
     this.setInitialized = this.setInitialized.bind(this);
     this.checkSecretPassword = this.checkSecretPassword.bind(this);

@@ -2,9 +2,10 @@ import React from 'react';
 import './AssetPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {Server} from "../../server/server";
-import {ETH, formatTimestamp, handlerNumberStr} from "../util/util";
+import {divideAndMultiplyByTenPowerN, formatTimestamp, handlerNumberStr} from "../util/util";
 import {ethers} from "ethers";
 import {Navigate} from "react-router-dom";
+import {Asset, Config} from "../../server/config";
 
 interface AssetPageState {
   assetId: string;
@@ -37,51 +38,43 @@ class AssetPage extends React.Component<{}, AssetPageState> {
 
   componentDidMount(): void {
     let assetId = window.location.pathname.substring(7);
-
-    let assetIcon;
-    if (assetId === "BTC")
-      assetIcon = '/icon/btc.png';
-    else if (assetId === "ETH")
-      assetIcon = '/icon/eth.png';
-    else if (assetId === "USDC")
-      assetIcon = '/icon/usdc.png';
-    else if (assetId === "USDTPM") {
-      assetIcon = '/icon/usdc.png';
-      this.getTokenTxList().then((e) => {
+    let asset = Config.TOKENS[assetId];
+    let assetIcon = asset.icon;
+    this.setState({assetId, assetIcon});
+    if (asset.type == 1) {
+      this.getMainTokenList().then((e) => {
         this.setState({txDataTo: e.txListTo});
         this.setState({txDataFrom: e.txListFrom});
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Server.account.balanceOfUSDTPM(Server.account.contractAddress).then((e)=>{
+      Server.account.balanceOfMainToken(Server.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
-    } else if (assetId === "MATIC") {
-      assetIcon = '/icon/matic.png';
-      this.getMaticList().then((e) => {
+    } else if (asset.type == 2) {
+      this.getTokenTxList(Config.TOKENS[assetId]).then((e) => {
         this.setState({txDataTo: e.txListTo});
         this.setState({txDataFrom: e.txListFrom});
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Server.account.balanceOfMATIC(Server.account.contractAddress).then((e)=>{
+      Server.account.balanceOfERC20(asset.address, Server.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
     }
-
-    this.setState({assetId, assetIcon});
   }
 
-  async getMaticList() {
-    let txListResponse = await Server.account.getMaticTxList(Server.account.contractAddress);
-
+  async getMainTokenList() {
+    let txListResponse = await Server.account.getMainTokenTxList();
+    let txInternalListResponse = await Server.account.getMainTokenInternalTxList();
+    let allResult = txListResponse.body["result"].concat(txInternalListResponse.body["result"])
 
     let txListFrom: any[] = [];
     let txListTo: any[] = [];
 
-    txListResponse.body["result"].forEach((item: any) => {
+    allResult.forEach((item: any) => {
       let valueStr = handlerNumberStr(Server.web3.utils.fromWei(item.value));
-      if (valueStr == 0){
+      if (valueStr == 0) {
         return;
       }
       let data = {
@@ -102,16 +95,16 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
 
-    txListFrom = txListFrom.filter((item:any) => item != null)
-    txListTo = txListTo.filter((item:any) => item != null)
-    mergedArray = mergedArray.filter((item:any) => item != null)
+    txListFrom = txListFrom.filter((item: any) => item != null)
+    txListTo = txListTo.filter((item: any) => item != null)
+    mergedArray = mergedArray.filter((item: any) => item != null)
     return {txListTo, txListFrom, mergedArray}
   }
 
-  async getTokenTxList() {
-    let txListFromResponse = await Server.account.getTokenTxListByFromAddr(Server.account.contractAddress);
+  async getTokenTxList(asset: Asset) {
+    let txListFromResponse = await Server.account.getTokenTxListByFromAddr(asset.address);
     let txListFrom = txListFromResponse.body["result"].map((item: any) => {
-      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)));
+      let valueStr = handlerNumberStr(divideAndMultiplyByTenPowerN(ethers.BigNumber.from(item.data).toString(), asset.decimals));
       if (valueStr == 0) {
         return;
       }
@@ -124,9 +117,12 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       };
     });
 
-    let txListToResponse = await Server.account.getTokenTxListByToAddr(Server.account.contractAddress);
+    let txListToResponse = await Server.account.getTokenTxListByToAddr(asset.address);
     let txListTo = txListToResponse.body["result"].map((item: any) => {
-      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(ethers.utils.hexlify(item.data)));
+      if (null == item.data) {
+        return;
+      }
+      let valueStr = handlerNumberStr(divideAndMultiplyByTenPowerN(ethers.BigNumber.from(item.data).toString(), asset.decimals));
       if (valueStr == 0) {
         return;
       }

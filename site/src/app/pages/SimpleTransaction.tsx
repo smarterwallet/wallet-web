@@ -1,9 +1,13 @@
 import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
-import {ADDRESS_ENTRYPOINT, ADDRESS_TOKEN_PAYMASTER, ADDRESS_USDTPM, Server} from '../../server/server';
+import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
 import {BigNumber} from "ethers";
+import {Config} from "../../server/config";
+
+const polygonConfig = require('../config/polygon.json');
+const polygonMumbaiConfig = require('../config/polygon-mumbai.json');
 
 interface SimpleTransactionState {
     txTo: string;
@@ -25,13 +29,15 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
             txValue: '',
             gasPrice: BigNumber.from(0),
             alert: '',
-            selectedAsset: 'Matic-Matic'
+            selectedAsset: 'Matic'
         }
 
         this.onToChange = this.onToChange.bind(this);
         this.onValueChange = this.onValueChange.bind(this);
         this.onAssetChange = this.onAssetChange.bind(this);
         this.onGasFeeChange = this.onGasFeeChange.bind(this);
+
+        this.flushConfig("Mumbai");
     }
 
     onToChange(e: any) {
@@ -55,12 +61,29 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
     async onSend() {
         this.setState({alert: this.state.selectedAsset + " sending..."});
-        if (this.state.selectedAsset == "Matic-Matic") {
-            await Server.account.sendMainToken(this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT, this.state.gasPrice);
-        } else if (this.state.selectedAsset == "Matic-USDTMP") {
-            await Server.account.sendERC20Token(ADDRESS_USDTPM, this.state.txValue, this.state.txTo, ADDRESS_TOKEN_PAYMASTER, ADDRESS_ENTRYPOINT, this.state.gasPrice)
+        if (this.state.selectedAsset == "Matic") {
+            await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
+        } else if (this.state.selectedAsset == "SWT") {
+            await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+        } else if (this.state.selectedAsset == "USDC") {
+            // TODO USDC bug
+            await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+        } else {
+            console.error("unknown asset: " + this.state.selectedAsset);
         }
         this.setState({alert: "send " + this.state.selectedAsset + " success"});
+    }
+
+    async flushConfig(chainName: string) {
+        console.log("start to flush. Chain name: " + chainName);
+        switch (chainName) {
+            case "Polygon":
+                await Config.flushConfig(JSON.stringify(polygonConfig));
+                break;
+            case "Mumbai":
+                await Config.flushConfig(JSON.stringify(polygonMumbaiConfig));
+                break;
+        }
     }
 
     render() {
@@ -69,10 +92,18 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
             <div className="login-page">
                 <HeaderBar text='Send Transaction'/>
                 <br/>
+                <div>Chain name</div>
+                <select className="home-page-header-select" onChange={event => this.flushConfig(event.target.value)}>
+                    <option value="Mumbai">Mumbai
+                    </option>
+                    <option value="Polygon">Polygon
+                    </option>
+                </select>
                 <div>Asset</div>
                 <select value={this.state.selectedAsset} onChange={this.onAssetChange}>
-                    <option value="Matic-Matic">Matic-Matic</option>
-                    <option value="Matic-USDTMP">Matic-USDTMP</option>
+                    <option value="Matic">Matic</option>
+                    <option value="SWT">SWT</option>
+                    <option value="USDC">USDC</option>
                 </select>
                 <br/>
                 <div>Send To</div>

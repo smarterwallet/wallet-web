@@ -1,16 +1,26 @@
 import React from 'react';
 import './HomePage.css';
-import { NavLink, Navigate } from 'react-router-dom';
-import { Server } from '../../server/server';
-import QuestionModal from '../modals/QuestionModal';
-import { BsFiles } from 'react-icons/bs';
+import {Navigate, NavLink} from 'react-router-dom';
+import {Server} from '../../server/server';
+import {BsFiles} from 'react-icons/bs';
+import {Asset, Config} from "../../server/config";
+import QuestionModal from "../modals/QuestionModal";
+import AlertModal from "../modals/AlertModal";
+
+const polygonConfig = require('../config/polygon.json');
+const polygonMumbaiConfig = require('../config/polygon-mumbai.json');
+
+interface AssetInfo {
+  asset: Asset;
+  amount: string;
+  sort: number;
+}
 
 interface HomePageState {
   message: string;
   question: string;
   alert: string;
-  matic: string;
-  usdtpm: string;
+  asset: { [key: string]: AssetInfo };
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
@@ -21,8 +31,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       message: '',
       question: '',
       alert: '',
-      matic: '',
-      usdtpm: '',
+      asset: {},
     };
 
     this.onQuestionYes = this.onQuestionYes.bind(this);
@@ -30,16 +39,37 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
-    this.getBalance();
+    let newAsset = {...this.state.asset};
+    for (let key in Config.TOKENS) {
+      console.log(key);
+      newAsset[key] = {
+        asset: Config.TOKENS[key],
+        amount: "loading",
+        sort: Config.TOKENS[key].sort
+      };
+    }
+
+    this.setState({asset: newAsset});
+    this.flushAsset();
   }
 
-  async getBalance() {
-    let address  = Server.account.contractAddress;
+  async flushAsset() {
+    let address = Server.account.contractAddress;
 
     if (address) {
-      let matic  = await Server.account.balanceOfMATIC(address);
-      let usdtpm = await Server.account.balanceOfUSDTPM(address);
-      this.setState({ matic, usdtpm });
+      for (let key in Config.TOKENS) {
+        const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
+        this.setState({
+          asset: {
+            ...this.state.asset,
+            [key]: {
+              asset: Config.TOKENS[key],
+              amount: balance,
+              sort: Config.TOKENS[key].sort
+            }
+          }
+        });
+      }
     }
   }
 
@@ -52,16 +82,19 @@ class HomePage extends React.Component<{}, HomePageState> {
     this.setState({question: ''});
   }
 
-  renderAsset(icon: string, name: string, amount: number, usd: number) {
+  renderAsset(key: string, icon: string, name: string, amount: string, usd: number) {
     return (
-      <NavLink className='home-page-asset-row' to={'/asset/' + name}>
-        <img className="home-page-asset-icon" src={icon} />
-        <div className="home-page-asset-name">{name}</div>
-        <div>
-          <div className="home-page-asset-amount">{amount.toFixed(2)}</div>
-          <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
+        <div key={key}>
+          <NavLink className='home-page-asset-row' to={'/asset/' + name}>
+            <img className="home-page-asset-icon" src={icon}/>
+            <div className="home-page-asset-name">{name}</div>
+            <div>
+              <div
+                  className="home-page-asset-amount">{Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}</div>
+              <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
+            </div>
+          </NavLink>
         </div>
-      </NavLink>
     );
   }
 
@@ -73,16 +106,32 @@ class HomePage extends React.Component<{}, HomePageState> {
     await navigator.clipboard.writeText(Server.account.contractAddress);
   }
 
+  async flushConfig(chainName: string) {
+    console.log("start to flush. Chain name: " + chainName);
+    switch (chainName) {
+      case "Polygon":
+        await Config.flushConfig(JSON.stringify(polygonConfig));
+        await this.flushAsset();
+        break;
+      case "Mumbai":
+        await Config.flushConfig(JSON.stringify(polygonMumbaiConfig));
+        await this.flushAsset();
+        break;
+    }
+  }
+
   render() {
-    if(!Server.account.isLoggedIn())
-      return <Navigate to="/" replace />;
-      
+    if (!Server.account.isLoggedIn()) {
+      return <Navigate to="/" replace/>;
+    }
+
     let address = '';
     let username = localStorage.getItem('username');
     let val = Server.account.contractAddress;
     if (val) address = val;
-    if (address.length > 10)
+    if (address.length > 10) {
       address = address.substring(0, 5) + '...' + address.substring(address.length - 4);
+    }
 
     return (
       <div className="home-page">
@@ -92,19 +141,19 @@ class HomePage extends React.Component<{}, HomePageState> {
             <div className="home-page-header-username">{username}</div>
             <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => this.copyUrl()}>
               <div className="home-page-header-address">{address}</div>
-              <BsFiles color='gray' />
+              <BsFiles color='gray'/>
             </div>
           </div>
           <select
-            className="home-page-header-select" 
-            // value={this.state.category} 
-            // onChange={this.onCategoryChange}
-            // disabled={this.state.loading}
+              className="home-page-header-select"
+              onChange={event => this.flushConfig(event.target.value)}
           >
-            <option value="main">Mumbai</option>
-            <option value="testnet">Mainnet</option>
+            <option value="Mumbai">Mumbai
+            </option>
+            <option value="Polygon">Polygon
+            </option>
           </select>
-          <img className="home-page-icon-logout" src="/icon/logout.png" onClick={()=>this.onLogout()} />
+          <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()}/>
         </div>
 
         <div className='home-page-balance-container'>
@@ -113,14 +162,16 @@ class HomePage extends React.Component<{}, HomePageState> {
         </div>
 
         <div>
-          {this.renderAsset('/icon/matic.png', 'MATIC', Number(this.state.matic), 0)}
-          {this.renderAsset('/icon/usdc.png', 'USDTPM', Number(this.state.usdtpm), 0)}
+          {Object.entries(this.state.asset).sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
+              .map(([key, assetInfo], index) => (
+                  this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0)
+              ))}
         </div>
 
         <br/>
-        {/* <div>Transactions</div> */}
 
-        <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo} />
+        <AlertModal message={this.state.alert} button="OK" onClose={() => this.setState({alert: ''})}/>
+        <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo}/>
       </div>
     );
   }

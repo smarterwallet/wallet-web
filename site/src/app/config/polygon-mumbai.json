@@ -1,0 +1,41 @@
+{
+  "address": {
+    "address_simple_account_factory": "0x6ACF75E7EA53E85fb97ee62575B4410c27346dDE",
+    "address_token_paymaster": "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED",
+    "address_entrypoint": "0x6FdC82b4500b5B82504DaA465B8CDB9E9dBC48Ef"
+  },
+  "api": {
+    "rpc_api": "https://polygon-mumbai.g.alchemy.com/v2/wXKxRcFDvtVaA2blWEhUT9G2nd3AQ0A_",
+    "bundler_api": "https://smarter-api.web3-idea.xyz/bundler/",
+    "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
+    "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
+    "erc20_tx_from_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
+    "erc20_tx_to_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic2=0x000000000000000000000000%s"
+  },
+  "token": {
+    "MATIC": {
+      "sort": 0,
+      "name": "MATIC",
+      "address": null,
+      "decimals": 18,
+      "type": 1,
+      "icon": "/icon/matic.png"
+    },
+    "SWT": {
+      "sort": 1,
+      "name": "SWT",
+      "address": "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED",
+      "decimals": 18,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    },
+    "USDC": {
+      "sort": 2,
+      "name": "USDC",
+      "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+      "decimals": 6,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    }
+  }
+}

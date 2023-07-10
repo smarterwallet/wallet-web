@@ -1,16 +1,9 @@
-import {
-  ADDRESS_SIMPLE_ACCOUNT_FACTORY,
-  ADDRESS_USDTPM,
-  BUNDLER_API,
-  ERC20_TX_FROM_LIST_API,
-  ERC20_TX_TO_LIST_API,
-  MATIC_TX_LIST_API,
-  Server
-} from './server';
+import {Server} from './server';
 import {Service} from './service';
 import {BigNumber, ethers} from "ethers";
-import {ETH} from '../app/util/util';
+import {divideAndMultiplyByTenPowerN, ETH} from '../app/util/util';
 import {UserOperation} from "../app/modals/UserOperation";
+import {Asset, Config} from "./config";
 
 const {arrayify} = require("@ethersproject/bytes");
 
@@ -18,12 +11,13 @@ const factoryAbi = require('../data/factoryAbi.json');
 const usdtpmAbi = require('../data/usdtpmAbi.json');
 const simpleAccountAbi = require('../data/SimpleAccount.json');
 const erc20Abi = require('../data/IERC20.json');
+const util = require('util');
 
 export class AccountService extends Service {
   public contractAddress: string;
   public ethersWallet: ethers.Wallet;
   // gasPrice = gasPriceOnChain * feeRate / 100
-  private feeRate = 110;
+  private feeRate = 150;
 
   constructor() {
     super();
@@ -53,7 +47,7 @@ export class AccountService extends Service {
 
   async getAddress(eoaAddress: string, salt: number) {
     console.log("EOA Address: ", eoaAddress);
-    let contract = new Server.web3.eth.Contract(factoryAbi, ADDRESS_SIMPLE_ACCOUNT_FACTORY);
+    let contract = new Server.web3.eth.Contract(factoryAbi, Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY);
 
     try {
       let address = await contract.methods.getAddress(eoaAddress, salt).call();
@@ -65,17 +59,27 @@ export class AccountService extends Service {
     }
   }
 
-  async balanceOfMATIC(address: string) {
+  async balanceOfMainToken(address: string, decimals: number) {
     const balance = await Server.web3.eth.getBalance(address);
-    return Server.web3.utils.fromWei(balance);
+    return divideAndMultiplyByTenPowerN(balance, decimals);
   }
 
-  async balanceOfUSDTPM(address: string) {
-    let contract = new Server.web3.eth.Contract(usdtpmAbi, ADDRESS_USDTPM);
+  async getBalanceOf(asset: Asset) {
+    if (asset.type == 1) {
+      console.log(await this.balanceOfMainToken(this.contractAddress, asset.decimals))
+      return await this.balanceOfMainToken(this.contractAddress, asset.decimals);
+    } else if (asset.type == 2) {
+      console.log(await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals))
+      return await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals);
+    }
+  }
+
+  async balanceOfERC20(contractAddress: string, address: string, decimals: number) {
+    let contract = new Server.web3.eth.Contract(usdtpmAbi, contractAddress);
 
     try {
       let balance = await contract.methods.balanceOf(address).call();
-      return Server.web3.utils.fromWei(balance);
+      return divideAndMultiplyByTenPowerN(balance, decimals);
     } catch (error) {
       console.error(error);
       return '';
@@ -213,18 +217,24 @@ export class AccountService extends Service {
   }
 
   async sendUserOperation(params: any) {
-    return await this.sendCommand(BUNDLER_API, params);
+    return await this.sendCommand(Config.BUNDLER_API, params);
   }
 
 
-  async getMaticTxList(address: string) {
-    return await this.getRequest(MATIC_TX_LIST_API + address);
+  async getMainTokenTxList() {
+    return await this.getRequest(util.format(Config.MAIN_TOKEN_TX_LIST_API, Server.account.contractAddress));
   }
-  async getTokenTxListByFromAddr(address: string) {
-    return await this.getRequest(ERC20_TX_FROM_LIST_API + address.substring(2));
+
+  async getMainTokenInternalTxList() {
+    return await this.getRequest(util.format(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, Server.account.contractAddress));
   }
-  async getTokenTxListByToAddr(address: string) {
-    return await this.getRequest(ERC20_TX_TO_LIST_API + address.substring(2));
+
+  async getTokenTxListByFromAddr(contractAddress: string) {
+    return await this.getRequest(util.format(Config.ERC20_TX_FROM_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
+  }
+
+  async getTokenTxListByToAddr(contractAddress: string) {
+    return await this.getRequest(util.format(Config.ERC20_TX_TO_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
   }
 }
 

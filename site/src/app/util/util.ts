@@ -9,6 +9,9 @@ export const ETHUnits = (value: string) => {
 };
 
 export function handlerNumberStr(numStr: string) {
+  if (null == numStr || numStr.length == 0) {
+    return 0;
+  }
   return parseFloat(numStr.match(/^\d+(?:\.\d{0,4})?/)[0]);
 }
 
@@ -335,4 +338,14 @@ export function browserDetect() {
   }
 
   return browserName;
+}
+
+export function divideAndMultiplyByTenPowerN(input: string, n: number): string {
+  if (n >= input.length) {
+    const leadingZeros = '0'.repeat(n - input.length+1);
+    input = leadingZeros + input;
+  }
+  const integerPart = input.slice(0, -n);
+  const decimalPart = input.slice(-n);
+  return integerPart + '.' + decimalPart;
 }

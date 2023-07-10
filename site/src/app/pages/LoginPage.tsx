@@ -4,6 +4,8 @@ import HeaderBar from '../elements/HeaderBar';
 import {Navigate} from 'react-router-dom';
 import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
+import {Config} from "../../server/config";
+const polygonConfig = require('../config/polygon.json');
 
 interface LoginPageState {
   username: string;
@@ -51,6 +53,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
       let key = window.atob(aakey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
       await Server.account.initWalletAndContractAddress(key);
+
       this.setState({navigate: '/home'});
     }
     else

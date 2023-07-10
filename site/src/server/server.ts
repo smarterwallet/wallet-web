@@ -1,6 +1,7 @@
 import {AccountService} from './accountService';
 import Web3 from 'web3';
 import {ethers} from 'ethers';
+import {Config} from "./config";
 
 // system contract address
 export const ADDRESS_SIMPLE_ACCOUNT_FACTORY = "0x6ACF75E7EA53E85fb97ee62575B4410c27346dDE";
@@ -22,11 +23,12 @@ export class Server {
   public static isLoggedIn: boolean = false;
   public static account: AccountService = new AccountService();
   public static initialized: boolean = false;
-  public static web3 = new Web3('https://polygon-mumbai.g.alchemy.com/v2/wXKxRcFDvtVaA2blWEhUT9G2nd3AQ0A_');
-  public static ethersProvider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.g.alchemy.com/v2/wXKxRcFDvtVaA2blWEhUT9G2nd3AQ0A_');
+  public static web3: Web3;
+  public static ethersProvider: ethers.providers.JsonRpcProvider;
 
   public static async init() {
     Server.initialized = true;
+    await this.flush();
   }
 
   public static async checkTransactionStatus(txHash: string) {
@@ -36,6 +38,11 @@ export class Server {
       await Server.ethersProvider.waitForTransaction(txHash);
       receipt = await Server.ethersProvider.getTransactionReceipt(txHash);
     }
+  }
+
+  public static async flush() {
+    this.web3 = new Web3(Config.RPC_API);
+    this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
   }
 
 }
