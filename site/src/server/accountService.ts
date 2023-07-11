@@ -133,6 +133,7 @@ export class AccountService extends Service {
     } else {
       callData = this.sendMainTokenCall(toAddress, ETH(amount));
     }
+    console.log("callData: " + callData);
     // TODO
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;

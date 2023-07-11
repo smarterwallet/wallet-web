@@ -54,22 +54,20 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async flushAsset() {
-    let address = Server.account.contractAddress;
-
-    if (address) {
+    if (Server.account.contractAddress) {
+      let newAsset: {[key: string]: any}  = {};
       for (let key in Config.TOKENS) {
-        const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
-        this.setState({
-          asset: {
-            ...this.state.asset,
-            [key]: {
-              asset: Config.TOKENS[key],
-              amount: balance,
-              sort: Config.TOKENS[key].sort
-            }
-          }
-        });
+        if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
+          const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
+          newAsset[key] = {
+            asset: Config.TOKENS[key],
+            amount: balance,
+            sort: Config.TOKENS[key].sort
+          };
+        }
       }
+
+      this.setState({asset: newAsset});
     }
   }
 
@@ -146,7 +144,7 @@ class HomePage extends React.Component<{}, HomePageState> {
           </div>
           <select
               className="home-page-header-select"
-              onChange={event => this.flushConfig(event.target.value)}
+              onChange={async event => await this.flushConfig(event.target.value)}
           >
             <option value="Mumbai">Mumbai
             </option>

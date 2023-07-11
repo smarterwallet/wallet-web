@@ -66,7 +66,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
         } else if (this.state.selectedAsset == "SWT") {
             await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
         } else if (this.state.selectedAsset == "USDC") {
-            // TODO USDC bug
+            // TODO USDC need approve first
             await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
         } else {
             console.error("unknown asset: " + this.state.selectedAsset);
@@ -103,7 +103,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <select value={this.state.selectedAsset} onChange={this.onAssetChange}>
                     <option value="Matic">Matic</option>
                     <option value="SWT">SWT</option>
-                    <option value="USDC">USDC</option>
+                    {/*<option value="USDC">USDC</option>*/}
                 </select>
                 <br/>
                 <div>Send To</div>
