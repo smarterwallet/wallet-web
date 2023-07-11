@@ -20,7 +20,8 @@ class AppsPage extends React.Component {
         <div className='apps-page-title'>Account Interaction Apps</div>
         <div className='apps-page-app-container'>
           {this.renderApp('/icon/batch.png', 'Simple Transactions', '/simpleTransaction')}
-          {this.renderApp('/icon/auto-trading.png', 'Automatic Trading', '/autoTrade')}
+          {this.renderApp('/icon/auto-trading.png', 'Automatic Trading', '')}
+          {/*{this.renderApp('/icon/auto-trading.png', 'Automatic Trading', '/autoTrade')}*/}
           {this.renderApp('/icon/p2p.png', 'P2P Matching & Trading', '')}
         </div>
 

@@ -5,6 +5,7 @@ import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
 import {BigNumber} from "ethers";
 import {Config} from "../../server/config";
+import {Navigate} from "react-router-dom";
 
 const polygonConfig = require('../config/polygon.json');
 const polygonMumbaiConfig = require('../config/polygon-mumbai.json');
@@ -87,18 +88,22 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     }
 
     render() {
+        if (!Server.account.isLoggedIn()) {
+            return <Navigate to="/" replace/>;
+        }
 
         return (
             <div className="login-page">
                 <HeaderBar text='Send Transaction'/>
                 <br/>
-                <div>Chain name</div>
-                <select className="home-page-header-select" onChange={event => this.flushConfig(event.target.value)}>
+                <div>Chain</div>
+                <select onChange={event => this.flushConfig(event.target.value)}>
                     <option value="Mumbai">Mumbai
                     </option>
                     <option value="Polygon">Polygon
                     </option>
                 </select>
+                <br/>
                 <div>Asset</div>
                 <select value={this.state.selectedAsset} onChange={this.onAssetChange}>
                     <option value="Matic">Matic</option>
