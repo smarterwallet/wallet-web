@@ -146,10 +146,8 @@ class HomePage extends React.Component<{}, HomePageState> {
               className="home-page-header-select"
               onChange={async event => await this.flushConfig(event.target.value)}
           >
-            <option value="Mumbai">Mumbai
-            </option>
-            {/*<option value="Polygon">Polygon*/}
-            {/*</option>*/}
+            <option value="Mumbai">Mumbai</option>
+            <option value="Polygon">Polygon</option>
           </select>
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()}/>
         </div>

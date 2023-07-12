@@ -99,14 +99,14 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <div>Chain</div>
                 <select onChange={event => this.flushConfig(event.target.value)}>
                     <option value="Mumbai">Mumbai</option>
-                    {/*<option value="Polygon">Polygon</option>*/}
+                    <option value="Polygon">Polygon</option>
                 </select>
                 <br/>
                 <div>Asset</div>
                 <select value={this.state.selectedAsset} onChange={this.onAssetChange}>
                     <option value="Matic">Matic</option>
                     <option value="SWT">SWT</option>
-                    {/*<option value="USDC">USDC</option>*/}
+                    <option value="USDC">USDC</option>
                 </select>
                 <br/>
                 <div>Send To</div>
