@@ -61,12 +61,12 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     }
 
     async onSend() {
-        if (this.state.selectedAsset.trim() === '' || this.state.gasPrice.toBigInt() <= 0 || this.state.txTo.trim() === '' || this.state.txValue.trim() === '') {
-            this.setState({alert: 'Params can not be empty or zero.'});
+        if (this.state.selectedAsset.trim() === '' || this.state.gasPrice.toString() === "0" || this.state.txTo.trim() === '' || this.state.txValue.trim() === '') {
+            this.setState({alert: 'Params can not be empty or zero'});
             return;
         }
 
-        this.setState({alert: this.state.selectedAsset + " sending..."});
+        this.setState({alert: "Sending " + this.state.selectedAsset});
         try {
             if (this.state.selectedAsset == "Matic") {
                 await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
@@ -82,7 +82,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
             this.setState({alert: "Error: " + error});
             return;
         }
-        this.setState({alert: "send " + this.state.selectedAsset + " success"});
+        this.setState({alert: "sent " + this.state.selectedAsset + " success"});
     }
 
     async flushConfig(chainName: string) {
@@ -126,12 +126,12 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <input type="string" value={this.state.txValue} onChange={this.onValueChange}/>
                 <br/>
                 <div>Gas Price(Wei)</div>
-                <input type="string" value={this.state.gasPrice.toString()} onChange={this.onGasFeeChange}/>
+                <input type="number" value={this.state.gasPrice.toString()} onChange={this.onGasFeeChange}/>
                 <br/><br/>
                 <button className='simple-transaction-page-button' onClick={async () => await this.onSend()}>Send
                 </button>
 
-                <AlertModal message={this.state.alert} button={null} onClose={() => this.setState({alert: ''})}/>
+                <AlertModal message={this.state.alert} button={"OK"} onClose={() => this.setState({alert: ''})}/>
             </div>
         );
     }

@@ -36,6 +36,7 @@ export class AccountService extends Service {
   }
 
   async initWalletAndContractAddress(eoaKey: string) {
+    // console.log("eoaKey:", eoaKey);
     this.ethersWallet = new ethers.Wallet(eoaKey, Server.ethersProvider);
     this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
   }
@@ -88,7 +89,7 @@ export class AccountService extends Service {
     let contract = new ethers.Contract(address, simpleAccountAbi, Server.ethersProvider);
 
     try {
-      return await contract.nonce();
+      return (await contract.nonce()).toBigInt();
     } catch (error) {
       console.error(error);
       return '';
@@ -123,6 +124,7 @@ export class AccountService extends Service {
   async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
     const senderAddress = Server.account.contractAddress;
     const nonce = await this.contractAccountNonce(senderAddress);
+    // TODO check SWT balance is enough(>0)
     const initCode = "0x";
     let callData;
     if (contractAddress != null) {
@@ -169,8 +171,6 @@ export class AccountService extends Service {
     // sender sign UserOperator
     signature = await Server.account.ethersWallet.signMessage(arrayify(userOpHash));
 
-    const params = [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
-      preVerificationGas, maxFeePerGas, maxPriorityFeePerGas, paymasterAndData, signature];
     const userOperation: UserOperation = {
       sender: senderAddress,
       nonce: nonce.toString(),
@@ -184,6 +184,7 @@ export class AccountService extends Service {
       paymasterAndData: paymasterAndData,
       signature: signature,
     };
+    console.log(userOperation);
     return userOperation;
   }
 
@@ -216,7 +217,6 @@ export class AccountService extends Service {
   async sendUserOperation(params: any) {
     return await this.sendCommand(Config.BUNDLER_API, params);
   }
-
 
   async getMainTokenTxList() {
     return await this.getRequest(util.format(Config.MAIN_TOKEN_TX_LIST_API, Server.account.contractAddress));
