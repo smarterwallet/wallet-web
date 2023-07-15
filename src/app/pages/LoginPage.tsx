@@ -4,7 +4,7 @@ import HeaderBar from '../elements/HeaderBar';
 import {Navigate} from 'react-router-dom';
 import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
-import {Config} from "../../server/config";
+
 const polygonConfig = require('../config/polygon.json');
 
 interface LoginPageState {
@@ -41,16 +41,16 @@ class LoginPage extends React.Component<{}, LoginPageState> {
   }
 
   async onLogin() {
-    let aakey    = localStorage.getItem('aakey');
+    this.setState({alert: 'Login...'});
+    let smarterWalletKey = localStorage.getItem('smarter-wallet-key');
     let loginkey = localStorage.getItem('loginkey');
 
-    let str = this.state.username + this.state.password + aakey;
-    // console.log(window.atob(str))
+    let str = this.state.username + this.state.password + smarterWalletKey;
     let tryLogin = window.btoa(str); // encrypt
 
     if (tryLogin === loginkey) {
       Server.account.loggedIn();
-      let key = window.atob(aakey);
+      let key = window.atob(smarterWalletKey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
       await Server.account.initWalletAndContractAddress(key);
 
@@ -77,7 +77,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
         <br/><br/>
         <button className='login-page-button' onClick={async () => await this.onLogin()}>Login</button>
 
-        <AlertModal message={this.state.alert} button="OK" onClose={()=>this.setState({alert: ''})}/>
+        <AlertModal message={this.state.alert} button={null}  onClose={()=>this.setState({alert: ''})}/>
       </div>
     );
   }

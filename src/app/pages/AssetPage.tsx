@@ -73,7 +73,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let txListTo: any[] = [];
 
     allResult.forEach((item: any) => {
-      let valueStr = handlerNumberStr(Server.web3.utils.fromWei(item.value));
+      let valueStr = handlerNumberStr(ethers.utils.formatUnits(item.value));
       if (valueStr == 0) {
         return;
       }

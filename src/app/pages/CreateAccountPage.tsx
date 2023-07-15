@@ -5,6 +5,7 @@ import HeaderBar from '../elements/HeaderBar';
 import {Server} from '../../server/server';
 import MessageModal from '../modals/MessageModal';
 import AlertModal from '../modals/AlertModal';
+import {ethers} from "ethers";
 
 interface CreateAccountPageState {
   create: boolean;
@@ -58,15 +59,15 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
       return;
     }
 
-    let aakey = localStorage.getItem('aakey');
-    if (aakey != null || aakey != '') {
+    let smarterWalletKey = localStorage.getItem('smarter-wallet-key');
+    if (smarterWalletKey != null && smarterWalletKey !== '') {
       this.setState({alert: 'You have already registered please login directly.'});
       return;
     }
 
     this.setState({message: 'Registering...'});
 
-    let account = Server.web3.eth.accounts.create();
+    let account = ethers.Wallet.createRandom();
 
     this.encryptKey(account.privateKey, this.state.username, this.state.password);
 
@@ -96,8 +97,8 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
   encryptKey(privKey: string, username: string, password: string) {
     let str = username + password + privKey;
     let key = window.btoa(str); // encrypt
-    // console.log("aakey:", key)
-    localStorage.setItem('aakey', key);
+    // console.log("smarter-wallet-key:", key)
+    localStorage.setItem('smarter-wallet-key', key);
 
     // generate loginkey
     str = username + password + key;

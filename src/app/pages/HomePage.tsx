@@ -58,6 +58,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       for (let key in Config.TOKENS) {
         if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
           const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
+          console.log(balance);
           newAsset[key] = {
             asset: Config.TOKENS[key],
             amount: balance,

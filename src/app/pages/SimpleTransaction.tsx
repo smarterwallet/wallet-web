@@ -67,15 +67,20 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
         }
 
         this.setState({alert: this.state.selectedAsset + " sending..."});
-        if (this.state.selectedAsset == "Matic") {
-            await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
-        } else if (this.state.selectedAsset == "SWT") {
-            await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
-        } else if (this.state.selectedAsset == "USDC") {
-            // TODO USDC need approve first
-            await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
-        } else {
-            console.error("unknown asset: " + this.state.selectedAsset);
+        try {
+            if (this.state.selectedAsset == "Matic") {
+                await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
+            } else if (this.state.selectedAsset == "SWT") {
+                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+            } else if (this.state.selectedAsset == "USDC") {
+                // TODO USDC need approve on chain first
+                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+            } else {
+                this.setState({alert: "unknown asset: " + this.state.selectedAsset});
+            }
+        } catch (error) {
+            this.setState({alert: "Error: " + error});
+            return;
         }
         this.setState({alert: "send " + this.state.selectedAsset + " success"});
     }
@@ -126,7 +131,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <button className='simple-transaction-page-button' onClick={async () => await this.onSend()}>Send
                 </button>
 
-                <AlertModal message={this.state.alert} button="OK" onClose={() => this.setState({alert: ''})}/>
+                <AlertModal message={this.state.alert} button={null} onClose={() => this.setState({alert: ''})}/>
             </div>
         );
     }

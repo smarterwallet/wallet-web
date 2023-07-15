@@ -19,15 +19,16 @@ class AlertModal extends React.Component<AlertModalProps, {}> {
 
   render() {
     if(this.props.message == '')
-      return (null);
+      return null;
 
     return (
       <div className="modal open">
         <div className="modal-content" style={{width: '250px', textAlign: 'center'}}>
           <div>{this.props.message}</div>
-          <div>
-            <button style={{marginTop: '25px'}} onClick={this.onClose}>{this.props.button}</button>
-          </div>
+          {this.props.button == null ?
+              <div></div> :
+              <div><button style={{marginTop: '25px'}} onClick={this.onClose}>{this.props.button}</button></div>
+          }
         </div>
       </div>
     )

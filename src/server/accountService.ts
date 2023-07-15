@@ -47,10 +47,10 @@ export class AccountService extends Service {
 
   async getAddress(eoaAddress: string, salt: number) {
     console.log("EOA Address: ", eoaAddress);
-    let contract = new Server.web3.eth.Contract(factoryAbi, Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY);
+    let contract = new ethers.Contract(Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY, factoryAbi, Server.ethersProvider);
 
     try {
-      let address = await contract.methods.getAddress(eoaAddress, salt).call();
+      let address = await contract.getAddress(eoaAddress, salt);
       this.contractAddress = address;
       return address;
     } catch (error) {
@@ -60,8 +60,8 @@ export class AccountService extends Service {
   }
 
   async balanceOfMainToken(address: string, decimals: number) {
-    const balance = await Server.web3.eth.getBalance(address);
-    return divideAndMultiplyByTenPowerN(balance, decimals);
+    const balance = await Server.ethersProvider.getBalance(address);
+    return divideAndMultiplyByTenPowerN(balance.toString(), decimals);
   }
 
   async getBalanceOf(asset: Asset) {
@@ -73,11 +73,11 @@ export class AccountService extends Service {
   }
 
   async balanceOfERC20(contractAddress: string, address: string, decimals: number) {
-    let contract = new Server.web3.eth.Contract(usdtpmAbi, contractAddress);
+    let contract = new ethers.Contract(contractAddress, usdtpmAbi, Server.ethersProvider);
 
     try {
-      let balance = await contract.methods.balanceOf(address).call();
-      return divideAndMultiplyByTenPowerN(balance, decimals);
+      let balance = await contract.balanceOf(address);
+      return divideAndMultiplyByTenPowerN(balance.toString(), decimals);
     } catch (error) {
       console.error(error);
       return '';
@@ -85,10 +85,10 @@ export class AccountService extends Service {
   }
 
   async contractAccountNonce(address: string) {
-    let contract = new Server.web3.eth.Contract(simpleAccountAbi, address);
+    let contract = new ethers.Contract(address, simpleAccountAbi, Server.ethersProvider);
 
     try {
-      return await contract.methods.nonce().call();
+      return await contract.nonce();
     } catch (error) {
       console.error(error);
       return '';
