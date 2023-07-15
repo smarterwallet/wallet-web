@@ -41,7 +41,6 @@ class HomePage extends React.Component<{}, HomePageState> {
   componentDidMount(): void {
     let newAsset = {...this.state.asset};
     for (let key in Config.TOKENS) {
-      console.log(key);
       newAsset[key] = {
         asset: Config.TOKENS[key],
         amount: "loading",
@@ -147,7 +146,7 @@ class HomePage extends React.Component<{}, HomePageState> {
               onChange={async event => await this.flushConfig(event.target.value)}
           >
             <option value="Mumbai">Mumbai</option>
-            <option value="Polygon">Polygon</option>
+            {/*<option value="Polygon">Polygon</option>*/}
           </select>
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()}/>
         </div>

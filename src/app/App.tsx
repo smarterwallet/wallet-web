@@ -24,7 +24,6 @@ const polygonConfig = require('./config/polygon.json');
 const polygonMumbaiConfig = require('./config/polygon-mumbai.json');
 
 interface AppState {
-  allowAccess: boolean;
   postLoginPage: string;
   initialized: boolean;
   maintenance: boolean;
@@ -35,7 +34,6 @@ class App extends React.Component<{}, AppState> {
     super(props);
 
     this.state = {
-      allowAccess: this.checkSecretPassword(),
       postLoginPage: 'account',
       initialized: false,
       maintenance: false
@@ -47,8 +45,6 @@ class App extends React.Component<{}, AppState> {
     }
 
     this.setInitialized = this.setInitialized.bind(this);
-    this.checkSecretPassword = this.checkSecretPassword.bind(this);
-    this.setSecretPassword = this.setSecretPassword.bind(this);
     this.onAccountChanged = this.onAccountChanged.bind(this);
 
     window.addEventListener("beforeunload", function (e) {
@@ -67,15 +63,6 @@ class App extends React.Component<{}, AppState> {
 
   setInitialized() {
     this.setState({initialized: true});
-  }
-
-  checkSecretPassword() {
-    return (localStorage.getItem('secret-password') === AppConfig.secretPassword);
-  }
-
-  setSecretPassword(password:string) {
-    localStorage.setItem('secret-password', password);
-    this.setState({allowAccess: this.checkSecretPassword()});
   }
 
   onAccountChanged() {

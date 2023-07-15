@@ -66,10 +66,8 @@ export class AccountService extends Service {
 
   async getBalanceOf(asset: Asset) {
     if (asset.type == 1) {
-      console.log(await this.balanceOfMainToken(this.contractAddress, asset.decimals))
       return await this.balanceOfMainToken(this.contractAddress, asset.decimals);
     } else if (asset.type == 2) {
-      console.log(await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals))
       return await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals);
     }
   }
