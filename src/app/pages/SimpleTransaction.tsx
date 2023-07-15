@@ -61,6 +61,11 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     }
 
     async onSend() {
+        if (this.state.selectedAsset.trim() === '' || this.state.gasPrice.toBigInt() <= 0 || this.state.txTo.trim() === '' || this.state.txValue.trim() === '') {
+            this.setState({alert: 'Params can not be empty or zero.'});
+            return;
+        }
+
         this.setState({alert: this.state.selectedAsset + " sending..."});
         if (this.state.selectedAsset == "Matic") {
             await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);

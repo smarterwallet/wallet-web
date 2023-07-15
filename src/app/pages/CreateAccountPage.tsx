@@ -1,8 +1,8 @@
 import React from 'react';
 import './CreateAccountPage.css';
-import { NavLink, Navigate } from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import HeaderBar from '../elements/HeaderBar';
-import { Server } from '../../server/server';
+import {Server} from '../../server/server';
 import MessageModal from '../modals/MessageModal';
 import AlertModal from '../modals/AlertModal';
 
@@ -58,12 +58,18 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
       return;
     }
 
+    let aakey = localStorage.getItem('aakey');
+    if (aakey != null || aakey != '') {
+      this.setState({alert: 'You have already registered please login directly.'});
+      return;
+    }
+
     this.setState({message: 'Registering...'});
 
     let account = Server.web3.eth.accounts.create();
 
     this.encryptKey(account.privateKey, this.state.username, this.state.password);
-    
+
     // create smart contract account on chain
     let params = {
       "address": account.address

@@ -66,10 +66,8 @@ export class AccountService extends Service {
 
   async getBalanceOf(asset: Asset) {
     if (asset.type == 1) {
-      console.log(await this.balanceOfMainToken(this.contractAddress, asset.decimals))
       return await this.balanceOfMainToken(this.contractAddress, asset.decimals);
     } else if (asset.type == 2) {
-      console.log(await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals))
       return await this.balanceOfERC20(asset.address, this.contractAddress, asset.decimals);
     }
   }
@@ -103,7 +101,6 @@ export class AccountService extends Service {
 
   async getGasPrice() {
     let gasPrice = await Server.ethersProvider.getGasPrice();
-    console.log("gasPrice:",gasPrice.toBigInt().toString());
     return gasPrice.mul(BigNumber.from(this.feeRate)).div(BigNumber.from(100))
   }
 
@@ -133,7 +130,6 @@ export class AccountService extends Service {
     } else {
       callData = this.sendMainTokenCall(toAddress, ETH(amount));
     }
-    console.log("callData: " + callData);
     // TODO
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;

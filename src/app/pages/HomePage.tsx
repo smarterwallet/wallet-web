@@ -41,7 +41,6 @@ class HomePage extends React.Component<{}, HomePageState> {
   componentDidMount(): void {
     let newAsset = {...this.state.asset};
     for (let key in Config.TOKENS) {
-      console.log(key);
       newAsset[key] = {
         asset: Config.TOKENS[key],
         amount: "loading",
