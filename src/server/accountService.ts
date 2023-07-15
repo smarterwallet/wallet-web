@@ -101,7 +101,6 @@ export class AccountService extends Service {
 
   async getGasPrice() {
     let gasPrice = await Server.ethersProvider.getGasPrice();
-    console.log("gasPrice:",gasPrice.toBigInt().toString());
     return gasPrice.mul(BigNumber.from(this.feeRate)).div(BigNumber.from(100))
   }
 
@@ -131,7 +130,6 @@ export class AccountService extends Service {
     } else {
       callData = this.sendMainTokenCall(toAddress, ETH(amount));
     }
-    console.log("callData: " + callData);
     // TODO
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;
