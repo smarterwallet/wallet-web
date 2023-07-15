@@ -112,7 +112,7 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
 
     return (
       <div className="ca-page">
-        <div style={{paddingLeft: '20px'}}><HeaderBar text='DeStorage' /></div>
+        <div style={{paddingLeft: '20px'}}><HeaderBar text='Local' /></div>
         
         <div className={`ca-page-menu-container ${this.state.create && 'extend'}`}>
           <div className='ca-page-menu-header' onClick={()=> this.toggleCreate()}>
