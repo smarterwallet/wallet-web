@@ -23,6 +23,7 @@ export class Server {
   }
 
   public static async flush() {
+    console.log("server flush");
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
     await this.account.flushEtherWallet();
 
