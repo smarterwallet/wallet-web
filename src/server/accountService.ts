@@ -4,14 +4,13 @@ import {BigNumber, ethers} from "ethers";
 import {divideAndMultiplyByTenPowerN, ETH} from '../app/util/util';
 import {UserOperation} from "../app/modals/UserOperation";
 import {Asset, Config} from "./config";
+import { sprintf } from 'sprintf-js';
 
 const {arrayify} = require("@ethersproject/bytes");
 
 const factoryAbi = require('../data/factoryAbi.json');
-const usdtpmAbi = require('../data/usdtpmAbi.json');
 const simpleAccountAbi = require('../data/SimpleAccount.json');
 const erc20Abi = require('../data/IERC20.json');
-const util = require('util');
 
 export class AccountService extends Service {
   public contractAddress: string;
@@ -74,7 +73,7 @@ export class AccountService extends Service {
   }
 
   async balanceOfERC20(contractAddress: string, address: string, decimals: number) {
-    let contract = new ethers.Contract(contractAddress, usdtpmAbi, Server.ethersProvider);
+    let contract = new ethers.Contract(contractAddress, erc20Abi, Server.ethersProvider);
 
     try {
       let balance = await contract.balanceOf(address);
@@ -106,19 +105,16 @@ export class AccountService extends Service {
   }
 
   sendMainTokenCall(toAddress: string, amount: BigNumber) {
-    // https://github.com/ethers-io/ethers.js/issues/478#issuecomment-495814010
-    let ABI = ["function execute(address dest, uint256 value, bytes calldata func)"];
-    let iface = new ethers.utils.Interface(ABI);
-    return iface.encodeFunctionData("execute", [toAddress, amount, "0x"]);
+    const accountContract = new ethers.Contract("", simpleAccountAbi, Server.ethersProvider);
+    return accountContract.interface.encodeFunctionData('execute', [toAddress, amount, "0x"]);
   }
 
   sendERC20TokenCall(contractAddress: string, toAddress: string, amount: BigNumber) {
-    const contract = new ethers.Contract(contractAddress, erc20Abi, Server.ethersProvider);
-    const transferCalldata = contract.interface.encodeFunctionData('transfer', [toAddress, amount]);
+    const accountContract = new ethers.Contract("", simpleAccountAbi, Server.ethersProvider);
+    const ERC20Contract = new ethers.Contract(contractAddress, erc20Abi, Server.ethersProvider);
+    const transferCallData = ERC20Contract.interface.encodeFunctionData('transfer', [toAddress, amount]);
 
-    let ABI = ["function execute(address dest, uint256 value, bytes calldata func)"];
-    let iface = new ethers.utils.Interface(ABI);
-    return iface.encodeFunctionData("execute", [contractAddress, 0, transferCalldata]);
+    return accountContract.interface.encodeFunctionData('execute', [contractAddress, 0, transferCallData]);
   }
 
   async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber) {
@@ -132,7 +128,7 @@ export class AccountService extends Service {
     } else {
       callData = this.sendMainTokenCall(toAddress, ETH(amount));
     }
-    // TODO
+    // TODO 参数确定方式还需要讨论
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;
     const preVerificationGas = 210000;
@@ -184,7 +180,6 @@ export class AccountService extends Service {
       paymasterAndData: paymasterAndData,
       signature: signature,
     };
-    console.log(userOperation);
     return userOperation;
   }
 
@@ -219,19 +214,19 @@ export class AccountService extends Service {
   }
 
   async getMainTokenTxList() {
-    return await this.getRequest(util.format(Config.MAIN_TOKEN_TX_LIST_API, Server.account.contractAddress));
+    return await this.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_API, Server.account.contractAddress));
   }
 
   async getMainTokenInternalTxList() {
-    return await this.getRequest(util.format(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, Server.account.contractAddress));
+    return await this.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, Server.account.contractAddress));
   }
 
   async getTokenTxListByFromAddr(contractAddress: string) {
-    return await this.getRequest(util.format(Config.ERC20_TX_FROM_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
+    return await this.getRequest(sprintf(Config.ERC20_TX_FROM_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
   }
 
   async getTokenTxListByToAddr(contractAddress: string) {
-    return await this.getRequest(util.format(Config.ERC20_TX_TO_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
+    return await this.getRequest(sprintf(Config.ERC20_TX_TO_LIST_API, contractAddress, Server.account.contractAddress.substring(2)));
   }
 }
 
