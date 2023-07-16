@@ -17,9 +17,10 @@ export class Account extends Service {
   private contractAddressExist = false;
   public eoaKey: string;
   public ethersWallet: ethers.Wallet;
+  private hasBeenInit = false;
+
   // gasPrice = gasPriceOnChain * feeRate / 100
   private feeRate = 150;
-  private hasBeenInit = false;
 
   constructor() {
     super();
@@ -37,7 +38,7 @@ export class Account extends Service {
     Server.isLoggedIn = false;
   }
 
-  async initWalletAndContractAddress(eoaKey: string) {
+  async initAccount(eoaKey: string) {
     console.log("eoaKey:", eoaKey);
     this.eoaKey = eoaKey;
     this.ethersWallet = new ethers.Wallet(eoaKey, Server.ethersProvider);
@@ -49,9 +50,12 @@ export class Account extends Service {
 
   async flushEtherWallet() {
     if (this.hasBeenInit) {
+      console.log("flushEtherWallet:: has been init")
       this.ethersWallet = new ethers.Wallet(this.eoaKey, Server.ethersProvider);
       this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
       this.contractAddressExist = false;
+    } else {
+      console.log("flushEtherWallet:: has not been init")
     }
   }
 
@@ -67,7 +71,6 @@ export class Account extends Service {
     try {
       let address = await contract.getAddress(eoaAddress, salt);
       this.contractAddress = address;
-      console.log(address)
       return address;
     } catch (error) {
       console.error(error);
@@ -101,13 +104,17 @@ export class Account extends Service {
   }
 
   async deployContractAddressIfNot() {
-    if (!this.ethersWallet || this.contractAddressExist) {
+    if (!this.ethersWallet) {
+      console.log("ethersWallet has not been init.")
       return;
     }
-    console.log("deployedContractAddressIfNot")
+    if (this.contractAddressExist) {
+      console.log("contract account has been deployed.")
+      return;
+    }
+    console.log("start to check contract account")
 
     let code = await Server.ethersProvider.getCode(this.contractAddress);
-    console.log("code: " + code)
     if (code != "0x") {
       this.contractAddressExist = true;
       return;

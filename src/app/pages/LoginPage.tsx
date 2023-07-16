@@ -50,7 +50,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
       Server.account.loggedIn();
       let key = window.atob(smarterWalletKey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
-      await Server.account.initWalletAndContractAddress(key);
+      await Server.account.initAccount(key);
 
       this.setState({navigate: '/home'});
     }
