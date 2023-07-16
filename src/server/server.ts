@@ -1,10 +1,10 @@
-import {AccountService} from './accountService';
+import {Account} from './account';
 import {ethers} from 'ethers';
 import {Config} from "./config";
 
 export class Server {
   public static isLoggedIn: boolean = false;
-  public static account: AccountService = new AccountService();
+  public static account: Account = new Account();
   public static initialized: boolean = false;
   public static ethersProvider: ethers.providers.JsonRpcProvider;
 
@@ -24,6 +24,10 @@ export class Server {
 
   public static async flush() {
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
+    await this.account.flushEtherWallet();
+
+    // 如果没有创建合约，那么需要创建合约账户
+    await this.account.deployContractAddressIfNot();
   }
 
 }
