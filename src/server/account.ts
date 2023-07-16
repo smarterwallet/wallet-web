@@ -44,12 +44,14 @@ export class Account extends Service {
     this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
 
     this.hasBeenInit = true;
+    this.contractAddressExist = false;
   }
 
   async flushEtherWallet() {
     if (this.hasBeenInit) {
       this.ethersWallet = new ethers.Wallet(this.eoaKey, Server.ethersProvider);
       this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
+      this.contractAddressExist = false;
     }
   }
 
@@ -59,12 +61,13 @@ export class Account extends Service {
   }
 
   async getAddress(eoaAddress: string, salt: number) {
-    console.log("EOA Address: ", eoaAddress);
+    console.log("EOA Address: ", eoaAddress, "Salt:", salt);
     let contract = new ethers.Contract(Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY, factoryAbi, Server.ethersProvider);
 
     try {
       let address = await contract.getAddress(eoaAddress, salt);
       this.contractAddress = address;
+      console.log(address)
       return address;
     } catch (error) {
       console.error(error);
