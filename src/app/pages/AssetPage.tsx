@@ -67,8 +67,18 @@ class AssetPage extends React.Component<{}, AssetPageState> {
   async getMainTokenList() {
     let txListResponse = await Server.account.getMainTokenTxList();
     let txInternalListResponse = await Server.account.getMainTokenInternalTxList();
-    let allResult = txListResponse.body["result"].concat(txInternalListResponse.body["result"])
-
+    let allResultsConcat = txListResponse.body["result"].concat(txInternalListResponse.body["result"])
+    // 去重
+    let allResult = allResultsConcat.filter((value: { blockNumber: any;from:any; hash:any,to:any;traceId:any;value:any;}, index: any, self: any[]) =>
+        self.findIndex(item => (
+            item.blockNumber === value.blockNumber
+            && item.from === value.from
+            && item.hash === value.hash
+            && item.to === value.to
+            && item.traceId === value.traceId
+            && item.value === value.value
+        )) === index
+    );
     let txListFrom: any[] = [];
     let txListTo: any[] = [];
 
@@ -95,9 +105,11 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
 
-    txListFrom = txListFrom.filter((item: any) => item != null)
-    txListTo = txListTo.filter((item: any) => item != null)
-    mergedArray = mergedArray.filter((item: any) => item != null)
+    txListFrom = txListFrom.filter((item: any) => item != null);
+    txListTo = txListTo.filter((item: any) => item != null);
+    mergedArray = mergedArray.filter((item: any) => item != null);
+    
+    console.log({txListTo, txListFrom, mergedArray});
     return {txListTo, txListFrom, mergedArray}
   }
 

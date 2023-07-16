@@ -232,6 +232,7 @@ export class Account extends Service {
       paymasterAndData: paymasterAndData,
       signature: signature,
     };
+    console.log(userOperation)
     return userOperation;
   }
 
