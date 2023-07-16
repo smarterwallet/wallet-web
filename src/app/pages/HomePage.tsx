@@ -58,7 +58,6 @@ class HomePage extends React.Component<{}, HomePageState> {
       for (let key in Config.TOKENS) {
         if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
           const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
-          console.log("balance:", balance);
           newAsset[key] = {
             asset: Config.TOKENS[key],
             amount: balance,
@@ -107,7 +106,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   async flushConfigAndAsset(chainName: string) {
     console.log("start to flush. Chain name: " + chainName);
 
-    Config.currentChainName = chainName;
+    Config.CURRENT_CHAIN_NAME = chainName;
     switch (chainName.toLowerCase()) {
       case "polygon":
         await Config.flush(JSON.stringify(polygonConfig));
@@ -148,7 +147,7 @@ class HomePage extends React.Component<{}, HomePageState> {
             </div>
           </div>
           <select
-              defaultValue={Config.currentChainName}
+              defaultValue={Config.CURRENT_CHAIN_NAME}
               className="home-page-header-select"
               onChange={async event => {
                 this.setState({alert: 'Switch to ' + event.target.value});

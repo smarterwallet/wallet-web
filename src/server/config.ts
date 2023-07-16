@@ -28,7 +28,7 @@ export class Config {
     // 启动默认网络
     public static DEFAULT_NETWORK = "Polygon";
 
-    public static currentChainName = this.DEFAULT_NETWORK;
+    public static CURRENT_CHAIN_NAME = this.DEFAULT_NETWORK;
 
     public static async init(rawData: string) {
         await this.flush(rawData);
@@ -36,8 +36,9 @@ export class Config {
 
     // 切换网络时调用
     public static async flush(rawData: string) {
-        const configData = JSON.parse(rawData);
+        console.log("config flush. Data:", rawData);
 
+        const configData = JSON.parse(rawData);
         this.ADDRESS_SIMPLE_ACCOUNT_FACTORY = configData.address.address_simple_account_factory;
         this.ADDRESS_TOKEN_PAYMASTER = configData.address.address_token_paymaster;
         this.ADDRESS_ENTRYPOINT = configData.address.address_entrypoint;
