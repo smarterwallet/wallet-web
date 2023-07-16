@@ -4,7 +4,7 @@ import {BigNumber, ethers} from "ethers";
 import {divideAndMultiplyByTenPowerN, ETH} from '../app/util/util';
 import {UserOperation} from "../app/modals/UserOperation";
 import {Asset, Config} from "./config";
-import { sprintf } from 'sprintf-js';
+import {sprintf} from 'sprintf-js';
 
 const {arrayify} = require("@ethersproject/bytes");
 
@@ -12,11 +12,14 @@ const factoryAbi = require('../data/factoryAbi.json');
 const simpleAccountAbi = require('../data/SimpleAccount.json');
 const erc20Abi = require('../data/IERC20.json');
 
-export class AccountService extends Service {
+export class Account extends Service {
   public contractAddress: string;
+  private contractAddressExist = false;
+  public eoaKey: string;
   public ethersWallet: ethers.Wallet;
   // gasPrice = gasPriceOnChain * feeRate / 100
   private feeRate = 150;
+  private hasBeenInit = false;
 
   constructor() {
     super();
@@ -35,13 +38,23 @@ export class AccountService extends Service {
   }
 
   async initWalletAndContractAddress(eoaKey: string) {
-    // console.log("eoaKey:", eoaKey);
+    console.log("eoaKey:", eoaKey);
+    this.eoaKey = eoaKey;
     this.ethersWallet = new ethers.Wallet(eoaKey, Server.ethersProvider);
     this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
+
+    this.hasBeenInit = true;
+  }
+
+  async flushEtherWallet() {
+    if (this.hasBeenInit) {
+      this.ethersWallet = new ethers.Wallet(this.eoaKey, Server.ethersProvider);
+      this.contractAddress = await this.getAddress(await this.ethersWallet.getAddress(), 0);
+    }
   }
 
   async createAccount(params: any) {
-    let api = 'https://smarter-api.web3-idea.xyz/be/account/onchain/create';
+    let api = Config.BACKEND_API + '/account/onchain/create';
     return await this.sendCommand(api, params);
   }
 
@@ -82,6 +95,35 @@ export class AccountService extends Service {
       console.error(error);
       return '';
     }
+  }
+
+  async deployContractAddressIfNot() {
+    if (!this.ethersWallet || this.contractAddressExist) {
+      return;
+    }
+    console.log("deployedContractAddressIfNot")
+
+    let code = await Server.ethersProvider.getCode(this.contractAddress);
+    console.log("code: " + code)
+    if (code != "0x") {
+      this.contractAddressExist = true;
+      return;
+    }
+
+    console.log("create contract")
+    // create smart contract account on chain
+    let params = {
+      "address": this.ethersWallet.address
+    }
+    let tx = await Server.account.createAccount(params);
+    await Server.checkTransactionStatus(tx.body["result"]);
+
+    let newContractAddress = await Server.account.getAddress(this.ethersWallet.address, 0);
+
+    if (this.contractAddress != newContractAddress) {
+      throw new Error("Deployed contract address error. The new contract address not equals contract address")
+    }
+    this.contractAddressExist = true;
   }
 
   async contractAccountNonce(address: string) {

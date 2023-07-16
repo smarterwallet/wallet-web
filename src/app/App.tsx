@@ -6,7 +6,6 @@ import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
 import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
-import {AppConfig} from './AppConfig';
 import RegisterPage from './pages/RegisterPage';
 import RegisterPwdPage from './pages/RegisterPwdPage';
 import CreateAccountPage from './pages/CreateAccountPage';
@@ -20,8 +19,8 @@ import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
 import {Config} from "../server/config";
-const polygonConfig = require('./config/polygon.json');
-const polygonMumbaiConfig = require('./config/polygon-mumbai.json');
+
+const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
 interface AppState {
   postLoginPage: string;
@@ -40,8 +39,12 @@ class App extends React.Component<{}, AppState> {
     }
 
     if (!this.state.maintenance) {
-      Config.init(JSON.stringify(polygonMumbaiConfig));
-      Server.init();
+      Config.init(JSON.stringify(polygonConfig)).then(e => {
+        console.log("config init success");
+        Server.init().then(e => {
+          console.log("server init success");
+        })
+      })
     }
 
     this.setInitialized = this.setInitialized.bind(this);

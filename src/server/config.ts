@@ -21,13 +21,21 @@ export class Config {
     public static ERC20_TX_TO_LIST_API: string;
     public static BUNDLER_API: string;
     public static RPC_API: string;
+    public static BACKEND_API: string;
+    public static BLOCKCHAIN_SCAN: string;
     public static TOKENS: Assets;
 
+    // 启动默认网络
+    public static DEFAULT_NETWORK = "Polygon";
+
+    public static currentChainName = this.DEFAULT_NETWORK;
+
     public static async init(rawData: string) {
-        await this.flushConfig(rawData);
+        await this.flush(rawData);
     }
 
-    public static async flushConfig(rawData: string) {
+    // 切换网络时调用
+    public static async flush(rawData: string) {
         const configData = JSON.parse(rawData);
 
         this.ADDRESS_SIMPLE_ACCOUNT_FACTORY = configData.address.address_simple_account_factory;
@@ -39,6 +47,8 @@ export class Config {
         this.ERC20_TX_TO_LIST_API = configData.api.erc20_tx_to_list_api;
         this.BUNDLER_API = configData.api.bundler_api;
         this.RPC_API = configData.api.rpc_api;
+        this.BACKEND_API = configData.api.backend_api;
+        this.BLOCKCHAIN_SCAN = configData.api.blockchain_scan;
         this.TOKENS = configData.token;
     }
 }

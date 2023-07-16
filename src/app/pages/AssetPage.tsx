@@ -191,7 +191,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
             {this.state.txDataToShow && this.state.txDataToShow.map((tx: any, index: number) => (
                 <a
                     className='home-page-asset-row'
-                    href={`https://mumbai.polygonscan.com/tx/${tx.txHashShow}`}
+                    href={Config.BLOCKCHAIN_SCAN+`${tx.txHashShow}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     key={tx.txHashShow + "-" + index}

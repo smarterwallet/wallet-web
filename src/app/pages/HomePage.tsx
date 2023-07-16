@@ -8,7 +8,7 @@ import QuestionModal from "../modals/QuestionModal";
 import AlertModal from "../modals/AlertModal";
 
 const polygonConfig = require('../config/polygon.json');
-const polygonMumbaiConfig = require('../config/polygon-mumbai.json');
+const polygonMumbaiConfig = require('../config/mumbai.json');
 
 interface AssetInfo {
   asset: Asset;
@@ -58,7 +58,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       for (let key in Config.TOKENS) {
         if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
           const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
-          console.log(balance);
+          console.log("balance:", balance);
           newAsset[key] = {
             asset: Config.TOKENS[key],
             amount: balance,
@@ -104,18 +104,23 @@ class HomePage extends React.Component<{}, HomePageState> {
     await navigator.clipboard.writeText(Server.account.contractAddress);
   }
 
-  async flushConfig(chainName: string) {
+  async flushConfigAndAsset(chainName: string) {
     console.log("start to flush. Chain name: " + chainName);
-    switch (chainName) {
-      case "Polygon":
-        await Config.flushConfig(JSON.stringify(polygonConfig));
+
+    Config.currentChainName = chainName;
+    switch (chainName.toLowerCase()) {
+      case "polygon":
+        await Config.flush(JSON.stringify(polygonConfig));
+        await Server.flush();
         await this.flushAsset();
         break;
-      case "Mumbai":
-        await Config.flushConfig(JSON.stringify(polygonMumbaiConfig));
+      case "mumbai":
+        await Config.flush(JSON.stringify(polygonMumbaiConfig));
+        await Server.flush();
         await this.flushAsset();
         break;
     }
+
   }
 
   render() {
@@ -143,11 +148,16 @@ class HomePage extends React.Component<{}, HomePageState> {
             </div>
           </div>
           <select
+              defaultValue={Config.currentChainName}
               className="home-page-header-select"
-              onChange={async event => await this.flushConfig(event.target.value)}
+              onChange={async event => {
+                this.setState({alert: 'Switch to ' + event.target.value});
+                await this.flushConfigAndAsset(event.target.value);
+                this.setState({alert: ''});
+              }}
           >
+            <option value="Polygon">Polygon</option>
             <option value="Mumbai">Mumbai</option>
-            {/*<option value="Polygon">Polygon</option>*/}
           </select>
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()}/>
         </div>
@@ -166,7 +176,7 @@ class HomePage extends React.Component<{}, HomePageState> {
 
         <br/>
 
-        <AlertModal message={this.state.alert} button="OK" onClose={() => this.setState({alert: ''})}/>
+        <AlertModal message={this.state.alert} button={null} onClose={() => this.setState({alert: ''})}/>
         <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo}/>
       </div>
     );

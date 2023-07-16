@@ -5,8 +5,6 @@ import {Navigate} from 'react-router-dom';
 import {Server} from '../../server/server';
 import AlertModal from '../modals/AlertModal';
 
-const polygonConfig = require('../config/polygon.json');
-
 interface LoginPageState {
   username: string;
   password: string;

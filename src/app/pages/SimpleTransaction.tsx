@@ -8,7 +8,7 @@ import {Config} from "../../server/config";
 import {Navigate} from "react-router-dom";
 
 const polygonConfig = require('../config/polygon.json');
-const polygonMumbaiConfig = require('../config/polygon-mumbai.json');
+const polygonMumbaiConfig = require('../config/mumbai.json');
 
 interface SimpleTransactionState {
     txTo: string;
@@ -38,7 +38,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
         this.onAssetChange = this.onAssetChange.bind(this);
         this.onGasFeeChange = this.onGasFeeChange.bind(this);
 
-        this.flushConfig("Mumbai");
+        this.flushConfig(Config.DEFAULT_NETWORK);
     }
 
     onToChange(e: any) {
@@ -87,12 +87,12 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
     async flushConfig(chainName: string) {
         console.log("start to flush. Chain name: " + chainName);
-        switch (chainName) {
-            case "Polygon":
-                await Config.flushConfig(JSON.stringify(polygonConfig));
+        switch (chainName.toLowerCase()) {
+            case "polygon":
+                await Config.flush(JSON.stringify(polygonConfig));
                 break;
-            case "Mumbai":
-                await Config.flushConfig(JSON.stringify(polygonMumbaiConfig));
+            case "mumbai":
+                await Config.flush(JSON.stringify(polygonMumbaiConfig));
                 break;
         }
     }
@@ -108,8 +108,8 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <br/>
                 <div>Chain</div>
                 <select onChange={event => this.flushConfig(event.target.value)}>
+                    <option value="Polygon">Polygon</option>
                     <option value="Mumbai">Mumbai</option>
-                    {/*<option value="Polygon">Polygon</option>*/}
                 </select>
                 <br/>
                 <div>Asset</div>
