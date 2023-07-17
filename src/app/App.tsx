@@ -18,6 +18,8 @@ import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
+import AutomaticTrading from "./pages/AutomaticTrading";
+
 import {Config} from "../server/config";
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
@@ -96,6 +98,7 @@ class App extends React.Component<{}, AppState> {
             <Route path='/editTradeBot' element={<EditTradeBotPage />} />
             <Route path='/runBot' element={<RunBotPage />} />
             <Route path='/simpleTransaction' element={<SimpleTransactionPage />} />
+            <Route path='/automaticTrading' element={<AutomaticTrading />}></Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
