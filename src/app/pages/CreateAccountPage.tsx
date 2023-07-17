@@ -84,7 +84,7 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
     localStorage.setItem('address', address);
     Server.account.loggedIn();
 
-    this.setState({navigate: '/home', message: ''});
+    this.setState({navigate: '/login', message: ''});
   }
 
   onLogin() {

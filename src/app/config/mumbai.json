@@ -1,8 +1,8 @@
 {
   "address": {
-    "address_simple_account_factory": "0x6ACF75E7EA53E85fb97ee62575B4410c27346dDE",
-    "address_token_paymaster": "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED",
-    "address_entrypoint": "0x6FdC82b4500b5B82504DaA465B8CDB9E9dBC48Ef"
+    "address_simple_account_factory": "0xA02867e1b8410a810Ca3b4875A7A33C89846Ea10",
+    "address_token_paymaster": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
+    "address_entrypoint": "0x081d5B6e93B686cEA78B87f5f96Ec274cC6FFe41"
   },
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
@@ -26,7 +26,7 @@
     "SWT": {
       "sort": 1,
       "name": "SWT",
-      "address": "0xa83C860681d4da28154c225a985aA0C5a5F7E8ED",
+      "address": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
       "decimals": 18,
       "type": 2,
       "icon": "/icon/usdc.png"
