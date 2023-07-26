@@ -258,9 +258,9 @@ export function getFirstImage(content: any) {
   let image = '';
   let start = content.indexOf('<img');
 
-  if (start != -1) {
+  if (start !== -1) {
     let end = content.indexOf('>', start);
-    if (end != -1)
+    if (end !== -1)
       image = content.substring(start + 10, end - 1);
   }
 
@@ -292,42 +292,42 @@ export function browserDetect() {
   
   // Approach 2
   // CHROME
-  if (userAgent.indexOf("Chrome") != -1 ) {
+  if (userAgent.indexOf("Chrome") !== -1 ) {
     console.log("Google Chrome");
     browserName = "chrome";
   }
   // FIREFOX
-  else if (userAgent.indexOf("Firefox") != -1 ) {
+  else if (userAgent.indexOf("Firefox") !== -1 ) {
     console.log("Mozilla Firefox");
     browserName = "firefox";
   }
   // INTERNET EXPLORER
-  else if (userAgent.indexOf("MSIE") != -1 ) {
+  else if (userAgent.indexOf("MSIE") !== -1 ) {
     console.log("Internet Exploder");
     browserName = "ie";
   }
   // EDGE
-  else if (userAgent.indexOf("Edge") != -1 ) {
+  else if (userAgent.indexOf("Edge") !== -1 ) {
     console.log("Internet Edge");
     browserName = "edge";
   }
   // SAFARI
-  else if (userAgent.indexOf("Safari") != -1 ) {
+  else if (userAgent.indexOf("Safari") !== -1 ) {
     console.log("Safari");
     browserName = "safari";
   }
   // OPERA
-  else if (userAgent.indexOf("Opera") != -1 ) {
+  else if (userAgent.indexOf("Opera") !== -1 ) {
     console.log("Opera");
     browserName = "opera";
   }
   // YANDEX BROWSER
-  else if (userAgent.indexOf("YaBrowser") != -1 ) {
+  else if (userAgent.indexOf("YaBrowser") !== -1 ) {
     console.log("YaBrowser");
     browserName = "yandex";
   }
   // Brave - TODO: need to test and update
-  else if (userAgent.indexOf("Brave") != -1 ) {
+  else if (userAgent.indexOf("Brave") !== -1 ) {
     console.log("Brave");
     browserName = "brave";
   }
