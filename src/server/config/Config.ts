@@ -27,6 +27,7 @@ export class Config {
 
     // 启动默认网络
     public static DEFAULT_NETWORK = "Polygon";
+    public static TOKEN_PAYMASTER_TOKEN_NAME = "SWT";
 
     public static CURRENT_CHAIN_NAME = this.DEFAULT_NETWORK;
 

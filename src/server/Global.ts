@@ -19,7 +19,9 @@ export class Global {
     await this.account.flushEtherWallet();
 
     // 如果没有创建合约，那么需要创建合约账户
-    await this.account.deployContractAddressIfNot(await this.account.ethersWallet.getAddress());
+    if (this.account.ethersWallet) {
+      await this.account.deployContractWalletIfNotExist(await this.account.ethersWallet.getAddress());
+    }
   }
 
 }

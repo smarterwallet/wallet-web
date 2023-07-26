@@ -41,24 +41,24 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let asset = Config.TOKENS[assetId];
     let assetIcon = asset.icon;
     this.setState({assetId, assetIcon});
-    if (asset.type == 1) {
+    if (asset.type === 1) {
       this.getMainTokenList().then((e) => {
         this.setState({txDataTo: e.txListTo});
         this.setState({txDataFrom: e.txListFrom});
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Global.account.balanceOfMainToken(Global.account.contractAddress, asset.decimals).then((e) => {
+      Global.account.getBalanceOfMainToken(Global.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
-    } else if (asset.type == 2) {
+    } else if (asset.type === 2) {
       this.getTokenTxList(Config.TOKENS[assetId]).then((e) => {
         this.setState({txDataTo: e.txListTo});
         this.setState({txDataFrom: e.txListFrom});
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Global.account.balanceOfERC20(asset.address, Global.account.contractAddress, asset.decimals).then((e) => {
+      Global.account.getBalanceOfERC20(asset.address, Global.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
     }
@@ -84,7 +84,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
 
     allResult.forEach((item: any) => {
       let valueStr = handlerNumberStr(ethers.utils.formatUnits(item.value));
-      if (valueStr == 0) {
+      if (valueStr === 0) {
         return;
       }
       let data = {
@@ -102,6 +102,9 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       }
     })
 
+    // sort all result
+    txListFrom.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
+    txListTo.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
 
@@ -117,8 +120,8 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     let txListFromResponse = await Global.account.getTokenTxListByFromAddr(asset.address);
     let txListFrom = txListFromResponse.body["result"].map((item: any) => {
       let valueStr = handlerNumberStr(divideAndMultiplyByTenPowerN(ethers.BigNumber.from(item.data).toString(), asset.decimals));
-      if (valueStr == 0) {
-        return;
+      if (valueStr === 0) {
+        return {};
       }
       return {
         ...item,
@@ -131,12 +134,12 @@ class AssetPage extends React.Component<{}, AssetPageState> {
 
     let txListToResponse = await Global.account.getTokenTxListByToAddr(asset.address);
     let txListTo = txListToResponse.body["result"].map((item: any) => {
-      if (null == item.data) {
-        return;
+      if (null === item.data) {
+        return {};
       }
       let valueStr = handlerNumberStr(divideAndMultiplyByTenPowerN(ethers.BigNumber.from(item.data).toString(), asset.decimals));
-      if (valueStr == 0) {
-        return;
+      if (valueStr === 0) {
+        return {};
       }
       return {
         ...item,
@@ -147,6 +150,9 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       };
     });
 
+    // sort all result
+    txListFrom.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
+    txListTo.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
     let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
 
@@ -178,7 +184,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
           <HeaderBar text={this.state.assetId}/>
 
           <div className='asset-page-header'>
-            <img className="asset-page-image" src={this.state.assetIcon}/>
+            <img className="asset-page-image" src={this.state.assetIcon} alt=""/>
             <div className="asset-page-asset">{this.state.balance} {this.state.assetId}</div>
             <div className="asset-page-usd">$0.00</div>
           </div>
@@ -208,7 +214,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
                     rel="noopener noreferrer"
                     key={tx.txHashShow + "-" + index}
                 >
-                  <img className="home-page-asset-icon" src={this.state.assetIcon}/>
+                  <img className="home-page-asset-icon" src={this.state.assetIcon} alt=""/>
                   <div
                       className="home-page-asset-name">{tx.txType}</div>
                   <div>

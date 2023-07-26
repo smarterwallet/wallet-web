@@ -13,19 +13,29 @@ export interface AccountInterface {
 
   createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }>;
 
-  getSmartContractWalletAddress(eoaAddress: string, salt: number): Promise<string>;
-
-  balanceOfMainToken(address: string, decimals: number): Promise<string>;
+  getBalanceOfMainToken(address: string, decimals: number): Promise<string>;
 
   getBalanceOf(asset: Asset): Promise<string>;
 
-  balanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string>;
+  getBalanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string>;
 
-  deployContractAddressIfNot(ownerAddress: string): void;
+  deployContractWalletIfNotExist(ownerAddress: string): void;
 
-  contractAccountNonce(address: string): Promise<string>;
+  /**
+   * Get smart contract wallet address
+   * @param ownerAddress EOA address for manage smart contract wallet
+   * @param salt
+   */
+  getContractWalletAddress(ownerAddress: string, salt: number): Promise<string>;
 
-  getOwnerAccountNonce(address: string): Promise<number>;
+  getContractWalletAddressNonce(contractWalletAddress: string): Promise<string>;
+
+  /**
+   * EOA address for manage smart contract wallet
+   */
+  getOwnerAddress(): Promise<string>;
+
+  getOwnerAddressNonce(address: string): Promise<number>;
 
   getGasPrice(): Promise<BigNumber>;
 

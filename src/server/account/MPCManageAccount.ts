@@ -34,7 +34,7 @@ export class MPCManageAccount extends BaseManageAccount implements AccountInterf
     console.log("mpc key:", key);
     this._key = key;
     this.ethersWallet = new ethers.Wallet(key, Global.ethersProvider);
-    this.contractAddress = await this.getSmartContractWalletAddress(await this.ethersWallet.getAddress(), 0);
+    this.contractAddress = await this.getContractWalletAddress(await this.ethersWallet.getAddress(), 0);
     this.contractAddressExist = false;
     await super.initAccount(key);
   }
@@ -43,14 +43,14 @@ export class MPCManageAccount extends BaseManageAccount implements AccountInterf
     if (this.hasBeenInit) {
       console.log("flushEtherWallet:: has been init")
       this.ethersWallet = new ethers.Wallet(this._key, Global.ethersProvider);
-      this.contractAddress = await this.getSmartContractWalletAddress(await this.ethersWallet.getAddress(), 0);
+      this.contractAddress = await this.getContractWalletAddress(await this.ethersWallet.getAddress(), 0);
       this.contractAddressExist = false;
     } else {
       console.log("flushEtherWallet:: has not been init")
     }
   }
 
-  async getMPCEOAWalletAddress(): Promise<string> {
+  async getOwnerAddress(): Promise<string> {
     // TODO need to implement
     return "";
   }
@@ -64,32 +64,32 @@ export class MPCManageAccount extends BaseManageAccount implements AccountInterf
     return super.createSmartContractWalletAccount(params);
   }
 
-  async getSmartContractWalletAddress(eoaAddress: string, salt: number): Promise<string> {
-    return super.getSmartContractWalletAddress(eoaAddress, salt);
+  async getContractWalletAddress(eoaAddress: string, salt: number): Promise<string> {
+    return super.getContractWalletAddress(eoaAddress, salt);
   }
 
-  async balanceOfMainToken(address: string, decimals: number): Promise<string> {
-    return super.balanceOfMainToken(address, decimals);
+  async getBalanceOfMainToken(address: string, decimals: number): Promise<string> {
+    return super.getBalanceOfMainToken(address, decimals);
   }
 
   async getBalanceOf(asset: Asset): Promise<string> {
     return super.getBalanceOf(asset);
   }
 
-  async balanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string> {
-    return super.balanceOfERC20(contractAddress, address, decimals);
+  async getBalanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string> {
+    return super.getBalanceOfERC20(contractAddress, address, decimals);
   }
 
-  async deployContractAddressIfNot(ownerAddress: string) {
-    return super.deployContractAddressIfNot(ownerAddress);
+  async deployContractWalletIfNotExist(ownerAddress: string) {
+    return super.deployContractWalletIfNotExist(ownerAddress);
   }
 
-  async contractAccountNonce(address: string): Promise<string> {
-    return super.contractAccountNonce(address);
+  async getContractWalletAddressNonce(address: string): Promise<string> {
+    return super.getContractWalletAddressNonce(address);
   }
 
-  async getOwnerAccountNonce(address: string): Promise<number> {
-    return super.getOwnerAccountNonce(address);
+  async getOwnerAddressNonce(address: string): Promise<number> {
+    return super.getOwnerAddressNonce(address);
   }
 
   async getGasPrice(): Promise<BigNumber> {
