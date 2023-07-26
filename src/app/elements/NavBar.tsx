@@ -1,5 +1,5 @@
 import React from 'react';
-import { Server } from '../../server/server';
+import { Global } from '../../server/Global';
 import NavBarButton from './NavBarButton';
 import './NavBar.css';
 import { AppConfig } from '../AppConfig';

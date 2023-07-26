@@ -1,11 +1,11 @@
 import React from 'react';
 import './WelcomePage.css';
 import { NavLink, Navigate } from 'react-router-dom';
-import { Server } from '../../server/server';
+import { Global } from '../../server/Global';
 
 class WelcomePage extends React.Component {
   render() {
-    if (Server.account.isLoggedIn())
+    if (Global.account.isLoggedIn)
       return <Navigate to="/home" replace />;
 
     return (

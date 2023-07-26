@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import {Server} from '../server/server';
+import {Global} from '../server/Global';
 import HomePage from './pages/HomePage';
 import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
@@ -18,7 +18,7 @@ import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
-import {Config} from "../server/config";
+import {Config} from "../server/config/Config";
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -41,8 +41,8 @@ class App extends React.Component<{}, AppState> {
     if (!this.state.maintenance) {
       Config.init(JSON.stringify(polygonConfig)).then(e => {
         console.log("config init success");
-        Server.init().then(e => {
-          console.log("server init success");
+        Global.init().then(e => {
+          console.log("global variable init success");
         })
       })
     }
@@ -51,17 +51,17 @@ class App extends React.Component<{}, AppState> {
     this.onAccountChanged = this.onAccountChanged.bind(this);
 
     window.addEventListener("beforeunload", function (e) {
-      // Server.network.disconnect();
+      // Global.network.disconnect();
     });
 
   }
 
   componentDidMount() {
-    // Server.account.addEventListener('login', this.onAccountChanged);
-    // Server.account.addEventListener('logout', this.onAccountChanged);
+    // Global.account.addEventListener('login', this.onAccountChanged);
+    // Global.account.addEventListener('logout', this.onAccountChanged);
 
     // if(!this.state.maintenance)
-    //   Server.network.setPresence('site');
+    //   Global.network.setPresence('site');
   }
 
   setInitialized() {

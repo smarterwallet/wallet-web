@@ -1,10 +1,10 @@
 import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
-import {Server} from '../../server/server';
+import {Global} from '../../server/Global';
 import AlertModal from '../modals/AlertModal';
 import {BigNumber} from "ethers";
-import {Config} from "../../server/config";
+import {Config} from "../../server/config/Config";
 import {Navigate} from "react-router-dom";
 
 const polygonConfig = require('../config/polygon.json');
@@ -22,7 +22,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
     constructor(props: any) {
         super(props);
-        Server.account.getGasPrice().then(
+        Global.account.getGasPrice().then(
             (e) => this.setState({gasPrice: e})
         );
         this.state = {
@@ -69,12 +69,12 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
         this.setState({alert: "Sending " + this.state.selectedAsset});
         try {
             if (this.state.selectedAsset == "Matic") {
-                await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
+                await Global.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
             } else if (this.state.selectedAsset == "SWT") {
-                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
             } else if (this.state.selectedAsset == "USDC") {
                 // TODO USDC need approve on chain first
-                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
             } else {
                 this.setState({alert: "unknown asset: " + this.state.selectedAsset});
             }
@@ -98,7 +98,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
     }
 
     render() {
-        if (!Server.account.isLoggedIn()) {
+        if (!Global.account.isLoggedIn) {
             return <Navigate to="/" replace/>;
         }
 

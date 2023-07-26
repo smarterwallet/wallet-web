@@ -1,5 +1,5 @@
 import React from 'react';
-import { Server } from '../../server/server';
+import { Global } from '../../server/Global';
 import './LoadingPage.css';
 
 interface LoadingPageProps {
@@ -18,7 +18,7 @@ class LoadingPage extends React.Component<LoadingPageProps, {}> {
   }
 
   checkState() {
-    if(Server.initialized)
+    if(Global.initialized)
       this.props.setInitialized();
     else {
       setTimeout(() => {

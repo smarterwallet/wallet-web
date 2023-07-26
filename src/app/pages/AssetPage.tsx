@@ -1,11 +1,11 @@
 import React from 'react';
 import './AssetPage.css';
 import HeaderBar from '../elements/HeaderBar';
-import {Server} from "../../server/server";
+import {Global} from "../../server/Global";
 import {divideAndMultiplyByTenPowerN, formatTimestamp, handlerNumberStr} from "../util/util";
 import {ethers} from "ethers";
 import {Navigate} from "react-router-dom";
-import {Asset, Config} from "../../server/config";
+import {Asset, Config} from "../../server/config/Config";
 
 interface AssetPageState {
   assetId: string;
@@ -48,7 +48,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Server.account.balanceOfMainToken(Server.account.contractAddress, asset.decimals).then((e) => {
+      Global.account.balanceOfMainToken(Global.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
     } else if (asset.type == 2) {
@@ -58,15 +58,15 @@ class AssetPage extends React.Component<{}, AssetPageState> {
         this.setState({txData: e.mergedArray});
         this.setState({txDataToShow: e.mergedArray});
       })
-      Server.account.balanceOfERC20(asset.address, Server.account.contractAddress, asset.decimals).then((e) => {
+      Global.account.balanceOfERC20(asset.address, Global.account.contractAddress, asset.decimals).then((e) => {
         this.setState({balance: handlerNumberStr(e).toString()})
       })
     }
   }
 
   async getMainTokenList() {
-    let txListResponse = await Server.account.getMainTokenTxList();
-    let txInternalListResponse = await Server.account.getMainTokenInternalTxList();
+    let txListResponse = await Global.account.getMainTokenTxList();
+    let txInternalListResponse = await Global.account.getMainTokenInternalTxList();
     let allResultsConcat = txListResponse.body["result"].concat(txInternalListResponse.body["result"])
     // 去重
     let allResult = allResultsConcat.filter((value: { blockNumber: any;from:any; hash:any,to:any;traceId:any;value:any;}, index: any, self: any[]) =>
@@ -93,10 +93,10 @@ class AssetPage extends React.Component<{}, AssetPageState> {
         txTimeShow: formatTimestamp(item.timeStamp, true),
         txHashShow: item.hash,
       };
-      if (item.from.toLowerCase() === Server.account.contractAddress.toLowerCase()) {
+      if (item.from.toLowerCase() === Global.account.contractAddress.toLowerCase()) {
         data.txType = "Sent";
         txListFrom.push(data);
-      } else if (item.to.toLowerCase() === Server.account.contractAddress.toLowerCase()) {
+      } else if (item.to.toLowerCase() === Global.account.contractAddress.toLowerCase()) {
         data.txType = "Received";
         txListTo.push(data);
       }
@@ -114,7 +114,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
   }
 
   async getTokenTxList(asset: Asset) {
-    let txListFromResponse = await Server.account.getTokenTxListByFromAddr(asset.address);
+    let txListFromResponse = await Global.account.getTokenTxListByFromAddr(asset.address);
     let txListFrom = txListFromResponse.body["result"].map((item: any) => {
       let valueStr = handlerNumberStr(divideAndMultiplyByTenPowerN(ethers.BigNumber.from(item.data).toString(), asset.decimals));
       if (valueStr == 0) {
@@ -129,7 +129,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       };
     });
 
-    let txListToResponse = await Server.account.getTokenTxListByToAddr(asset.address);
+    let txListToResponse = await Global.account.getTokenTxListByToAddr(asset.address);
     let txListTo = txListToResponse.body["result"].map((item: any) => {
       if (null == item.data) {
         return;
@@ -170,7 +170,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
   }
 
   render() {
-    if (!Server.account.isLoggedIn())
+    if (!Global.account.isLoggedIn)
       return <Navigate to="/" replace/>;
 
     return (

@@ -2,7 +2,7 @@ import React from 'react';
 import './CreateAccountPage.css';
 import {Navigate} from 'react-router-dom';
 import HeaderBar from '../elements/HeaderBar';
-import {Server} from '../../server/server';
+import {Global} from '../../server/Global';
 import MessageModal from '../modals/MessageModal';
 import AlertModal from '../modals/AlertModal';
 import {ethers} from "ethers";
@@ -75,14 +75,14 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
     let params = {
       "address": account.address
     }
-    let tx = await Server.account.createAccount(params);
-    await Server.checkTransactionStatus(tx.body["result"]);
+    let tx = await Global.account.createSmartContractWalletAccount(params);
+    await Global.checkTransactionStatus(tx.body["result"]);
 
-    let address = await Server.account.getAddress(account.address, 0);
+    let address = await Global.account.getSmartContractWalletAddress(account.address, 0);
 
     localStorage.setItem('username', this.state.username);
     localStorage.setItem('address', address);
-    Server.account.loggedIn();
+    Global.account.loggedIn();
 
     this.setState({navigate: '/login', message: ''});
   }
