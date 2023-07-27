@@ -53,7 +53,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async flushAsset() {
-    if (Global.account.contractAddress) {
+    if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== "") {
       let newAsset: {[key: string]: any}  = {};
       for (let key in Config.TOKENS) {
         if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
@@ -71,7 +71,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   onQuestionYes() {
-    Global.account.loggedOut()
+    Global.account.isLoggedIn = false;
     this.forceUpdate();
   }
 
@@ -100,7 +100,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
-    await navigator.clipboard.writeText(Global.account.contractAddress);
+    await navigator.clipboard.writeText(Global.account.contractWalletAddress);
   }
 
   async flushConfigAndAsset(chainName: string) {
@@ -109,13 +109,13 @@ class HomePage extends React.Component<{}, HomePageState> {
     Config.CURRENT_CHAIN_NAME = chainName;
     switch (chainName.toLowerCase()) {
       case "polygon":
-        await Config.flush(JSON.stringify(polygonConfig));
-        await Global.flush();
+        await Config.init(JSON.stringify(polygonConfig));
+        await Global.init();
         await this.flushAsset();
         break;
       case "mumbai":
-        await Config.flush(JSON.stringify(polygonMumbaiConfig));
-        await Global.flush();
+        await Config.init(JSON.stringify(polygonMumbaiConfig));
+        await Global.init();
         await this.flushAsset();
         break;
     }
@@ -129,7 +129,7 @@ class HomePage extends React.Component<{}, HomePageState> {
 
     let address = '';
     let username = localStorage.getItem('username');
-    let val = Global.account.contractAddress;
+    let val = Global.account.contractWalletAddress;
     if (val) address = val;
     if (address.length > 10) {
       address = address.substring(0, 5) + '...' + address.substring(address.length - 4);

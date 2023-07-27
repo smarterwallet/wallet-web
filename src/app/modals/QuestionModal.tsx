@@ -13,8 +13,8 @@ class QuestionModal extends React.Component<QuestionModalProps, {}> {
   }
   
   render() {
-    if(this.props.message == '')
-      return (null);
+    if(this.props.message === '')
+      return null;
 
     return (
       <div className="modal open">

@@ -47,10 +47,10 @@ class LoginPage extends React.Component<{}, LoginPageState> {
     let tryLogin = window.btoa(str); // encrypt
 
     if (tryLogin === loginkey) {
-      Global.account.loggedIn();
       let key = window.atob(smarterWalletKey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
       await Global.account.initAccount(key);
+      Global.account.isLoggedIn = true;
 
       this.setState({navigate: '/home'});
     }
@@ -59,7 +59,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
   }
 
   render() {
-    if (this.state.navigate != '') 
+    if (this.state.navigate !== '') 
       return <Navigate to={this.state.navigate} />;
 
     return (

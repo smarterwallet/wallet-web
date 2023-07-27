@@ -17,7 +17,7 @@ const erc20Abi = require('../../data/IERC20.json');
 /**
  * Account Manage Base Class
  */
-export class BaseManageAccount implements AccountInterface {
+export class ERC4337BaseManageAccount implements AccountInterface {
 
   /**
    * a data for init account
@@ -27,7 +27,8 @@ export class BaseManageAccount implements AccountInterface {
   /**
    * smart contract address for saving the asset
    */
-  private _contractAddress: string;
+  private _contractWalletAddress: string;
+  private _contractWalletAddressSalt: number;
 
   /**
    * if the wallet has already been created
@@ -38,6 +39,7 @@ export class BaseManageAccount implements AccountInterface {
    * EOA address's wallet client
    */
   private _ethersWallet: ethers.Wallet;
+  private _ethersProvider: ethers.providers.JsonRpcProvider;
 
   /**
    * account init
@@ -54,6 +56,7 @@ export class BaseManageAccount implements AccountInterface {
    */
   private _isLoggedIn: boolean;
 
+
   constructor() {
     this._contractAddressExist = false;
     this._hasBeenInit = false;
@@ -69,12 +72,20 @@ export class BaseManageAccount implements AccountInterface {
     this._initData = value;
   }
 
-  get contractAddress(): string {
-    return this._contractAddress;
+  get contractWalletAddress(): string {
+    return this._contractWalletAddress;
   }
 
-  set contractAddress(value: string) {
-    this._contractAddress = value;
+  set contractWalletAddress(value: string) {
+    this._contractWalletAddress = value;
+  }
+
+  get contractWalletAddressSalt(): number {
+    return this._contractWalletAddressSalt;
+  }
+
+  set contractWalletAddressSalt(value: number) {
+    this._contractWalletAddressSalt = value;
   }
 
   get contractAddressExist(): boolean {
@@ -109,20 +120,25 @@ export class BaseManageAccount implements AccountInterface {
     this._feeRate = value;
   }
 
-  get isLoggedIn() {
+  get isLoggedIn(): boolean {
     return this._isLoggedIn;
   }
 
-  public loggedIn() {
-    this._isLoggedIn = true;
+  set isLoggedIn(value: boolean) {
+    this._isLoggedIn = value;
   }
 
-  public loggedOut() {
-    this._isLoggedIn = false;
+  get ethersProvider(): ethers.providers.JsonRpcProvider {
+    return this._ethersProvider;
+  }
+
+  set ethersProvider(value: ethers.providers.JsonRpcProvider) {
+    this._ethersProvider = value;
   }
 
   /**
    * must call initAccount in subclass
+   * call it after change network
    * @param data
    */
   async initAccount(data: any) {
@@ -130,23 +146,17 @@ export class BaseManageAccount implements AccountInterface {
     this._hasBeenInit = true;
   }
 
-  async flushEtherWallet() {
-    throw new Error("need to implement");
-  }
-
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {
     let api = Config.BACKEND_API + '/account/onchain/create';
     return await HttpUtils.sendCommand(api, params);
   }
 
-  async getContractWalletAddress(eoaAddress: string, salt: number): Promise<string> {
-    console.log("EOA Address: ", eoaAddress, "Salt:", salt);
-    let contract = new ethers.Contract(Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY, simpleAccountFactoryAbi, Global.ethersProvider);
-
+  async calcContractWalletAddress(): Promise<string> {
+    console.log("Owner EOA Address: ", await this.getOwnerAddress());
+    console.log("Salt:", this.contractWalletAddressSalt);
+    let contract = new ethers.Contract(Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY, simpleAccountFactoryAbi, this.ethersProvider);
     try {
-      let address = await contract.getAddress(eoaAddress, salt);
-      this.contractAddress = address;
-      return address;
+      return await contract.getAddress(this.getOwnerAddress(), this.contractWalletAddressSalt);
     } catch (error) {
       console.error(error);
       return '';
@@ -154,21 +164,20 @@ export class BaseManageAccount implements AccountInterface {
   }
 
   async getBalanceOfMainToken(address: string, decimals: number): Promise<string> {
-    const balance = await Global.ethersProvider.getBalance(address);
+    const balance = await this.ethersProvider.getBalance(address);
     return divideAndMultiplyByTenPowerN(balance.toString(), decimals);
   }
 
   async getBalanceOf(asset: Asset): Promise<string> {
     if (asset.type === 1) {
-      return await this.getBalanceOfMainToken(this._contractAddress, asset.decimals);
+      return await this.getBalanceOfMainToken(this.contractWalletAddress, asset.decimals);
     } else if (asset.type === 2) {
-      return await this.getBalanceOfERC20(asset.address, this._contractAddress, asset.decimals);
+      return await this.getBalanceOfERC20(asset.address, this.contractWalletAddress, asset.decimals);
     }
   }
 
   async getBalanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string> {
-    let contract = new ethers.Contract(contractAddress, erc20Abi, Global.ethersProvider);
-
+    let contract = new ethers.Contract(contractAddress, erc20Abi, this.ethersProvider);
     try {
       let balance = await contract.balanceOf(address);
       return divideAndMultiplyByTenPowerN(balance.toString(), decimals);
@@ -178,41 +187,41 @@ export class BaseManageAccount implements AccountInterface {
     }
   }
 
-  async deployContractWalletIfNotExist(ownerAddress: string) {
-    if (!this._ethersWallet) {
+  async deployContractWalletIfNotExist(contractAddress: string) {
+    if (this.ethersWallet == null) {
       console.log("ethersWallet has not been init.")
       return;
     }
-    if (this._contractAddressExist) {
+    if (this.contractAddressExist) {
       console.log("contract account has been deployed.")
       return;
     }
     console.log("start to check contract account")
 
-    let code = await Global.ethersProvider.getCode(this._contractAddress);
+    let code = await this.ethersProvider.getCode(this.contractWalletAddress);
+    console.log("code:", code);
+    console.log("ownerAddress:", contractAddress);
     if (code !== "0x") {
-      this._contractAddressExist = true;
+      this.contractAddressExist = true;
       return;
     }
 
     console.log("create contract")
     // create smart contract account on chain
-    let params = {
-      "address": ownerAddress
-    }
+    let params = {"address": contractAddress}
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.checkTransactionStatus(Global.ethersProvider, tx.body["result"]);
+    await TxUtils.checkTransactionStatus(this.ethersProvider, tx.body["result"]);
 
-    let newContractAddress = await Global.account.getContractWalletAddress(this._ethersWallet.address, 0);
+    let newContractAddress = this.contractWalletAddress;
 
-    if (this._contractAddress !== newContractAddress) {
+    if (this._contractWalletAddress !== newContractAddress) {
       throw new Error("Deployed contract address error. The new contract address not equals contract address")
     }
     this._contractAddressExist = true;
   }
 
-  async getContractWalletAddressNonce(address: string): Promise<string> {
-    let contract = new ethers.Contract(address, simpleAccountAbi, Global.ethersProvider);
+  async getContractWalletAddressNonce(): Promise<string> {
+    let contract = new ethers.Contract(this.contractWalletAddress, simpleAccountAbi, this.ethersProvider);
 
     try {
       return (await contract.nonce()).toBigInt();
@@ -223,37 +232,37 @@ export class BaseManageAccount implements AccountInterface {
   }
 
   async getOwnerAddress(): Promise<string> {
-    return await this.ethersWallet.getAddress();
+    throw new Error("need to implement");
   }
 
-  async getOwnerAddressNonce(ownerAddress: string): Promise<number> {
-    return await Global.ethersProvider.getTransactionCount(ownerAddress);
+  async getOwnerAddressNonce(): Promise<number> {
+    throw new Error("need to implement");
   }
 
   async getGasPrice(): Promise<BigNumber> {
-    let gasPrice = await Global.ethersProvider.getGasPrice();
+    let gasPrice = await this.ethersWallet.getGasPrice();
     return gasPrice.mul(BigNumber.from(this._feeRate)).div(BigNumber.from(100))
   }
 
-  public sendMainTokenCall(toAddress: string, amount: BigNumber): string {
-    const accountContract = new ethers.Contract("", simpleAccountAbi, Global.ethersProvider);
+  protected sendMainTokenCall(toAddress: string, amount: BigNumber): string {
+    const accountContract = new ethers.Contract("", simpleAccountAbi, this.ethersProvider);
     return accountContract.interface.encodeFunctionData('execute', [toAddress, amount, "0x"]);
   }
 
-  public sendERC20TokenCall(contractAddress: string, toAddress: string, amount: BigNumber): string {
-    const accountContract = new ethers.Contract("", simpleAccountAbi, Global.ethersProvider);
-    const ERC20Contract = new ethers.Contract(contractAddress, erc20Abi, Global.ethersProvider);
+  protected sendERC20TokenCall(contractAddress: string, toAddress: string, amount: BigNumber): string {
+    const accountContract = new ethers.Contract("", simpleAccountAbi, this.ethersProvider);
+    const ERC20Contract = new ethers.Contract(contractAddress, erc20Abi, this.ethersProvider);
     const transferCallData = ERC20Contract.interface.encodeFunctionData('transfer', [toAddress, amount]);
     return accountContract.interface.encodeFunctionData('execute', [contractAddress, 0, transferCallData]);
   }
 
   async ownerSign(hash: string): Promise<string> {
-    return await Global.account._ethersWallet.signMessage(arrayify(hash));
+    return await this.ethersWallet.signMessage(arrayify(hash));
   }
 
   async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation> {
-    const senderAddress = Global.account._contractAddress;
-    const nonce = await this.getContractWalletAddressNonce(senderAddress);
+    const senderAddress = this.contractWalletAddress;
+    const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
     let tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
     if (parseFloat(tokenPaymasterAmount) < 1) {
@@ -283,7 +292,7 @@ export class BaseManageAccount implements AccountInterface {
           preVerificationGas, maxFeePerGas, maxPriorityFeePerGas]);
     const paymasterSignPackHash = ethers.utils.keccak256(paymasterSignPack);
     // 测试的TokenPaymaster不包含验证逻辑，所以签名没有进行验证
-    const paymasterDataSign = await Global.account._ethersWallet.signMessage(arrayify(paymasterSignPackHash));
+    const paymasterDataSign = await this.ethersWallet.signMessage(arrayify(paymasterSignPackHash));
     paymasterAndData = ethers.utils.defaultAbiCoder.encode(
         ["bytes20", "bytes"],
         [tokenPaymasterAddress, paymasterDataSign]);
@@ -297,7 +306,7 @@ export class BaseManageAccount implements AccountInterface {
     // remove signature
     userOpPack = userOpPack.substring(0, userOpPack.length - 64);
     const hash = ethers.utils.keccak256(userOpPack);
-    const {chainId} = await Global.ethersProvider.getNetwork();
+    const {chainId} = await this.ethersProvider.getNetwork();
     const packData = ethers.utils.defaultAbiCoder.encode(["bytes32", "address", "uint256"],
         [hash, entryPointAddress, chainId]);
     const userOpHash = ethers.utils.keccak256(packData);
@@ -337,6 +346,7 @@ export class BaseManageAccount implements AccountInterface {
 
   async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
     let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    console.log(op)
     return await this.sendUserOperation({
       "jsonrpc": "2.0",
       "id": 1,
@@ -353,19 +363,19 @@ export class BaseManageAccount implements AccountInterface {
   }
 
   async getMainTokenTxList(): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_API, Global.account._contractAddress));
+    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_API, this.contractWalletAddress));
   }
 
   async getMainTokenInternalTxList(): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, Global.account._contractAddress));
+    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, this.contractWalletAddress));
   }
 
-  async getTokenTxListByFromAddr(contractAddress: string): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_FROM_LIST_API, contractAddress, Global.account._contractAddress.substring(2)));
+  async getTokenTxListFromThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
+    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_FROM_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
-  async getTokenTxListByToAddr(contractAddress: string): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_TO_LIST_API, contractAddress, Global.account._contractAddress.substring(2)));
+  async getTokenTxListToThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
+    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
 }

@@ -77,13 +77,14 @@ class CreateAccountPage extends React.Component<{}, CreateAccountPageState> {
       "address": account.address
     }
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.checkTransactionStatus(Global.ethersProvider, tx.body["result"]);
+    await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
 
-    let address = await Global.account.getContractWalletAddress(account.address, 0);
+    Global.account.initAccount(account.privateKey);
+    let address = Global.account.contractWalletAddress;
 
     localStorage.setItem('username', this.state.username);
     localStorage.setItem('address', address);
-    Global.account.loggedIn();
+    Global.account.isLoggedIn = true;
 
     this.setState({navigate: '/login', message: ''});
   }

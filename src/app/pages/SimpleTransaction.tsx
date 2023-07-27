@@ -74,7 +74,8 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
             if (this.state.selectedAsset === "Matic") {
                 await Global.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
             } else if (this.state.selectedAsset === "SWT") {
-                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+                const res = await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+                console.log(res);
             } else if (this.state.selectedAsset === "USDC") {
                 // TODO USDC need approve on chain first
                 await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
@@ -92,10 +93,10 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
         this.setState({message: 'Reload ' + chainName + ' config'});
         switch (chainName.toLowerCase()) {
             case "polygon":
-                await Config.flush(JSON.stringify(polygonConfig));
+                await Config.init(JSON.stringify(polygonConfig));
                 break;
             case "mumbai":
-                await Config.flush(JSON.stringify(polygonMumbaiConfig));
+                await Config.init(JSON.stringify(polygonMumbaiConfig));
                 break;
         }
         await new Promise(resolve => setTimeout(resolve, 800));

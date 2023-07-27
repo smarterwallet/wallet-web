@@ -1,26 +1,24 @@
 import {EOAManageAccount} from './account/EOAManageAccount';
-import {ethers} from 'ethers';
-import {Config} from "./config/Config";
+import {AccountInterface} from "./account/AccountInterface";
 
 export class Global {
-  public static account: EOAManageAccount;
+  public static account: AccountInterface;
   public static initialized: boolean = false;
-  public static ethersProvider: ethers.providers.JsonRpcProvider;
 
   public static async init() {
     this.initialized = true;
-    this.account = new EOAManageAccount();
-    await this.flush();
-  }
-
-  public static async flush() {
-    console.log("server flush");
-    this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
-    await this.account.flushEtherWallet();
-
-    // 如果没有创建合约，那么需要创建合约账户
-    if (this.account.ethersWallet) {
-      await this.account.deployContractWalletIfNotExist(await this.account.ethersWallet.getAddress());
+    if (this.account == null || Global.account.initData == null) {
+      // init
+      console.log("Global init");
+      this.account = new EOAManageAccount();
+      await this.account.initAccount(null);
+    } else {
+      // flush
+      console.log("Global flush");
+      console.log("initdata:", Global.account.initData);
+      await this.account.initAccount(Global.account.initData);
+      await this.account.deployContractWalletIfNotExist(this.account.contractWalletAddress);
+      this.account.isLoggedIn = true;
     }
   }
 

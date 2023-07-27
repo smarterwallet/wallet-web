@@ -19,7 +19,7 @@ export class HttpUtils {
 
       request.onload = () => {
         let body = null;
-        if (request.responseText != '') {
+        if (request.responseText !== '') {
           body = JSON.parse(request.responseText);
         }
         resolve({

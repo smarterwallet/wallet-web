@@ -9,7 +9,7 @@ export const ETHUnits = (value: string) => {
 };
 
 export function handlerNumberStr(numStr: string) {
-  if (null == numStr || numStr.length == 0) {
+  if (null === numStr || numStr.length === 0) {
     return 0;
   }
   return parseFloat(numStr.match(/^\d+(?:\.\d{0,4})?/)[0]);

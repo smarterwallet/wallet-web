@@ -1,64 +1,88 @@
 import {Asset} from "../config/Config";
 import {BigNumber} from "@ethersproject/bignumber";
-import {UserOperation} from "../../app/modals/UserOperation";
+import {ethers} from "ethers";
 
 /**
  * Account Manage Interface
  */
 export interface AccountInterface {
 
+  /**
+   * base state
+   */
+  get isLoggedIn(): boolean;
+
+  set isLoggedIn(value: boolean);
+
+  get initData(): any;
+
+  set initData(value: any);
+
+  get contractWalletAddress(): string;
+
+  set contractWalletAddress(value: string);
+
+  get contractWalletAddressSalt(): number;
+
+  set contractWalletAddressSalt(value: number);
+
+  get ethersWallet(): ethers.Wallet;
+
+  set ethersWallet(value: ethers.Wallet);
+
+  get ethersProvider(): ethers.providers.JsonRpcProvider;
+
+  set ethersProvider(value: ethers.providers.JsonRpcProvider);
+
+  /**
+   * Account state
+   */
   initAccount(data: any): void;
 
-  flushEtherWallet(): void;
-
+  /**
+   * deploy smart contract wallet
+   */
   createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }>;
 
+  deployContractWalletIfNotExist(ownerAddress: string): void;
+
+  /**
+   * get params and data
+   */
   getBalanceOfMainToken(address: string, decimals: number): Promise<string>;
 
   getBalanceOf(asset: Asset): Promise<string>;
 
   getBalanceOfERC20(contractAddress: string, address: string, decimals: number): Promise<string>;
 
-  deployContractWalletIfNotExist(ownerAddress: string): void;
+  getContractWalletAddressNonce(): Promise<string>;
 
-  /**
-   * Get smart contract wallet address
-   * @param ownerAddress EOA address for manage smart contract wallet
-   * @param salt
-   */
-  getContractWalletAddress(ownerAddress: string, salt: number): Promise<string>;
-
-  getContractWalletAddressNonce(contractWalletAddress: string): Promise<string>;
-
-  /**
-   * EOA address for manage smart contract wallet
-   */
   getOwnerAddress(): Promise<string>;
 
-  getOwnerAddressNonce(address: string): Promise<number>;
+  getOwnerAddressNonce(): Promise<number>;
 
   getGasPrice(): Promise<BigNumber>;
 
-  sendMainTokenCall(toAddress: string, amount: BigNumber): string;
-
-  sendERC20TokenCall(contractAddress: string, toAddress: string, amount: BigNumber): string;
-
+  /**
+   * build tx interface
+   */
   ownerSign(hash: string): Promise<string>;
-
-  buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation>;
-
-  sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
-
-  sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>
 
   sendUserOperation(params: any): Promise<{ status: number, body?: any }>
 
+  sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
+  sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
+  /**
+   * get tx list interface
+   */
   getMainTokenTxList(): Promise<{ status: number, body?: any }>
 
   getMainTokenInternalTxList(): Promise<{ status: number, body?: any }>
 
-  getTokenTxListByFromAddr(contractAddress: string): Promise<{ status: number, body?: any }>
+  getTokenTxListFromThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
 
-  getTokenTxListByToAddr(contractAddress: string): Promise<{ status: number, body?: any }>
+  getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
 }
 
