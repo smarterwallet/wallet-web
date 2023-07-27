@@ -1,6 +1,5 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import {Server} from '../server/server';
 import HomePage from './pages/HomePage';
 import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
@@ -20,7 +19,8 @@ import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
 import AutomaticTrading from "./pages/AutomaticTrading";
 
-import {Config} from "../server/config";
+import {Config} from "../server/config/Config";
+import {Global} from "../server/Global";
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -41,9 +41,9 @@ class App extends React.Component<{}, AppState> {
     }
 
     if (!this.state.maintenance) {
-      Config.init(JSON.stringify(polygonConfig)).then(e => {
+      Config.init(JSON.stringify(polygonConfig)).then(() => {
         console.log("config init success");
-        Server.init().then(e => {
+        Global.init().then(() => {
           console.log("server init success");
         })
       })
