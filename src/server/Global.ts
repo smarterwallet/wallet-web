@@ -15,7 +15,6 @@ export class Global {
     } else {
       // flush
       console.log("Global flush");
-      console.log("initdata:", Global.account.initData);
       await this.account.initAccount(Global.account.initData);
       await this.account.deployContractWalletIfNotExist(this.account.contractWalletAddress);
       this.account.isLoggedIn = true;

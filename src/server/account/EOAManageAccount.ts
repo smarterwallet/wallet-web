@@ -34,7 +34,6 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
     if (eoaKey != null && eoaKey !== "") {
       console.log("eoaKey not null");
-      console.log("eoaKey:", eoaKey);
       this.ethersWallet = new ethers.Wallet(eoaKey, this.ethersProvider);
       this.contractWalletAddress = await this.calcContractWalletAddress();
     } else {

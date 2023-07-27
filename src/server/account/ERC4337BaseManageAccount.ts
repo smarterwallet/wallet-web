@@ -199,8 +199,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     console.log("start to check contract account")
 
     let code = await this.ethersProvider.getCode(this.contractWalletAddress);
-    console.log("code:", code);
-    console.log("ownerAddress:", contractAddress);
     if (code !== "0x") {
       this.contractAddressExist = true;
       return;
@@ -346,7 +344,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
   async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
     let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    console.log(op)
     return await this.sendUserOperation({
       "jsonrpc": "2.0",
       "id": 1,

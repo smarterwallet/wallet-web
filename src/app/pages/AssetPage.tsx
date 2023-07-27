@@ -112,7 +112,7 @@ class AssetPage extends React.Component<{}, AssetPageState> {
     txListTo = txListTo.filter((item: any) => item != null);
     mergedArray = mergedArray.filter((item: any) => item != null);
     
-    console.log({txListTo, txListFrom, mergedArray});
+    // console.log({txListTo, txListFrom, mergedArray});
     return {txListTo, txListFrom, mergedArray}
   }
 
