@@ -47,7 +47,7 @@ class AutoTradePage extends React.Component<{}, AutoTradePageState> {
   }
 
   render() {
-    if (this.state.navigate != '') 
+    if (this.state.navigate !== '')
       return <Navigate to={this.state.navigate} />;
 
     return (

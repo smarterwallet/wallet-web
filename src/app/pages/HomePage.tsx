@@ -1,9 +1,9 @@
 import React from 'react';
 import './HomePage.css';
 import {Navigate, NavLink} from 'react-router-dom';
-import {Server} from '../../server/server';
+import {Global} from '../../server/Global';
 import {BsFiles} from 'react-icons/bs';
-import {Asset, Config} from "../../server/config";
+import {Asset, Config} from "../../server/config/Config";
 import QuestionModal from "../modals/QuestionModal";
 import AlertModal from "../modals/AlertModal";
 
@@ -53,11 +53,11 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async flushAsset() {
-    if (Server.account.contractAddress) {
+    if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== "") {
       let newAsset: {[key: string]: any}  = {};
       for (let key in Config.TOKENS) {
         if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
-          const balance = await Server.account.getBalanceOf(Config.TOKENS[key]);
+          const balance = await Global.account.getBalanceOf(Config.TOKENS[key]);
           newAsset[key] = {
             asset: Config.TOKENS[key],
             amount: balance,
@@ -71,7 +71,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   onQuestionYes() {
-    Server.account.loggedOut()
+    Global.account.isLoggedIn = false;
     this.forceUpdate();
   }
 
@@ -100,7 +100,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
-    await navigator.clipboard.writeText(Server.account.contractAddress);
+    await navigator.clipboard.writeText(Global.account.contractWalletAddress);
   }
 
   async flushConfigAndAsset(chainName: string) {
@@ -109,13 +109,13 @@ class HomePage extends React.Component<{}, HomePageState> {
     Config.CURRENT_CHAIN_NAME = chainName;
     switch (chainName.toLowerCase()) {
       case "polygon":
-        await Config.flush(JSON.stringify(polygonConfig));
-        await Server.flush();
+        await Config.init(JSON.stringify(polygonConfig));
+        await Global.init();
         await this.flushAsset();
         break;
       case "mumbai":
-        await Config.flush(JSON.stringify(polygonMumbaiConfig));
-        await Server.flush();
+        await Config.init(JSON.stringify(polygonMumbaiConfig));
+        await Global.init();
         await this.flushAsset();
         break;
     }
@@ -123,13 +123,13 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   render() {
-    if (!Server.account.isLoggedIn()) {
+    if (!Global.account.isLoggedIn) {
       return <Navigate to="/" replace/>;
     }
 
     let address = '';
     let username = localStorage.getItem('username');
-    let val = Server.account.contractAddress;
+    let val = Global.account.contractWalletAddress;
     if (val) address = val;
     if (address.length > 10) {
       address = address.substring(0, 5) + '...' + address.substring(address.length - 4);

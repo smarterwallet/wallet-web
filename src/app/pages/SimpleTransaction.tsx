@@ -1,11 +1,12 @@
 import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
-import {Server} from '../../server/server';
+import {Global} from '../../server/Global';
 import AlertModal from '../modals/AlertModal';
 import {BigNumber} from "ethers";
-import {Config} from "../../server/config";
+import {Config} from "../../server/config/Config";
 import {Navigate} from "react-router-dom";
+import MessageModal from "../modals/MessageModal";
 
 const polygonConfig = require('../config/polygon.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
@@ -15,6 +16,7 @@ interface SimpleTransactionState {
     txValue: string;
     gasPrice: BigNumber;
     alert: string;
+    message: string;
     selectedAsset: string;
 }
 
@@ -22,7 +24,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
     constructor(props: any) {
         super(props);
-        Server.account.getGasPrice().then(
+        Global.account.getGasPrice().then(
             (e) => this.setState({gasPrice: e})
         );
         this.state = {
@@ -30,6 +32,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
             txValue: '',
             gasPrice: BigNumber.from(0),
             alert: '',
+            message: '',
             selectedAsset: 'Matic'
         }
 
@@ -68,37 +71,39 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
 
         this.setState({alert: "Sending " + this.state.selectedAsset});
         try {
-            if (this.state.selectedAsset == "Matic") {
-                await Server.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
-            } else if (this.state.selectedAsset == "SWT") {
-                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
-            } else if (this.state.selectedAsset == "USDC") {
+            if (this.state.selectedAsset === "Matic") {
+                await Global.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice);
+            } else if (this.state.selectedAsset === "SWT") {
+                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+            } else if (this.state.selectedAsset === "USDC") {
                 // TODO USDC need approve on chain first
-                await Server.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
+                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, this.state.gasPrice)
             } else {
                 this.setState({alert: "unknown asset: " + this.state.selectedAsset});
             }
         } catch (error) {
-            this.setState({alert: "Error: " + error});
+            this.setState({alert: error.toString()});
             return;
         }
-        this.setState({alert: "sent " + this.state.selectedAsset + " success"});
+        this.setState({alert: "Sent " + this.state.selectedAsset + " success"});
     }
 
     async flushConfig(chainName: string) {
-        console.log("start to flush. Chain name: " + chainName);
+        this.setState({message: 'Reload ' + chainName + ' config'});
         switch (chainName.toLowerCase()) {
             case "polygon":
-                await Config.flush(JSON.stringify(polygonConfig));
+                await Config.init(JSON.stringify(polygonConfig));
                 break;
             case "mumbai":
-                await Config.flush(JSON.stringify(polygonMumbaiConfig));
+                await Config.init(JSON.stringify(polygonMumbaiConfig));
                 break;
         }
+        await new Promise(resolve => setTimeout(resolve, 800));
+        this.setState({message: ''});
     }
 
     render() {
-        if (!Server.account.isLoggedIn()) {
+        if (!Global.account.isLoggedIn) {
             return <Navigate to="/" replace/>;
         }
 
@@ -107,7 +112,7 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <HeaderBar text='Send Transaction'/>
                 <br/>
                 <div>Chain</div>
-                <select onChange={event => this.flushConfig(event.target.value)}>
+                <select onChange={async event => await this.flushConfig(event.target.value)}>
                     <option value="Polygon">Polygon</option>
                     <option value="Mumbai">Mumbai</option>
                 </select>
@@ -131,7 +136,9 @@ class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> 
                 <button className='simple-transaction-page-button' onClick={async () => await this.onSend()}>Send
                 </button>
 
-                <AlertModal message={this.state.alert} button={"OK"} onClose={() => this.setState({alert: ''})}/>
+                <MessageModal message={this.state.message}/>
+                <AlertModal message={this.state.alert} button={"OK"}
+                            onClose={() => this.setState({alert: ''})}/>
             </div>
         );
     }

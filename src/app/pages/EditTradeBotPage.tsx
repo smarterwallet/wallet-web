@@ -21,7 +21,7 @@ class EditTradeBotPage extends React.Component<{}, EditTradeBotPageState> {
   }
 
   render() {
-    if (this.state.navigate != '') 
+    if (this.state.navigate !== '')
       return <Navigate to={this.state.navigate} />;
 
     return (

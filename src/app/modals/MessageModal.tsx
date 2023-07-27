@@ -7,8 +7,8 @@ interface MessageModalProps {
 
 class MessageModal extends React.Component<MessageModalProps, {}> {
   render() {
-    if(this.props.message == '')
-      return (null);
+    if(this.props.message === '')
+      return null;
 
     return (
       <div className="modal open">

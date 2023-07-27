@@ -2,7 +2,7 @@ import React from 'react';
 import './LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {Navigate} from 'react-router-dom';
-import {Server} from '../../server/server';
+import {Global} from '../../server/Global';
 import AlertModal from '../modals/AlertModal';
 
 interface LoginPageState {
@@ -47,10 +47,10 @@ class LoginPage extends React.Component<{}, LoginPageState> {
     let tryLogin = window.btoa(str); // encrypt
 
     if (tryLogin === loginkey) {
-      Server.account.loggedIn();
       let key = window.atob(smarterWalletKey);
       key = key.substring(this.state.username.length + this.state.password.length,key.length);
-      await Server.account.initAccount(key);
+      await Global.account.initAccount(key);
+      Global.account.isLoggedIn = true;
 
       this.setState({navigate: '/home'});
     }
@@ -59,7 +59,7 @@ class LoginPage extends React.Component<{}, LoginPageState> {
   }
 
   render() {
-    if (this.state.navigate != '') 
+    if (this.state.navigate !== '') 
       return <Navigate to={this.state.navigate} />;
 
     return (

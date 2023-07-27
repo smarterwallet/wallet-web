@@ -18,7 +18,7 @@ class AlertModal extends React.Component<AlertModalProps, {}> {
   }
 
   render() {
-    if(this.props.message == '')
+    if(this.props.message === '')
       return null;
 
     return (
