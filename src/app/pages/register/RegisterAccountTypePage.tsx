@@ -9,7 +9,7 @@ export default function RegisterAccountTypePage(props: {}) {
 
       <div className="register-page-title">Choose a way to register your account:</div>
 
-      <SWCell icon="/icon/lock.png" text="Password" to="/registerPwd" shadow={true} />
+      <SWCell icon="/icon/lock.png" text="Single party account" to="/registerPwd" shadow={true} />
 
       <SWCell icon="/icon/lock.png" text="Multi party account" to="/registerPwd" shadow={true} />
     </div>
