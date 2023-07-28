@@ -2,11 +2,11 @@ import React from 'react';
 import './WelcomePage.css';
 import { NavLink, Navigate } from 'react-router-dom';
 import { Global } from '../../server/Global';
+import SWCell from '../component/SWCell';
 
 class WelcomePage extends React.Component {
   render() {
-    if (Global.account.isLoggedIn)
-      return <Navigate to="/home" replace />;
+    if (Global.account.isLoggedIn) return <Navigate to="/home" replace />;
 
     return (
       <div className="welcome-page">
@@ -19,15 +19,14 @@ class WelcomePage extends React.Component {
           Enjoy countless capable and decentralized third-party account applications via account abstraction!
         </div>
 
-        <NavLink className="welcome-page-button-container" to='/register'>
-          <div className="welcome-page-button-text">Register an account</div>
-          <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
-        </NavLink>
+        <div className="mt-8">
+          <SWCell text="Register a smart contract account" to="/register/accountType" shadow={true} />
+        </div>
+        <div className="mt-8">
+          <SWCell text="Login" to="/login" shadow={true} />
+        </div>
 
-        <NavLink className="welcome-page-button-container" to='/login'>
-          <div className="welcome-page-button-text">Login</div>
-          <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
-        </NavLink>
+        <div className="mh-8"></div>
       </div>
     );
   }

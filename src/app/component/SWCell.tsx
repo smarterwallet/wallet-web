@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink } from 'react-router-dom';
 
 export default function SWCell({
   icon,
@@ -6,16 +6,20 @@ export default function SWCell({
   to,
   shadow = false,
 }: {
-  icon: string
-  text: string
-  to: string
-  shadow?: boolean
+  icon?: string;
+  text: string;
+  to: string;
+  shadow?: boolean;
 }) {
   return (
-    <NavLink className={`register-page-menu-container ${shadow && "shadow"}`} to={to}>
-      <img className="register-page-menu-icon" src={icon} />
-      <div className="register-page-menu-text">{text}</div>
-      <img className="register-page-menu-arrow" src="/icon/arrow-right.png" />
+    <NavLink
+      className={`flex flex-row items-center p-[15px] ${shadow && 'bg-[#D9D9D9] shadow-lg rounded-full'}`}
+      to={to}
+    >
+      {icon && <img className="w-[30px] h-[30px]" src={icon} />}
+
+      <div className="grow px-2 text-[20px] font-semibold">{text}</div>
+      <img className="w-[20px] h-[20px]" src="/icon/arrow-right.png" />
     </NavLink>
-  )
+  );
 }
