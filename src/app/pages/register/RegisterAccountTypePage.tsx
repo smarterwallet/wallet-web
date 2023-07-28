@@ -7,11 +7,13 @@ export default function RegisterAccountTypePage(props: {}) {
       <HeaderBar text="Account Signup" />
       <div>Choose the type of account you want to have:</div>
 
-      <div className="register-page-title">Choose a way to register your account:</div>
+      <div className="mt-16">
+        <SWCell icon="/icon/lock.png" text="Single party account" to="/registerPwd" shadow={true} />
+      </div>
 
-      <SWCell icon="/icon/lock.png" text="Single party account" to="/registerPwd" shadow={true} />
-
-      <SWCell icon="/icon/lock.png" text="Multi party account" to="/registerPwd" shadow={true} />
+      <div className="mt-8">
+        <SWCell icon="/icon/lock.png" text="Multi party account" to="/registerPwd" shadow={true} />
+      </div>
     </div>
   );
 }
