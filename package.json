@@ -20,6 +20,9 @@
     "typescript": "^4.6.4",
     "webfontloader": "^1.6.28"
   },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build"

@@ -1,5 +1,5 @@
-import SWCell from "../../component/SWCell"
-import HeaderBar from "../../elements/HeaderBar"
+import SWCell from '../../component/SWCell';
+import HeaderBar from '../../elements/HeaderBar';
 
 export default function RegisterAccountTypePage(props: {}) {
   return (
@@ -13,5 +13,5 @@ export default function RegisterAccountTypePage(props: {}) {
 
       <SWCell icon="/icon/lock.png" text="Multi party account" to="/registerPwd" shadow={true} />
     </div>
-  )
+  );
 }

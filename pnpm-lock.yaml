@@ -9,6 +9,7 @@ specifiers:
   '@types/sprintf-js': ^1.1.2
   ethers: ^5.6.2
   js-sha1: ^0.6.0
+  prettier: ^3.0.0
   react: ^18.1.0
   react-dom: ^18.1.0
   react-icons: ^4.4.0
@@ -27,6 +28,7 @@ dependencies:
   '@types/sprintf-js': 1.1.2
   ethers: 5.7.2
   js-sha1: 0.6.0
+  prettier: 3.0.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-icons: 4.10.1_react@18.2.0
@@ -8386,6 +8388,12 @@ packages:
   /prelude-ls/1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: false
+
+  /prettier/3.0.0:
+    resolution: {integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: false
 
   /pretty-bytes/5.6.0:
