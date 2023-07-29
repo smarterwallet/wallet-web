@@ -9,7 +9,7 @@ const GridStrategies = () => {
       <HeaderBar text='Grid Strategies'/>
       <Collapse accordion defaultActiveKey="1">
         <Collapse.Panel key='1' title='Spot grid'>
-          <div className="page-title">
+          <div className="ww-content-text">
             Buy low sell high in volatile markets,
             Multi trigger types to grasp the best entry points
           </div>
