@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@types/node": "^16.11.36",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@types/sprintf-js": "^1.1.2",
+    "antd-mobile": "^5.32.0",
     "ethers": "^5.6.2",
     "js-sha1": "^0.6.0",
     "react": "^18.1.0",
@@ -20,7 +22,7 @@
     "webfontloader": "^1.6.28"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "react-scripts build"
   },
   "eslintConfig": {
