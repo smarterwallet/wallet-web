@@ -5,7 +5,7 @@ import { renderMenu } from '../util/util';
 
 const GridStrategies = () => {
   return (
-    <div style={{marginLeft: 20}}>
+    <div className="ww-page-container">
       <HeaderBar text='Grid Strategies'/>
       <Collapse accordion defaultActiveKey="1">
         <Collapse.Panel key='1' title='Spot grid'>
@@ -13,7 +13,7 @@ const GridStrategies = () => {
             Buy low sell high in volatile markets,
             Multi trigger types to grasp the best entry points
           </div>
-          {renderMenu('', 'Config and create', '/createAccount')}
+          {renderMenu('', 'Config and create', '/spotGrid')}
 
         </Collapse.Panel>
         <Collapse.Panel key='2' title='Futures Grib'>
