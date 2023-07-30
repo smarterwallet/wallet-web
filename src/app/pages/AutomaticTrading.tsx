@@ -23,7 +23,7 @@ export default () => {
           <div className="ww-content-text">
             Create trading bots based on these strategies to run them.
           </div>
-          {renderMenu('', 'Spot Grid', '/spotGrid')}
+          {renderMenu('', 'Spot Grid', '/spotGridStrategy')}
         </Collapse.Panel>
       </Collapse>
     </div>
