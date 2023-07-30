@@ -1,8 +1,11 @@
 import React from 'react';
 import HeaderBar from '../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const SpotGridStrategy = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="ww-page-container">
       <HeaderBar text='Spot Grid Strategy'/>
@@ -42,7 +45,7 @@ const SpotGridStrategy = () => {
           </Radio.Group>
         </Form.Item>
         <Form.Item>
-          <Button>Create a Bot to Run</Button>
+          <Button onClick={() => { navigate('/SpotGridBot') }}>Create a Bot to Run</Button>
         </Form.Item>
       </Form>
     </div>
