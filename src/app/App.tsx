@@ -18,6 +18,10 @@ import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
 import AutomaticTrading from "./pages/AutomaticTrading";
+import GridStrategies from "./pages/GridStrategies";
+import SpotGrid from "./pages/SpotGrid";
+import SpotGridStrategy from "./pages/SpotGridStrategy";
+import SpotGridBot from "./pages/SpotGridBot";
 
 import {Config} from "../server/config/Config";
 import {Global} from "../server/Global";
@@ -98,7 +102,12 @@ class App extends React.Component<{}, AppState> {
             <Route path='/editTradeBot' element={<EditTradeBotPage />} />
             <Route path='/runBot' element={<RunBotPage />} />
             <Route path='/simpleTransaction' element={<SimpleTransactionPage />} />
-            <Route path='/automaticTrading' element={<AutomaticTrading />}></Route>
+            <Route path='/automaticTrading' element={<AutomaticTrading />}/>
+            <Route path='/gridStrategies' element={<GridStrategies />}/>
+            <Route path='/gridStrategies' element={<GridStrategies />}/>
+            <Route path='/spotGrid' element={<SpotGrid />}/>
+            <Route path='/spotGridStrategy' element={<SpotGridStrategy />}/>
+            <Route path='/spotGridBot' element={<SpotGridBot />}/>
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
