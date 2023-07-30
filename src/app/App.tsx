@@ -19,7 +19,7 @@ import LoginPage from './pages/LoginPage';
 import SimpleTransactionPage from "./pages/SimpleTransaction";
 import AutomaticTrading from "./pages/AutomaticTrading";
 import GridStrategies from "./pages/GridStrategies";
-// import AutomaticTrading from "./pages/";
+import SpotGrid from "./pages/SpotGrid";
 
 import {Config} from "../server/config/Config";
 import {Global} from "../server/Global";
@@ -102,6 +102,8 @@ class App extends React.Component<{}, AppState> {
             <Route path='/simpleTransaction' element={<SimpleTransactionPage />} />
             <Route path='/automaticTrading' element={<AutomaticTrading />}/>
             <Route path='/gridStrategies' element={<GridStrategies />}/>
+            <Route path='/gridStrategies' element={<GridStrategies />}/>
+            <Route path='/spotGrid' element={<SpotGrid />}/>
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

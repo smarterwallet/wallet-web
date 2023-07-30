@@ -1,0 +1,15 @@
+.sg-price-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+
+    .sg-price {
+        font-size: 18px;
+        color: #053346;
+    }
+
+    .sg-price-changes {
+        color: #1E772C;
+    }
+}
