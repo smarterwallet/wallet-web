@@ -1,4 +1,6 @@
 import {ethers} from "ethers";
+import { NavLink } from 'react-router-dom';
+import React from 'react';
 
 export const ETH = (value: string) => {
   return ethers.utils.parseEther(value);
@@ -348,4 +350,16 @@ export function divideAndMultiplyByTenPowerN(input: string, n: number): string {
   const integerPart = input.slice(0, -n);
   const decimalPart = input.slice(-n);
   return integerPart + '.' + decimalPart;
+}
+
+export const renderMenu = (icon: string, text: string, to: string) => {
+  return (
+    <NavLink className="ww-menu" to={to}>
+      {
+        icon && <img className="ww-menu-icon" src={icon} alt={text} />
+      }
+      <div className="ww-menu-text">{text}</div>
+      <img className="ww-menu-arrow" src="/icon/arrow-right.png" alt="" />
+    </NavLink>
+  );
 }

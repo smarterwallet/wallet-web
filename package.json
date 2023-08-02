@@ -9,6 +9,8 @@
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@types/sprintf-js": "^1.1.2",
+    "antd": "^5.7.3",
+    "antd-mobile": "^5.32.0",
     "ethers": "^5.6.2",
     "js-sha1": "^0.6.0",
     "react": "^18.1.0",
@@ -16,6 +18,7 @@
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "sass": "^1.64.1",
     "sprintf-js": "^1.1.2",
     "typescript": "^4.6.4",
     "webfontloader": "^1.6.28"
@@ -25,7 +28,7 @@
     "tailwindcss": "^3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "react-scripts build"
   },
   "eslintConfig": {

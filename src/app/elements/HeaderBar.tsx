@@ -6,7 +6,6 @@ interface HeaderBarProps {
 }
 
 class HeaderBar extends React.Component<HeaderBarProps, {}> {
-
   render() {
     return (
       <div className="header-bar" onClick={()=> window.history.back()}>
