@@ -1,9 +1,8 @@
 import React from 'react';
-import { Global } from '../../server/Global';
 import NavBarButton from './NavBarButton';
 import './NavBar.css';
-import { AppConfig } from '../AppConfig';
-import { getMenuIcon } from '../util/util';
+import {AppConfig} from '../AppConfig';
+import {getMenuIcon} from '../util/util';
 
 class NavBar extends React.Component {
 

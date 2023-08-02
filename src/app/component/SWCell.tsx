@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import "./SWCell.scss";
 
 export default function SWCell({
   icon,
