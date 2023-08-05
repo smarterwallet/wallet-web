@@ -2,7 +2,7 @@ import React, { RefObject } from 'react';
 import { Form, Input, Button, Dialog, TextArea, DatePicker, Selector, Slider, Stepper, Switch } from 'antd-mobile';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker';
 
-export default function SinglePartyAccountLogin(props: {}) {
+export default function SinglePartyAccount_SignUp(props: {}) {
   return (
     <div>
       <Form
@@ -12,7 +12,7 @@ export default function SinglePartyAccountLogin(props: {}) {
         }}
         footer={
           <Button block type="submit" color="primary" size="large">
-            提交
+            Register
           </Button>
         }
       >

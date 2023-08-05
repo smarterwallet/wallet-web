@@ -2,7 +2,8 @@ import HeaderBar from '../../../elements/HeaderBar';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
 import { Collapse } from 'antd-mobile';
-import SinglePartyAccountLogin from './SinglePartyAccountLogin';
+import SinglePartyAccount_Login from './SinglePartyAccount_Login';
+import SinglePartyAccount_SignUp from './SinglePartyAccount_SignUp';
 
 export default function SinglePartyAccountPage(props: {}) {
   return (
@@ -12,10 +13,10 @@ export default function SinglePartyAccountPage(props: {}) {
       <div>
         <Collapse accordion defaultActiveKey="SignUp">
           <Collapse.Panel key="SignUp" title="Sign up">
-            <SinglePartyAccountLogin />
+            <SinglePartyAccount_SignUp />
           </Collapse.Panel>
           <Collapse.Panel key="Login" title="Login">
-            手风琴模式只能同时展开一个
+            <SinglePartyAccount_Login />
           </Collapse.Panel>
         </Collapse>
       </div>
