@@ -10,16 +10,16 @@ export default function MultiPartyChooseStorePage(props: {}) {
 
       <div className="text-2xl">1st login key:</div>
       <div className="mt-4">
-        <SWCell text="Store in local device" to="/signin/multiPartyQuantityChoosePage" shadow={true} />
+        <SWCell text="Store in local device" to="/signin/multi/MultiParty-SignUp-Local" shadow={true} />
       </div>
       <div className="mt-4">
-        <SWCell text="Store in IPFS" to="/signin/multiPartyQuantityChoosePage" shadow={true} />
+        <SWCell text="Store in IPFS" to="/signin/multi/MultiParty-SignUp-Local" shadow={true} />
       </div>
       <div className="mt-4">
-        <SWCell text="Store in wallet server Wallet" to="/signin/multiPartyQuantityChoosePage" shadow={true} />
+        <SWCell text="Store in wallet server Wallet" to="/signin/multi/MultiParty-SignUp-Local" shadow={true} />
       </div>
       <div className="mt-4">
-        <SWCell text="Store in other people" to="/signin/multiPartyQuantityChoosePage" shadow={true} />
+        <SWCell text="Store in other people" to="/signin/multi/MultiParty-SignUp-Local" shadow={true} />
       </div>
     </div>
   );

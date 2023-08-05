@@ -1,14 +1,13 @@
-import React, { RefObject } from 'react';
-import { Form, Input, Button, Dialog, TextArea, DatePicker, Selector, Slider, Stepper, Switch } from 'antd-mobile';
-import type { DatePickerRef } from 'antd-mobile/es/components/date-picker';
+import { Button, Form, Input } from 'antd-mobile';
 
-export default function SinglePartyAccount_SignUp(props: {}) {
+export default function SinglePartyAccount_SignUp(props: { onChange?: () => void }) {
   return (
     <div>
       <Form
         layout="horizontal"
         onFinish={(values) => {
           console.log('submit data:', values);
+          props.onChange && props.onChange();
         }}
         footer={
           <Button block type="submit" color="primary" size="large">
