@@ -31,6 +31,7 @@ import MultiPartyBackupKeysPage from './pages/signin/multi/MultiPartyBackupKeysP
 import MultiPartyChooseMenuPage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiPartyChooseStorePage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiParty_SignUp_Local from './pages/signin/multi/MultiParty_SignUp_Local';
+import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignUp_OtherPeople';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -103,7 +104,8 @@ class App extends React.Component<{}, AppState> {
             <Route path="/signin/multi/multiPartyQuantityChoosePage" element={<MultiPartyQuantityChoosePage />} />
             <Route path="/signin/multi/multiPartyBackupKeysPage" element={<MultiPartyBackupKeysPage />} />
             <Route path="/signin/multi/multiPartyChooseStorePage" element={<MultiPartyChooseStorePage />} />
-            <Route path="/signin/multi/MultiParty-SignUp-Local" element={<MultiParty_SignUp_Local />} />
+            <Route path="/signin/multi/multiParty-SignUp-Local" element={<MultiParty_SignUp_Local />} />
+            <Route path="/signin/multi/multiParty-SignUp-OtherPeople" element={<MultiParty_SignUp_OtherPeople />} />
 
             <Route path="/registerPwd" element={<RegisterPwdPage />} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
