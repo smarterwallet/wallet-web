@@ -26,7 +26,7 @@ export default function RegisterAccountTypePage(props: {}) {
         <SWCell
           // icon="/icon/lock.png"
           text="Multi party account"
-          to="/signin/multiPartyQuantityChoosePage"
+          to="/signin/multi/multiPartyQuantityChoosePage"
           shadow={true}
         />
         {/* <NavLink className="welcome-page-button-container" to="/signin/multiPartyQuantityChoosePage">
