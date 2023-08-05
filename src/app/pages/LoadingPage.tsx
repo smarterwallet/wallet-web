@@ -38,14 +38,7 @@ class LoadingPage extends React.Component<LoadingPageProps, {}> {
 
     return (
       <div className="loading-page">
-        {/* <img src="/logo.png" style={{width: '280px', marginTop: '50px'}}></img> */}
         <img src="/loading.gif" style={{width: '50px', marginTop: '50px'}}></img>
-        <div className='loading-page-content'>
-          Don't worry about a thing<br/>
-          'Cause every little thing <br/>gonna be alright<br/><br/>
-          Singin', don't worry about a thing<br/>
-          'Cause every little thing <br/>gonna be alright
-        </div>
       </div>
     )
   }
