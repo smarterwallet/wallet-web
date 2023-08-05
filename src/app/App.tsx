@@ -1,6 +1,6 @@
 import React from 'react';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import {Global} from '../server/Global';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Global } from '../server/Global';
 import HomePage from './pages/HomePage';
 import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
@@ -17,14 +17,15 @@ import EditTradeBotPage from './pages/EditTradeBotPage';
 import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/LoginPage';
-import SimpleTransactionPage from "./pages/SimpleTransaction";
-import {Config} from "../server/config/Config";
-import RegisterAccountTypePage from "./pages/register/RegisterAccountTypePage"
-import AutomaticTrading from "./pages/AutomaticTrading";
-import GridStrategies from "./pages/GridStrategies";
-import SpotGrid from "./pages/SpotGrid";
-import SpotGridStrategy from "./pages/SpotGridStrategy";
-import SpotGridBot from "./pages/SpotGridBot";
+import SimpleTransactionPage from './pages/SimpleTransaction';
+import { Config } from '../server/config/Config';
+import RegisterAccountTypePage from './pages/signin/RegisterAccountTypePage';
+import AutomaticTrading from './pages/AutomaticTrading';
+import GridStrategies from './pages/GridStrategies';
+import SpotGrid from './pages/SpotGrid';
+import SpotGridStrategy from './pages/SpotGridStrategy';
+import SpotGridBot from './pages/SpotGridBot';
+import SinglePartyAccountPage from './pages/signin/single/SinglePartyAccountPage';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -41,37 +42,35 @@ class App extends React.Component<{}, AppState> {
     this.state = {
       postLoginPage: 'account',
       initialized: false,
-      maintenance: false
-    }
+      maintenance: false,
+    };
 
     if (!this.state.maintenance) {
-      Config.init(JSON.stringify(polygonConfig)).then(e => {
-        console.log("config init success");
-        Global.init().then(e => {
-          console.log("global variable init success");
-        })
-      })
+      Config.init(JSON.stringify(polygonConfig)).then((e) => {
+        console.log('config init success');
+        Global.init().then((e) => {
+          console.log('global variable init success');
+        });
+      });
     }
 
     this.setInitialized = this.setInitialized.bind(this);
     this.onAccountChanged = this.onAccountChanged.bind(this);
 
-    window.addEventListener("beforeunload", function (e) {
+    window.addEventListener('beforeunload', function (e) {
       // Global.network.disconnect();
     });
-
   }
 
   componentDidMount() {
     // Global.account.addEventListener('login', this.onAccountChanged);
     // Global.account.addEventListener('logout', this.onAccountChanged);
-
     // if(!this.state.maintenance)
     //   Global.network.setPresence('site');
   }
 
   setInitialized() {
-    this.setState({initialized: true});
+    this.setState({ initialized: true });
   }
 
   onAccountChanged() {
@@ -80,7 +79,7 @@ class App extends React.Component<{}, AppState> {
 
   render() {
     if (!this.state.initialized)
-      return (<LoadingPage maintenance={this.state.maintenance} setInitialized={this.setInitialized} />);
+      return <LoadingPage maintenance={this.state.maintenance} setInitialized={this.setInitialized} />;
 
     // if(!this.state.allowAccess)
     //   return (<PasswordPage setPassword={this.setSecretPassword} />);
@@ -88,13 +87,14 @@ class App extends React.Component<{}, AppState> {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<SitePage />}>
+          <Route path="/" element={<SitePage />}>
             <Route index element={<WelcomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/asset/:id" element={<AssetPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/register/accountType" element={<RegisterAccountTypePage />} />
+            <Route path="/signin/registerAccountType" element={<RegisterAccountTypePage />} />
+            <Route path="/signin/singlePartyAccount" element={<SinglePartyAccountPage />} />
             <Route path="/registerPwd" element={<RegisterPwdPage />} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
             <Route path="/apps" element={<AppsPage />} />
@@ -103,12 +103,12 @@ class App extends React.Component<{}, AppState> {
             <Route path="/editTradeBot" element={<EditTradeBotPage />} />
             <Route path="/runBot" element={<RunBotPage />} />
             <Route path="/simpleTransaction" element={<SimpleTransactionPage />} />
-            <Route path='/automaticTrading' element={<AutomaticTrading />}/>
-            <Route path='/gridStrategies' element={<GridStrategies />}/>
-            <Route path='/gridStrategies' element={<GridStrategies />}/>
-            <Route path='/spotGrid' element={<SpotGrid />}/>
-            <Route path='/spotGridStrategy' element={<SpotGridStrategy />}/>
-            <Route path='/spotGridBot' element={<SpotGridBot />}/>
+            <Route path="/automaticTrading" element={<AutomaticTrading />} />
+            <Route path="/gridStrategies" element={<GridStrategies />} />
+            <Route path="/gridStrategies" element={<GridStrategies />} />
+            <Route path="/spotGrid" element={<SpotGrid />} />
+            <Route path="/spotGridStrategy" element={<SpotGridStrategy />} />
+            <Route path="/spotGridBot" element={<SpotGridBot />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

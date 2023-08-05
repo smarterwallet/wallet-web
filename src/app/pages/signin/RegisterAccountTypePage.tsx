@@ -4,13 +4,13 @@ import React from 'react';
 
 export default function RegisterAccountTypePage(props: {}) {
   return (
-    <div className="register-page">
+    <div className="px-[20px]">
       <HeaderBar text="Account Signup" />
       <div className="">Choose the type of account you want to have:</div>
 
       <div className="mt-16">
         {/*<SWCell icon="/icon/lock.png" text="Single party account" to="/registerPwd" shadow={true} />*/}
-        <NavLink className="welcome-page-button-container" to="/registerPwd">
+        <NavLink className="welcome-page-button-container" to="/signin/singlePartyAccount">
           <div className="welcome-page-button-text">Single party account</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
