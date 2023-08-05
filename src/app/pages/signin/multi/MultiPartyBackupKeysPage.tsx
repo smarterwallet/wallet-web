@@ -10,13 +10,13 @@ export default function MultiPartyBackupKeysPage(props: {}) {
 
       <div className="text-2xl">Set up your backup keys:</div>
       <div className="mt-4">
-        <SWCell text="1st login key:" to="/signin/multiPartyChooseMenuPage?step=1" shadow={true} />
+        <SWCell text="1st login key:" to="/signin/multi/multiPartyChooseStorePage?step=1" shadow={true} />
       </div>
       <div className="mt-4">
-        <SWCell text="2nd login key:" to="/signin/multiPartyChooseMenuPage?step=2" shadow={true} />
+        <SWCell text="2nd login key:" to="/signin/multi/multiPartyChooseStorePage?step=2" shadow={true} />
       </div>
       <div className="mt-4">
-        <SWCell text="3rd login key:" to="/signin/multiPartyChooseMenuPage?step=2" shadow={true} />
+        <SWCell text="3rd login key:" to="/signin/multi/multiPartyChooseStorePage?step=3" shadow={true} />
       </div>
     </div>
   );

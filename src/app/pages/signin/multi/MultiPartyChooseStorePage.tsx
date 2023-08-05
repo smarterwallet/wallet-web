@@ -3,7 +3,7 @@ import React from 'react';
 import HeaderBar from '../../../elements/HeaderBar';
 import SWCell from '../../../component/SWCell';
 
-export default function MultiPartyChooseMenuPage(props: {}) {
+export default function MultiPartyChooseStorePage(props: {}) {
   return (
     <div className="px-[20px]">
       <HeaderBar text="Setup Login Keys" />

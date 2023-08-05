@@ -28,7 +28,8 @@ import SpotGridBot from './pages/SpotGridBot';
 import SinglePartyAccountPage from './pages/signin/single/SinglePartyAccountPage';
 import MultiPartyQuantityChoosePage from './pages/signin/multi/MultiPartyQuantityChoosePage';
 import MultiPartyBackupKeysPage from './pages/signin/multi/MultiPartyBackupKeysPage';
-import MultiPartyChooseMenuPage from './pages/signin/multi/MultiPartyChooseMenuPage';
+import MultiPartyChooseMenuPage from './pages/signin/multi/MultiPartyChooseStorePage';
+import MultiPartyChooseStorePage from './pages/signin/multi/MultiPartyChooseStorePage';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -100,7 +101,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/signin/singlePartyAccount" element={<SinglePartyAccountPage />} />
             <Route path="/signin/multi/multiPartyQuantityChoosePage" element={<MultiPartyQuantityChoosePage />} />
             <Route path="/signin/multi/multiPartyBackupKeysPage" element={<MultiPartyBackupKeysPage />} />
-            <Route path="/signin/multi/multiPartyChooseMenuPage" element={<MultiPartyChooseMenuPage />} />
+            <Route path="/signin/multi/multiPartyChooseStorePage" element={<MultiPartyChooseStorePage />} />
 
             <Route path="/registerPwd" element={<RegisterPwdPage />} />
             <Route path="/createAccount" element={<CreateAccountPage />} />
