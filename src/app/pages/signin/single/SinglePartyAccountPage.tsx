@@ -1,7 +1,6 @@
 import HeaderBar from '../../../elements/HeaderBar';
-import { NavLink } from 'react-router-dom';
 import React from 'react';
-import { Collapse } from 'antd-mobile';
+import { Collapse } from 'antd';
 import SinglePartyAccount_Login from './SinglePartyAccount_Login';
 import SinglePartyAccount_SignUp from './SinglePartyAccount_SignUp';
 
@@ -11,14 +10,23 @@ export default function SinglePartyAccountPage(props: {}) {
       <HeaderBar text="Single Party Account" />
 
       <div>
-        <Collapse accordion defaultActiveKey="SignUp">
-          <Collapse.Panel key="SignUp" title="Sign up">
-            <SinglePartyAccount_SignUp />
-          </Collapse.Panel>
-          <Collapse.Panel key="Login" title="Login">
-            <SinglePartyAccount_Login />
-          </Collapse.Panel>
-        </Collapse>
+        <Collapse
+          accordion
+          className="ww-collapse"
+          defaultActiveKey="SignUp"
+          items={[
+            {
+              label: 'Sign up',
+              key: 'SignUp',
+              children: <SinglePartyAccount_SignUp />
+            },
+            {
+              label: 'Login',
+              key: 'Login',
+              children: <SinglePartyAccount_Login />
+            }
+          ]}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd-mobile';
+import { Button, Form, Input } from 'antd';
 
 export default function SinglePartyAccount_SignUp(props: { onChange?: () => void }) {
   return (
@@ -9,11 +9,6 @@ export default function SinglePartyAccount_SignUp(props: { onChange?: () => void
           console.log('submit data:', values);
           props.onChange && props.onChange();
         }}
-        footer={
-          <Button block type="submit" color="primary" size="large">
-            Register
-          </Button>
-        }
       >
         <Form.Item name="name" label="Username" rules={[{ required: true }]}>
           <Input onChange={console.log} placeholder="" />
@@ -21,6 +16,11 @@ export default function SinglePartyAccount_SignUp(props: { onChange?: () => void
         <Form.Item name="password" label="Password" rules={[{ required: true }]}>
           <Input onChange={console.log} placeholder="" />
         </Form.Item>
+        <div className="ww-tc">
+          <Button block color="primary" size="large">
+            Register
+          </Button>
+        </div>
       </Form>
     </div>
   );

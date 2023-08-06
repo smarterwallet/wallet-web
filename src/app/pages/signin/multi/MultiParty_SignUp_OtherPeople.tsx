@@ -1,7 +1,7 @@
 import HeaderBar from '../../../elements/HeaderBar';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
-import { Button, Collapse, Form, Input } from 'antd-mobile';
+import { Button, Collapse, Form, Input } from 'antd';
 import SinglePartyAccount_SignUp from '../single/SinglePartyAccount_SignUp';
 
 export default function MultiParty_SignUp_Local(props: {}) {
@@ -15,11 +15,6 @@ export default function MultiParty_SignUp_Local(props: {}) {
             console.log('submit data:', values);
             window.history.back();
           }}
-          footer={
-            <Button block type="submit" color="primary" size="large">
-              Submit
-            </Button>
-          }
         >
           <Form.Item name="walletAccount" label="Wallet account:" rules={[{ required: true }]}>
             <Input onChange={console.log} placeholder="" />
@@ -30,6 +25,11 @@ export default function MultiParty_SignUp_Local(props: {}) {
           <Form.Item name="email" label="Send invitation:" rules={[{ required: true }]}>
             <Input onChange={console.log} placeholder="E-Mail" />
           </Form.Item>
+          <div className="ww-tc">
+            <Button block color="primary" size="large">
+              Submit
+            </Button>
+          </div>
         </Form>
       </div>
     </div>

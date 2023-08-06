@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react';
-import { Form, Input, Button, Dialog, TextArea, DatePicker, Selector, Slider, Stepper, Switch } from 'antd-mobile';
-import type { DatePickerRef } from 'antd-mobile/es/components/date-picker';
+import { Form, Input, Button, DatePicker, Slider, Switch } from 'antd';
+// import type { DatePickerRef } from 'antd-mobile/es/components/date-picker';
 
 export default function SinglePartyAccount_Login(props: {}) {
   return (
@@ -10,11 +10,6 @@ export default function SinglePartyAccount_Login(props: {}) {
         onFinish={(values) => {
           console.log('submit data:', values);
         }}
-        footer={
-          <Button block type="submit" color="primary" size="large">
-            Login
-          </Button>
-        }
       >
         <Form.Item name="name" label="Username" rules={[{ required: true }]}>
           <Input onChange={console.log} placeholder="" />
@@ -22,6 +17,11 @@ export default function SinglePartyAccount_Login(props: {}) {
         <Form.Item name="password" label="Password" rules={[{ required: true }]}>
           <Input onChange={console.log} placeholder="" />
         </Form.Item>
+        <div className="ww-tc">
+          <Button block color="primary" size="large">
+            Login
+          </Button>
+        </div>
       </Form>
     </div>
   );
