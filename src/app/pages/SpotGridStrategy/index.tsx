@@ -1,18 +1,22 @@
 import React from 'react';
-import HeaderBar from '../elements/HeaderBar';
-import { Select, Radio, Form, InputNumber, Button } from 'antd';
+import HeaderBar from '../../elements/HeaderBar';
+import { Select, Radio, Form, InputNumber, Button, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-const SpotGridStrategy = () => {
+const Index = () => {
   const navigate = useNavigate();
 
   return (
     <div className="ww-page-container">
       <HeaderBar text='Spot Grid Strategy'/>
-      <Form>
-        <Form.Item className="">
+      <Form
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 16 }}
+      >
+        <Form.Item wrapperCol={{ span: 24 }}>
           <div className="sg-price-wrap">
             <Select
+              defaultValue={'BTC'}
               style={{ width: 120 }}
               options={[
                 { value: 'BTC', label: 'BTC' },
@@ -24,32 +28,44 @@ const SpotGridStrategy = () => {
           </div>
         </Form.Item>
         <Form.Item>
-          <Radio.Group>
+          <Radio.Group
+            defaultValue="1"
+            optionType="button"
+            buttonStyle="solid"
+          >
             <Radio.Button value="1">Buy at low</Radio.Button>
             <Radio.Button value="2">Sell at high</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <h3>Grid Range</h3>
-        <Form.Item>
-          <InputNumber style={{ width: '100%' }} prefix="From" suffix="USD"/>
+        <Form.Item label="From">
+          <InputNumber style={{ width: '100%' }} placeholder="USD"/>
         </Form.Item>
-        <Form.Item>
-          <InputNumber style={{ width: '100%' }} prefix="To" suffix="USD" />
+        <Form.Item label="To">
+          <InputNumber style={{ width: '100%' }} placeholder="USD" />
         </Form.Item>
         <h3>Grid Mode</h3>
         <Form.Item>
-          <Radio.Group>
+          <Radio.Group
+            defaultValue="1"
+            optionType="button"
+            buttonStyle="solid"
+          >
             <Radio.Button value="1">Arithmetic</Radio.Button>
             <Radio.Button value="2">Geometric</Radio.Button>
-            <Radio.Button value="3">Quantatity</Radio.Button>
+            <Radio.Button value="3">Quantity</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item>
-          <Button onClick={() => { navigate('/SpotGridBot') }}>Create a Bot to Run</Button>
-        </Form.Item>
+        <div className={'ww-tc'} style={{ marginTop: 40 }}>
+          <Button
+            type="primary"
+            onClick={() => { navigate('/SpotGridBot') }}
+            shape="round"
+          >Create a Bot to Run</Button>
+        </div>
       </Form>
     </div>
   );
 };
 
-export default SpotGridStrategy;
+export default Index;

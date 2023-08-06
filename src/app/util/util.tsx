@@ -1,6 +1,7 @@
 import {ethers} from "ethers";
 import { NavLink } from 'react-router-dom';
 import React from 'react';
+import { RightOutlined } from '@ant-design/icons';
 
 export const ETH = (value: string) => {
   return ethers.utils.parseEther(value);
@@ -359,7 +360,7 @@ export const renderMenu = (icon: string, text: string, to: string) => {
         icon && <img className="ww-menu-icon" src={icon} alt={text} />
       }
       <div className="ww-menu-text">{text}</div>
-      <img className="ww-menu-arrow" src="/icon/arrow-right.png" alt="" />
+      <RightOutlined />
     </NavLink>
   );
 }

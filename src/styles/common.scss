@@ -9,11 +9,11 @@
     flex-direction: row;
     align-items: center;
     padding: 0 15px;
-    height: 60px;
+    height: 40px;
     border-radius: 20px;
-    background: $menuBg;
     text-decoration: none;
-    box-shadow: 5px 5px 20px 0 #00000040;
+    color: $antPrimary;
+    border: 1px solid currentColor;
 
     .ww-menu-icon {
 
@@ -21,9 +21,7 @@
 
     .ww-menu-text {
         flex: 1;
-        font-size: 20px;
-        color: $menuColor;
-        font-weight: 600;
+        font-size: 18px;
     }
 
     .ww-menu-arrow {
@@ -37,4 +35,18 @@
     font-size: 16px;
     line-height: 22px;
     padding-bottom: 10px;
+}
+
+.ww-tc {
+    text-align: center;
+}
+
+.ww-collapse {
+    .ant-collapse-header {
+        flex-direction: row-reverse;
+    }
+
+    &.ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-expand-icon {
+        padding-inline-end: 0;
+    }
 }
