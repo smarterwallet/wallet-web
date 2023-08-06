@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+img {
+  /* css-图片下方有空白问题解决方法，https://blog.csdn.net/qq_39111074/article/details/119889034 */
+  display: block;
+}
+
+.bd1 {
+  border: 1px solid deeppink;
+}
+.bd2 {
+  border: 1px solid rgb(8, 167, 252);
+}
+.bd3 {
+  border: 1px solid rgb(255, 204, 0);
+}
+
+/* SVG 图标样式，不直接使用 <XIcon/> 的原因是传参指定大小，组件又不能挂载 html */
+.xicon {
+  width: 1em;
+  height: 1em;
+  display: inline-flex;
+}
+
+.xicon svg {
+  width: 1em;
+  height: 1em;
+}
+
+.xicon svg:not([fill]) {
+  fill: currentColor;
+}
+
+/* 苹果手机底部栏 */
+@supports (top: constant(safe-area-inset-bottom)) or (top: env(safe-area-inset-bottom)) {
+  .safe-bottom-wrap {
+    height: calc(0px + constant(safe-area-inset-bottom));
+    height: calc(0px + env(safe-area-inset-bottom));
+  }
+}
