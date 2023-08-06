@@ -50,3 +50,14 @@
         padding-inline-end: 0;
     }
 }
+
+.ww-selector {
+    .ant-select-selector {
+        height: 40px!important;
+        min-width: 120px;
+    }
+
+    .ant-select-selection-item {
+        line-height: 36px!important;
+    }
+}
