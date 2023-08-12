@@ -24,11 +24,11 @@ const SpotGrid = () => {
         <Form.Item className="" wrapperCol={{ span: 24 }}>
           <div className="sg-price-wrap">
             <Select<CurrencyType>
-              defaultValue={'BTC'}
+              defaultValue={'ETC'}
               style={{ width: 120 }}
               options={[
-                { value: 'BTC', label: 'BTC' },
                 { value: 'ETC', label: 'ETC' },
+                { value: 'Matic', label: 'Matic' },
               ]}
             />
             <div className="sg-price">$30000</div>
@@ -66,7 +66,7 @@ const SpotGrid = () => {
         </Form.Item>
         <h3>Buying Action</h3>
         <Form.Item label="Amount">
-          <InputNumber style={{ width: '100%' }} placeholder="BTC"/>
+          <InputNumber style={{ width: '100%' }} placeholder="Matic"/>
         </Form.Item>
         <Form.Item label="Value">
           <InputNumber style={{ width: '100%' }} placeholder="USD" />
