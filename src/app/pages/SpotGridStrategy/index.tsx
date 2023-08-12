@@ -16,10 +16,10 @@ const Index = () => {
         <Form.Item wrapperCol={{ span: 24 }}>
           <div className="sg-price-wrap">
             <Select
-              defaultValue={'ETC'}
+              defaultValue={'ETH'}
               style={{ width: 120 }}
               options={[
-                { value: 'ETC', label: 'ETC' },
+                { value: 'ETH', label: 'ETH' },
                 { value: 'Matic', label: 'Matic' },
               ]}
             />
