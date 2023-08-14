@@ -14,9 +14,9 @@ export default function SinglePartyAccountPage(props: {}) {
 
       <div>
         <Collapse
-          accordion
+          // accordion
           className="ww-collapse"
-          defaultActiveKey="Single-party"
+          defaultActiveKey={['Single-party', 'Multi-party']}
           items={[
             {
               label: 'Single-party account',
