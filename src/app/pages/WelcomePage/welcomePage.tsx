@@ -1,7 +1,7 @@
 import React from 'react';
-import './WelcomePage.css';
+import './styles.css';
 import { Navigate, NavLink } from 'react-router-dom';
-import { Global } from '../../server/Global';
+import { Global } from '../../../server/Global';
 
 class WelcomePage extends React.Component {
   render() {
@@ -18,8 +18,8 @@ class WelcomePage extends React.Component {
           Enjoy countless capable and decentralized third-party account applications via account abstraction!
         </div>
 
-        <NavLink className="welcome-page-button-container" to="/signin/registerAccountType">
-          <div className="welcome-page-button-text">Register an account</div>
+        <NavLink className="welcome-page-button-container" to="/signup">
+          <div className="welcome-page-button-text">Register a smart contract account</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
 

@@ -1,5 +1,8 @@
 .welcome-page {
   padding: 0 20px;
+    height: 100%;
+    color: #fff;
+    background: linear-gradient(75deg,#4f3c77 0%,#4c1bef 100%);
 }
 
 .welcome-page-header {
@@ -31,13 +34,14 @@
   display: flex;
   justify-content: space-between;
   border-radius: 30px;
-  background-color: #D9D9D9;
+  background: #7A787B99;
+
   padding: 15px 10px;
   margin: 40px 0;
   align-items: center;
   cursor: pointer;
   box-shadow: 5px 5px 20px 0px #00000040;
-  color: black;
+  color: #fff;
   text-decoration: none;
 }
 

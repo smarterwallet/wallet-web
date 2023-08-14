@@ -1,1 +1,1 @@
-export type CurrencyType = 'Matic' | 'ETC';
+export type CurrencyType = 'Matic' | 'ETH';

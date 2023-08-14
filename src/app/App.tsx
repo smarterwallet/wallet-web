@@ -9,7 +9,7 @@ import './App.css';
 import RegisterPage from './pages/RegisterPage';
 import RegisterPwdPage from './pages/RegisterPwdPage';
 import CreateAccountPage from './pages/CreateAccountPage';
-import WelcomePage from './pages/WelcomePage';
+import WelcomePage from './pages/WelcomePage/welcomePage';
 import AppsPage from './pages/AppsPage';
 import AutoTradePage from './pages/AutoTradePage';
 import AddTradeBotPage from './pages/AddTradeBotPage';
@@ -32,6 +32,7 @@ import MultiPartyChooseMenuPage from './pages/signin/multi/MultiPartyChooseStore
 import MultiPartyChooseStorePage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiParty_SignUp_Local from './pages/signin/multi/MultiParty_SignUp_Local';
 import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignUp_OtherPeople';
+import SignUp from './pages/SignUp';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -99,6 +100,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/home" element={<HomePage />} />
             <Route path="/asset/:id" element={<AssetPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/signin/registerAccountType" element={<RegisterAccountTypePage />} />
             <Route path="/signin/singlePartyAccount" element={<SinglePartyAccountPage />} />
             <Route path="/signin/multi/multiPartyQuantityChoosePage" element={<MultiPartyQuantityChoosePage />} />
