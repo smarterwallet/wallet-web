@@ -1,29 +1,55 @@
 import HeaderBar from '../../../elements/HeaderBar';
 import React from 'react';
-import { Collapse } from 'antd';
-import SinglePartyAccount_Login from './SinglePartyAccount_Login';
-import SinglePartyAccount_SignUp from './SinglePartyAccount_SignUp';
+import { Button, Collapse, Space } from 'antd';
+import { CheckCircleTwoTone } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 export default function SinglePartyAccountPage(props: {}) {
+
+  const navigate = useNavigate();
+
   return (
-    <div className="px-[20px]">
+    <div className="ww-page-container">
       <HeaderBar text="Single Party Account" />
 
       <div>
         <Collapse
           accordion
           className="ww-collapse"
-          defaultActiveKey="SignUp"
+          defaultActiveKey="Single-party"
           items={[
             {
-              label: 'Sign up',
-              key: 'SignUp',
-              children: <SinglePartyAccount_SignUp />
+              label: 'Single-party account',
+              key: 'Single-party',
+              children: (
+                <>
+                  <div>
+                    <Space>
+                      <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      <h3>Register successfully</h3>
+                    </Space>
+                  </div>
+                  <Button type="primary" style={{ width: '100%'}}>Login</Button>
+                </>
+              )
             },
             {
-              label: 'Login',
-              key: 'Login',
-              children: <SinglePartyAccount_Login />
+              label: 'Multi-party account account',
+              key: 'Multi-party',
+              children: (
+                <>
+                  <p style={{ marginBottom: '1em'}}>
+                    Two other keys will be stored in the wallet server and IPFS.
+                  </p>
+                  <Button
+                    type="primary"
+                    style={{ width: '100%'}}
+                    onClick={() => {
+                      navigate('/signin/multi/multiPartyQuantityChoosePage')
+                    }}
+                  >Register</Button>
+                </>
+              )
             }
           ]}
         />
