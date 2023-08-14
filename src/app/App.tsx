@@ -35,6 +35,7 @@ import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignU
 import SignUp from './pages/SignUp';
 import MultiPartyAccount from './pages/MultiPartyAccount';
 import RegisterAtMultiParty from './pages/RegisterAtMultiParty';
+import RegisterSuccessfully from './pages/RegisterSuccessfully';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -105,6 +106,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/multiPartyAccount" element={<MultiPartyAccount />} />
             <Route path="/registerAtMultiParty" element={<RegisterAtMultiParty />} />
+            <Route path="/registerSuccessfully" element={<RegisterSuccessfully />} />
             <Route path="/signin/registerAccountType" element={<RegisterAccountTypePage />} />
             <Route path="/signin/singlePartyAccount" element={<SinglePartyAccountPage />} />
             <Route path="/signin/multi/multiPartyQuantityChoosePage" element={<MultiPartyQuantityChoosePage />} />

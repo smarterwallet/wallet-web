@@ -27,7 +27,7 @@ const RegisterAtMultiParty = () => {
           type="primary"
           style={{ width: '100%'}}
           onClick={() => {
-            navigate('/registerAtMultiParty')
+            navigate('/registerSuccessfully')
           }}
         >Register</Button>
       </Form>
