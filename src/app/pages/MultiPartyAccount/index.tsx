@@ -12,11 +12,11 @@ const MultiPartyAccount = () => {
       <p className="mpa-main-txt">What other places would you like to put two other keys in?</p>
       <Form>
         <Form.Item >
-          <Checkbox checked disabled>My other devices</Checkbox>
+          <Checkbox >My other devices</Checkbox>
           <br/>
-          <Checkbox checked disabled>Wallet server</Checkbox>
+          <Checkbox >Wallet server</Checkbox>
           <br/>
-          <Checkbox checked disabled>Decentralized server</Checkbox>
+          <Checkbox >Decentralized server</Checkbox>
         </Form.Item>
         <Button
           type="primary"

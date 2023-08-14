@@ -39,7 +39,7 @@ export default () => {
             </Form>)
           },
           {
-            label: 'Backup login',
+            label: 'Multi-party Login',
             key: '2',
             children: (<Form>
               <Form.Item
