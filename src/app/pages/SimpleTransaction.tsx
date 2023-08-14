@@ -1,5 +1,5 @@
 import React from 'react';
-import './LoginPage.css';
+import './Login/LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import {Global} from '../../server/Global';
 import AlertModal from '../modals/AlertModal';

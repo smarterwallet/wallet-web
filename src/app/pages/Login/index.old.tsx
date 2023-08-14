@@ -1,9 +1,9 @@
 import React from 'react';
 import './LoginPage.css';
-import HeaderBar from '../elements/HeaderBar';
+import HeaderBar from '../../elements/HeaderBar';
 import {Navigate} from 'react-router-dom';
-import {Global} from '../../server/Global';
-import AlertModal from '../modals/AlertModal';
+import {Global} from '../../../server/Global';
+import AlertModal from '../../modals/AlertModal';
 
 interface LoginPageState {
   username: string;

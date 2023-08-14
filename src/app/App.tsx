@@ -16,7 +16,7 @@ import AddTradeBotPage from './pages/AddTradeBotPage';
 import EditTradeBotPage from './pages/EditTradeBotPage';
 import RunBotPage from './pages/RunBotPage';
 import AssetPage from './pages/AssetPage';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/Login';
 import SimpleTransactionPage from './pages/SimpleTransaction';
 import { Config } from '../server/config/Config';
 import RegisterAccountTypePage from './pages/signin/RegisterAccountTypePage';
