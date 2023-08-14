@@ -45,7 +45,7 @@ export default function SinglePartyAccountPage(props: {}) {
                     type="primary"
                     style={{ width: '100%'}}
                     onClick={() => {
-                      navigate('/signin/multi/multiPartyQuantityChoosePage')
+                      navigate('/multiPartyAccount')
                     }}
                   >Register</Button>
                 </>
