@@ -34,6 +34,10 @@ export interface AccountInterface {
 
   set ethersProvider(value: ethers.providers.JsonRpcProvider);
 
+  get commonConfig(): any;
+
+  set commonConfig(value: any);
+
   /**
    * Account state
    */

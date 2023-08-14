@@ -11,8 +11,10 @@
     "@types/sprintf-js": "^1.1.2",
     "antd": "^5.7.3",
     "antd-mobile": "^5.32.0",
+    "child_process": "^1.0.2",
     "ethers": "^5.6.2",
     "js-sha1": "^0.6.0",
+    "json-bigint": "^1.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-icons": "^4.4.0",
@@ -48,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "browser":{
+    "child_process": false
   }
 }
