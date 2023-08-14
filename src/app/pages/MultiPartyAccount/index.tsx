@@ -24,7 +24,7 @@ const MultiPartyAccount = () => {
           onClick={() => {
             navigate('/registerAtMultiParty')
           }}
-        >Add</Button>
+        >Next</Button>
       </Form>
       <p className="mpa-tip">At least 2 of 3 keys will be required to login successfully</p>
     </div>
