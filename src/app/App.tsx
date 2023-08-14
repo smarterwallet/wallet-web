@@ -25,6 +25,7 @@ import GridStrategies from './pages/GridStrategies';
 import SpotGrid from './pages/SpotGrid';
 import SpotGridStrategy from './pages/SpotGridStrategy';
 import SpotGridBot from './pages/SpotGridBot';
+import Settings from './pages/Settings';
 import SinglePartyAccountPage from './pages/signin/single/SinglePartyAccountPage';
 import MultiPartyQuantityChoosePage from './pages/signin/multi/MultiPartyQuantityChoosePage';
 import MultiPartyBackupKeysPage from './pages/signin/multi/MultiPartyBackupKeysPage';
@@ -104,6 +105,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/asset/:id" element={<AssetPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/multiPartyAccount" element={<MultiPartyAccount />} />
             <Route path="/registerAtMultiParty" element={<RegisterAtMultiParty />} />
             <Route path="/registerSuccessfully" element={<RegisterSuccessfully />} />

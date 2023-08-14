@@ -16,9 +16,9 @@ export class AppConfig {
       loggedIn: false
     },
     {
-      text: 'Account',
+      text: 'Settings',
       icon: 'portrait',
-      to: '/profile',
+      to: '/settings',
       loggedIn: false
     },
   ];
