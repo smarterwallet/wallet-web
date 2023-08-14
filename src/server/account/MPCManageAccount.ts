@@ -1,9 +1,9 @@
 import {ethers} from "ethers";
 import {AccountInterface} from "./AccountInterface";
 import {EOAManageAccount} from "./EOAManageAccount";
+import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
 
 const {arrayify} = require("@ethersproject/bytes");
-import * as myModule from '../js/MPCUtils.js';
 
 /**
  * MPC Account Manage
@@ -53,8 +53,8 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
   }
 
   async getOwnerAddress(): Promise<string> {
-    const result = this.mpcWasmInstance.exports.add(1,2);
-    console.log(result);
+    // const result = this.mpcWasmInstance.exports.add(1,2);
+    // console.log(result);
     return "";
   }
 
@@ -64,30 +64,25 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
   }
 
   private async generateMPCWasmInstance() {
-    console.log("generateMPCWasmInstance");
+    console.log("generateMPCWasmInstance start");
     const response = await fetch(this.commonConfig.mpc.wasm.url);
     const buffer = await response.arrayBuffer();
-    myModule.test1(buffer);
-    // const response = await fetch(this.commonConfig.mpc.wasm.url);
-    // const buffer = await response.arrayBuffer();
-    // const module = await WebAssembly.compile(buffer);
-    //
-    // let imports = {
-    //   env: {}
-    // };
-    // imports.env = imports.env || {}
-    //
-    // Object.assign(imports.env, {
-    //   tableBase: module.tableBase,
-    //   table: new WebAssembly.Table({
-    //     initial: 4,
-    //     element: 'anyfunc',
-    //   }),
-    //   print:function(msg: any){
-    //     console.log(msg);
-    //   }
-    // });
-    // return await WebAssembly.instantiate(module, imports);
+    await mpcWasmUtils.init(buffer);
+
+    await this.generateKeys();
+  }
+
+  private async generateKeys() {
+    const keysResult = await mpcWasmUtils.generateDeviceData();
+    const keysJson = mpcWasmUtils.JSONBigInt.parse(keysResult);
+    if (keysJson["code"] === 200) {
+      console.log("p1JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
+      console.log("p2JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p2JsonData"]));
+      console.log("p3JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p3JsonData"]));
+    } else {
+      console.log("generateDeviceData error. Response: " + keysResult);
+    }
+    console.log("generateMPCWasmInstance end");
   }
 
 }
