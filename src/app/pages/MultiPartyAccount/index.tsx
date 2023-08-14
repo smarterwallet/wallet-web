@@ -22,7 +22,7 @@ const MultiPartyAccount = () => {
           type="primary"
           style={{ width: '100%' }}
           onClick={() => {
-            navigate('')
+            navigate('/registerAtMultiParty')
           }}
         >Add</Button>
       </Form>
