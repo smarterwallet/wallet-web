@@ -29,7 +29,13 @@ export default function SinglePartyAccountPage(props: {}) {
                       <h3>Register successfully</h3>
                     </Space>
                   </div>
-                  <Button type="primary" style={{ width: '100%'}}>Login</Button>
+                  <Button
+                    type="primary"
+                    style={{ width: '100%'}}
+                    onClick={() => {
+                      navigate('/home')
+                    }}
+                  >Login</Button>
                 </>
               )
             },
