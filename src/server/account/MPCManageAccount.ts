@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
 import {AccountInterface} from "./AccountInterface";
 import {EOAManageAccount} from "./EOAManageAccount";
-import {wasmGenerateDeviceData, initWasm, JSONBigInt} from '../js/mpc_wasm_utils.js';
+import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
 import {Config} from "../config/Config";
 import {HttpUtils} from "../utils/HttpUtils";
 
@@ -79,19 +79,19 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
     console.log("generateMPCWasmInstance start");
     const response = await fetch(this.commonConfig.mpc.wasm.url);
     const buffer = await response.arrayBuffer();
-    await initWasm(buffer);
+    await mpcWasmUtils.initWasm(buffer);
 
     await this.generateKeys();
   }
 
   private async generateKeys() {
-    const keysResult = await wasmGenerateDeviceData();
+    const keysResult = await mpcWasmUtils.wasmGenerateDeviceData();
     alert(keysResult);
-    const keysJson = JSONBigInt.parse(keysResult);
+    const keysJson = mpcWasmUtils.JSONBigInt.parse(keysResult);
     if (keysJson["code"] === 200) {
-      console.log("p1JsonData: " + JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
-      console.log("p2JsonData: " + JSONBigInt.stringify(keysJson["data"]["p2JsonData"]));
-      console.log("p3JsonData: " + JSONBigInt.stringify(keysJson["data"]["p3JsonData"]));
+      console.log("p1JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
+      console.log("p2JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p2JsonData"]));
+      console.log("p3JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p3JsonData"]));
     } else {
       console.log("generateDeviceData error. Response: " + keysResult);
     }
