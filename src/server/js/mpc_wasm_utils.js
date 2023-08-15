@@ -8,7 +8,7 @@ export const JSONBigInt = JSONBig({
 
 export async function initWasm(buffer) {
     if (!runWasmModule) {
-        runWasmModule = await require('./run_wasm')(buffer);
+        runWasmModule = await require('./run_wasm').runWasm(buffer);
     }
 }
 

@@ -2,7 +2,7 @@ require("./wasm_exec");
 
 // isWait 代表是否要等到go代码执行结束之后再执行js代码
 // 如果存在js调用go方法，那就不能等
-module.exports = async (buf, isWait) => {
+export async function runWasm(buf, isWait) {
     const go = new global.Go();
     return WebAssembly.instantiate(buf, go.importObject).then(result => {
         if (isWait) {
