@@ -29,6 +29,8 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
   }
 
   async initAccount(eoaKey: string) {
+    await super.initAccount(eoaKey);
+
     this.eoaKey = eoaKey;
     this.contractWalletAddressSalt = 0;
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
@@ -42,8 +44,6 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
       this.contractWalletAddress = null;
     }
     this.contractAddressExist = false;
-
-    await super.initAccount(eoaKey);
   }
 
   async getOwnerAddress(): Promise<string> {

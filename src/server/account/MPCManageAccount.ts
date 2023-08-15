@@ -1,6 +1,7 @@
 import {ethers} from "ethers";
 import {AccountInterface} from "./AccountInterface";
 import {EOAManageAccount} from "./EOAManageAccount";
+import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
 
 const {arrayify} = require("@ethersproject/bytes");
 
@@ -14,6 +15,11 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
    */
   private _key: string;
 
+  /**
+   * wasm instance
+   */
+  private _mpcWasmInstance: any;
+
   constructor() {
     super();
   }
@@ -26,23 +32,57 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
     this._key = value;
   }
 
+  get mpcWasmInstance(): any {
+    return this._mpcWasmInstance;
+  }
+
+  set mpcWasmInstance(value: any) {
+    this._mpcWasmInstance = value;
+  }
+
   async initAccount(key: string) {
     console.log("mpc key:", key);
+    await super.initAccount(key);
+
     this._key = key;
-    this.ethersWallet = new ethers.Wallet(key, this.ethersProvider);
+    let account = ethers.Wallet.createRandom();
+    this.ethersWallet = new ethers.Wallet(account.privateKey, this.ethersProvider);
+    this.mpcWasmInstance = await this.generateMPCWasmInstance();
     this.contractWalletAddress = await this.calcContractWalletAddress();
     this.contractAddressExist = false;
-    await super.initAccount(key);
   }
 
   async getOwnerAddress(): Promise<string> {
-    // TODO need to implement
+    // const result = this.mpcWasmInstance.exports.add(1,2);
+    // console.log(result);
     return "";
   }
 
   async ownerSign(hash: string): Promise<string> {
     // TODO need to implement
     return await this.ethersWallet.signMessage(arrayify(hash));
+  }
+
+  private async generateMPCWasmInstance() {
+    console.log("generateMPCWasmInstance start");
+    const response = await fetch(this.commonConfig.mpc.wasm.url);
+    const buffer = await response.arrayBuffer();
+    await mpcWasmUtils.init(buffer);
+
+    await this.generateKeys();
+  }
+
+  private async generateKeys() {
+    const keysResult = await mpcWasmUtils.generateDeviceData();
+    const keysJson = mpcWasmUtils.JSONBigInt.parse(keysResult);
+    if (keysJson["code"] === 200) {
+      console.log("p1JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
+      console.log("p2JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p2JsonData"]));
+      console.log("p3JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p3JsonData"]));
+    } else {
+      console.log("generateDeviceData error. Response: " + keysResult);
+    }
+    console.log("generateMPCWasmInstance end");
   }
 
 }

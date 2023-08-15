@@ -13,6 +13,7 @@ const {arrayify} = require("@ethersproject/bytes");
 const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
+const commonConfig = require('../../app/config/common.json');
 
 /**
  * Account Manage Base Class
@@ -56,6 +57,10 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    */
   private _isLoggedIn: boolean;
 
+  /**
+   * common config
+   */
+  private _commonConfig: any;
 
   constructor() {
     this._contractAddressExist = false;
@@ -136,6 +141,14 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     this._ethersProvider = value;
   }
 
+  get commonConfig(): any {
+    return this._commonConfig;
+  }
+
+  set commonConfig(value: any) {
+    this._commonConfig = value;
+  }
+
   /**
    * must call initAccount in subclass
    * call it after change network
@@ -143,6 +156,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    */
   async initAccount(data: any) {
     this._initData = data;
+    this._commonConfig = JSON.parse(JSON.stringify(commonConfig));
     this._hasBeenInit = true;
   }
 
