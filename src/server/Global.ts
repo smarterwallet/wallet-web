@@ -19,10 +19,10 @@ export class Global {
       console.log("Global init");
       switch (this._accountType) {
         case 1:
-          // default:
+        default:
           this.account = new EOAManageAccount()
           break;
-        default:
+          // default:
         case 2:
           this.account = new MPCManageAccount()
           break;

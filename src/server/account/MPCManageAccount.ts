@@ -86,7 +86,6 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
 
   private async generateKeys() {
     const keysResult = await mpcWasmUtils.wasmGenerateDeviceData();
-    alert(keysResult);
     const keysJson = mpcWasmUtils.JSONBigInt.parse(keysResult);
     if (keysJson["code"] === 200) {
       console.log("p1JsonData: " + mpcWasmUtils.JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
