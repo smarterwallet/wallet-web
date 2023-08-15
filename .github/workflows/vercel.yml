@@ -1,0 +1,20 @@
+name: deploy website
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ngduc/vercel-deploy-action@master
+        with:
+          vercel-cli: vercel
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID}}
+          vercel-project-id: ${{ secrets.PROJECT_ID}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,10 +1,10 @@
 export class HttpUtils {
 
-  public static sendCommand(api: string, params: any): Promise<{ status: number, body?: any }> {
+  public static post(api: string, params: any): Promise<{ status: number, body?: any }> {
     return this.request("POST", api, params);
   }
 
-  public static getRequest(api: string): Promise<{ status: number, body?: any }> {
+  public static get(api: string): Promise<{ status: number, body?: any }> {
     return this.request("GET", api, null);
   }
 

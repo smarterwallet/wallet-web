@@ -162,7 +162,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {
     let api = Config.BACKEND_API + '/account/onchain/create';
-    return await HttpUtils.sendCommand(api, params);
+    return await HttpUtils.post(api, params);
   }
 
   async calcContractWalletAddress(): Promise<string> {
@@ -370,23 +370,23 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   }
 
   async sendUserOperation(params: any): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.sendCommand(Config.BUNDLER_API, params);
+    return await HttpUtils.post(Config.BUNDLER_API, params);
   }
 
   async getMainTokenTxList(): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_API, this.contractWalletAddress));
+    return await HttpUtils.get(sprintf(Config.MAIN_TOKEN_TX_LIST_API, this.contractWalletAddress));
   }
 
   async getMainTokenInternalTxList(): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, this.contractWalletAddress));
+    return await HttpUtils.get(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, this.contractWalletAddress));
   }
 
   async getTokenTxListFromThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_FROM_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
+    return await HttpUtils.get(sprintf(Config.ERC20_TX_FROM_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
   async getTokenTxListToThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.getRequest(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
+    return await HttpUtils.get(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
 }

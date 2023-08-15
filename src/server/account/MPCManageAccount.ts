@@ -2,6 +2,8 @@ import {ethers} from "ethers";
 import {AccountInterface} from "./AccountInterface";
 import {EOAManageAccount} from "./EOAManageAccount";
 import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
+import {Config} from "../config/Config";
+import {HttpUtils} from "../utils/HttpUtils";
 
 const {arrayify} = require("@ethersproject/bytes");
 
@@ -19,6 +21,8 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
    * wasm instance
    */
   private _mpcWasmInstance: any;
+
+  private _authorization: string;
 
   constructor() {
     super();
@@ -38,6 +42,14 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
 
   set mpcWasmInstance(value: any) {
     this._mpcWasmInstance = value;
+  }
+
+  get authorization(): string {
+    return this._authorization;
+  }
+
+  set authorization(value: string) {
+    this._authorization = value;
   }
 
   async initAccount(key: string) {
@@ -83,6 +95,14 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
       console.log("generateDeviceData error. Response: " + keysResult);
     }
     console.log("generateMPCWasmInstance end");
+  }
+
+  public async saveKey2WalletServer(key: string) {
+    let api = Config.BACKEND_API + '/mpc/key/save';
+    return await HttpUtils.post(api, {
+      "Authorization": this._authorization,
+      "key": key
+    });
   }
 
 }
