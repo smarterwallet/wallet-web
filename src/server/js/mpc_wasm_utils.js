@@ -12,7 +12,7 @@ export async function initWasm(buffer) {
     }
 }
 
-export async function generateDeviceData() {
+export async function wasmGenerateDeviceData() {
     console.log("start run generateDeviceData...")
     return generateDeviceData();
 }
