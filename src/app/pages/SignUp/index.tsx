@@ -16,7 +16,7 @@ const SignUp = () => {
         >
           <Input.Password
             placeholder="input password"
-            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}
           />
         </Form.Item>
         <Form.Item
@@ -24,7 +24,7 @@ const SignUp = () => {
         >
           <Input.Password
             placeholder="repeat password"
-            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+            iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}
           />
         </Form.Item>
         <Button

@@ -25,7 +25,7 @@ export default function SinglePartyAccountPage(props: {}) {
                 <>
                   <div>
                     <Space>
-                      <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      <CheckCircleTwoTone twoToneColor="#52c41a" rev={undefined} />
                       <h3>Register successfully</h3>
                     </Space>
                   </div>

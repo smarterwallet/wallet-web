@@ -360,7 +360,7 @@ export const renderMenu = (icon: string, text: string, to: string) => {
         icon && <img className="ww-menu-icon" src={icon} alt={text} />
       }
       <div className="ww-menu-text">{text}</div>
-      <RightOutlined />
+      <RightOutlined rev={undefined} />
     </NavLink>
   );
 }

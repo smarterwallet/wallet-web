@@ -36,9 +36,9 @@ export default () => {
                   <Col span={2} className="icon-wrapper">
                     {
                       editUsername ?
-                        <CheckOutlined onClick={() => setEditUsername(false) }/>
+                        <CheckOutlined onClick={() => setEditUsername(false)} rev={undefined}/>
                         :
-                        <EditOutlined onClick={() => setEditUsername(true) } />
+                        <EditOutlined onClick={() => setEditUsername(true)} rev={undefined} />
                     }
                   </Col>
                 </Row>
@@ -53,9 +53,9 @@ export default () => {
                   <Col span={2} className="icon-wrapper">
                     {
                       editEmail ?
-                        <CheckOutlined onClick={() => setEditEmail(false) }/>
+                        <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined}/>
                         :
-                        <EditOutlined onClick={() => setEditEmail(true) } />
+                        <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />
                     }
                   </Col>
                 </Row>
@@ -70,9 +70,9 @@ export default () => {
                   <Col span={2} className="icon-wrapper">
                     {
                       editPassword ?
-                        <CheckOutlined onClick={() => setEditPassword(false) }/>
+                        <CheckOutlined onClick={() => setEditPassword(false)} rev={undefined}/>
                         :
-                        <EditOutlined onClick={() => setEditPassword(true) } />
+                        <EditOutlined onClick={() => setEditPassword(true)} rev={undefined} />
                     }
                   </Col>
                 </Row>
@@ -87,17 +87,17 @@ export default () => {
               <Row>
                 <Col span={12}>Local storage: </Col>
                 <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined /></Col>
+                <Col span={1}><UndoOutlined rev={undefined} /></Col>
               </Row>
               <Row>
                 <Col span={12}>Wallet server: </Col>
                 <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined /></Col>
+                <Col span={1}><UndoOutlined rev={undefined} /></Col>
               </Row>
               <Row>
                 <Col span={12}>IPFS: </Col>
                 <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined /></Col>
+                <Col span={1}><UndoOutlined rev={undefined} /></Col>
               </Row>
 
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>

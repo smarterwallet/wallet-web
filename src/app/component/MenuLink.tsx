@@ -13,7 +13,7 @@ const MenuLink = (props: IProps) => {
       <div className="ww-menu-text">
         {props.children}
       </div>
-      <RightOutlined />
+      <RightOutlined rev={undefined} />
     </NavLink>
   );
 };
