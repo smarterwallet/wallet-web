@@ -67,7 +67,7 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
   async getOwnerAddress(): Promise<string> {
     // const result = this.mpcWasmInstance.exports.add(1,2);
     // console.log(result);
-    return "0x5134F00C95b8e794db38E1eE39397d8086cee7Ed";
+    return "0x5134F00C95b8e794db38E1eE39397d8086cee7E1";
   }
 
   async ownerSign(hash: string): Promise<string> {
