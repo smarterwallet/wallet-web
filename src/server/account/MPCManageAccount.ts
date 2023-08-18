@@ -57,6 +57,8 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
     await super.initAccount(key);
 
     this._key = key;
+    const initP1KeyDataRes = mpcWasmUtils.wasmInitP1KeyData(key);
+    console.log("initP1KeyData: ", initP1KeyDataRes);
     let account = ethers.Wallet.createRandom();
     this.ethersWallet = new ethers.Wallet(account.privateKey, this.ethersProvider);
     this.mpcWasmInstance = await this.generateMPCWasmInstance();
@@ -65,9 +67,42 @@ export class MPCManageAccount extends EOAManageAccount implements AccountInterfa
   }
 
   async getOwnerAddress(): Promise<string> {
-    // const result = this.mpcWasmInstance.exports.add(1,2);
-    // console.log(result);
-    return "0x5134F00C95b8e794db38E1eE39397d8086cee7E1";
+    if (!this._authorization) {
+      console.log("have not login wallet server");
+      return null;
+    }
+    // get address
+    // params: p1 key, p2 id, random prim1, random prim2
+    console.log("start to get address")
+    console.log("start to get random prim(each client only needs to get it once)")
+    let primResult = await HttpUtils.get(Config.BACKEND_API + "/random-prim");
+    console.log("primResult:", primResult.body["result"]);
+
+    const prim1 = primResult.body["result"]["p"];
+    const prim2 = primResult.body["result"]["q"];
+    const addressGenMessage = mpcWasmUtils.wasmKeyGenRequestMessage(2, prim1, prim2);
+    console.log("Generate address Request Message: ", addressGenMessage);
+    let addressGenMessageJson = mpcWasmUtils.JSONBigInt.parse(addressGenMessage);
+    console.log(addressGenMessageJson["data"]);
+
+    console.log("start to bind-user-p2")
+    let bindResult = await HttpUtils.post(Config.BACKEND_API + "/bind-user-p2", {
+      "Authorization": this._authorization,
+      "p1_message_dto": addressGenMessageJson["data"],
+      "p1_data_id": 1,
+    });
+    console.log("bindResult:", bindResult.body);
+
+    // send http request to get address
+    console.log("start to get address")
+    let getAddressAndPubKeyRes = await HttpUtils.post(Config.BACKEND_API + "/get-address", {
+      "Authorization": this._authorization,
+    })
+    const address = getAddressAndPubKeyRes.body["result"]["address"];
+    const pubKey = getAddressAndPubKeyRes.body["result"]["pub_key"];
+    console.log("Address: " + address);
+    console.log("PubKey: " + pubKey);
+    return address;
   }
 
   async ownerSign(hash: string): Promise<string> {
