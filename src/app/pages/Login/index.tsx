@@ -1,13 +1,32 @@
 import HeaderBar from "../../elements/HeaderBar";
 import React from "react";
-import { Button, Collapse, Form, Input, Space } from 'antd';
-import MenuLink from '../../component/MenuLink';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Collapse, Form, Input, Space, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { Global } from '../../../server/Global';
 
 export default () => {
 
   const navigate = useNavigate();
+
+  const login = async (values: any) => {
+    message.info('Login...');
+    let smarterWalletKey = localStorage.getItem('smarter-wallet-key');
+    let loginkey = localStorage.getItem('loginkey');
+
+    let str = values.password + smarterWalletKey;
+    let tryLogin = window.btoa(str); // encrypt
+
+    if (tryLogin === loginkey) {
+      let key = window.atob(smarterWalletKey);
+      key = key.substring(values.password.length, key.length);
+      await Global.account.initAccount(key);
+      Global.account.isLoggedIn = true;
+
+      navigate('/home')
+    } else {
+      message.error('Password incorrect');
+    }
+  }
 
   return (
     <div className="ww-page-container">
@@ -20,14 +39,11 @@ export default () => {
           {
             label: 'Local login',
             key: '1',
-            children: (<Form>
+            children: (<Form onFinish={login}>
               <Form.Item
                 label="Password"
               >
-                <Input.Password
-                  // placeholder="input password"
-                  // iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                />
+                <Input.Password />
               </Form.Item>
               <Button
                 type="primary"
@@ -57,10 +73,8 @@ export default () => {
               </Form.Item>
               <Button
                 type="primary"
+                htmlType="submit"
                 style={{ width: '100%'}}
-                onClick={() => {
-                  navigate('/home')
-                }}
               >Login</Button>
             </Form>)
           },

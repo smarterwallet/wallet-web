@@ -109,9 +109,9 @@ a {
 
 .app-container {
   height: 100vh;
-  max-height: -webkit-fill-available;
   max-width: 500px;
   margin: auto;
+    /*background: url("../assets/inner_bg.png") no-repeat center 100%;*/
 }
 
 .app-page {
@@ -122,6 +122,8 @@ a {
 
 .app-navbar {
   background-color: #58669c;
+    /*background: #D9D9D98C;*/
+
 }
 
 /* @media (max-width: 850px) {

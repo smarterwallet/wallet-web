@@ -3,6 +3,7 @@
     height: 100%;
     color: #fff;
     background: linear-gradient(75deg,#4f3c77 0%,#4c1bef 100%);
+    /*background: url("../../../assets/bg.png") no-repeat center 100%;*/
 }
 
 .welcome-page-header {
@@ -55,7 +56,4 @@
 .welcome-page-button-icon {
   width: 30px;
   height: 30px;
-}
-
-@media (max-width: 500px) {
 }
