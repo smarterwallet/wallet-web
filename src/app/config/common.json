@@ -1,7 +1,7 @@
 {
   "mpc": {
     "wasm": {
-      "url": "https://decentralized-storage-01.web3-idea.xyz/mpc/wasm/v0_1/mpc.wasm"
+      "url": "https://decentralized-storage-01.web3-idea.xyz/mpc/wasm/v0_2/mpc.wasm"
     }
   }
 }

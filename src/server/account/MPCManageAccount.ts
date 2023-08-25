@@ -83,7 +83,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     this.contractAddressExist = false;
 
     // TEST
-    this.ownerSign("85eb8167756e6513cb3c6c1041e99615db0df6c72c1a8a94e144fc0fc626884a");
+    this.ownerSign("1635b3221c01a44dca3775217a1862c5f8df5d214aadfd6e8c0f6471ca28cd75");
   }
 
   async getOwnerAddress(): Promise<string> {
@@ -195,12 +195,30 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log("p2Step2Result: ", p2Step2Result);
 
     // p1 step3
-    const p1Step3Res = await mpcWasmUtils.wasmP1Step3(p2Step2Result.body["result"]);
+    const p1Step3Res = await mpcWasmUtils.wasmP1Step3(p2Step2Result.body["result"], message);
     console.log(`p1Step2: ${p1Step3Res}`);
 
     console.log("\n>>> Sign hex string: " + JSONBigInt.parse(p1Step3Res)["data"]["SignHex"]);
 
     return JSONBigInt.parse(p1Step3Res)["data"]["SignHex"];
+  }
+
+  private bufferToBase64(buf: ArrayBuffer) {
+    const uint8 = new Uint8Array(buf);
+    let str = '';
+    for (let i = 0; i < uint8.byteLength; i++) {
+      str += String.fromCharCode(uint8[i]);
+    }
+    return btoa(str);
+  }
+
+  private base64ToBuffer(base64: string) {
+    const binstr = atob(base64);
+    let buf = new Uint8Array(binstr.length);
+    Array.prototype.forEach.call(binstr, function (ch, i) {
+      buf[i] = ch.charCodeAt(0);
+    });
+    return buf.buffer;
   }
 
   private async generateMPCWasmInstance() {
