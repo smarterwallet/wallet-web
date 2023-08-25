@@ -1,0 +1,18 @@
+.multi-party-account-tip {
+    padding: 0 20px;
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.multi-party-account-tip-list {
+    list-style: none;
+    padding: 0 20px;
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}

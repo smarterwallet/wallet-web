@@ -8,29 +8,31 @@ const RegisterAtMultiParty = () => {
   const navigate = useNavigate();
   return (
     <div className="ww-page-container rmp-page">
-      <HeaderBar text="Register At Multi Party" />
-      <Form>
-        <Form.Item
-          label="Email"
-        >
-          <Input/>
-        </Form.Item>
-        <Form.Item
-          label="Code"
-        >
-          <Space>
-            <Input />
-            <Button>Send Code</Button>
-          </Space>
-        </Form.Item>
-        <Button
-          type="primary"
-          style={{ width: '100%'}}
-          onClick={() => {
-            navigate('/registerSuccessfully')
-          }}
-        >Register</Button>
-      </Form>
+      <HeaderBar text="Multi Party Account" />
+      <div className="ww-alpha-container">
+        <h2>Register At Multi Party</h2>
+        <Form>
+          <Form.Item
+            label="Email"
+          >
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            label="Code"
+          >
+            <Space>
+              <Input />
+              <Button className="ww-mini-btn">Send Code</Button>
+            </Space>
+          </Form.Item>
+          <Button
+            style={{ width: '100%'}}
+            onClick={() => {
+              navigate('/registerSuccessfully')
+            }}
+          >Register</Button>
+        </Form>
+      </div>
       <p className="mpa-tip">At least 2 of 3 keys will be required to login successfully</p>
     </div>
   );

@@ -3,7 +3,7 @@
   --section-color: rgb(83, 53, 4);
   --section-header-color: rgb(101, 70, 7);
   --item-color: rgb(32, 33, 37);
-  --body-color: rgb(30, 183, 140);
+  --body-color: rgb(0, 0, 0);
   --header-color: rgb(162, 103, 9);
   --header-menu-color: rgb(117, 81, 11);
   --button-color: rgb(44, 86, 155);
@@ -111,19 +111,17 @@ a {
   height: 100vh;
   max-width: 500px;
   margin: auto;
-    /*background: url("../assets/inner_bg.png") no-repeat center 100%;*/
+    background: url("../assets/inner_bg.png") no-repeat center 100%;
 }
 
 .app-page {
   height: calc(100vh - 80px);
   overflow-y: auto;
-  background-color: var(--page-color);
+  /*background-color: var(--page-color);*/
 }
 
 .app-navbar {
-  background-color: #58669c;
-    /*background: #D9D9D98C;*/
-
+    background: #D9D9D940;
 }
 
 /* @media (max-width: 850px) {

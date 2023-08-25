@@ -2,6 +2,7 @@ import React from 'react';
 import { Select, Form, InputNumber, Button, Space, Modal } from 'antd';
 import HeaderBar from '../../elements/HeaderBar';
 import { useNavigate } from 'react-router-dom';
+import '../SpotGrid/styles.scss';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Index = () => {
   }
 
   return (
-    <div className="ww-page-container">
+    <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid Bot'/>
       <Form>
         <h3>Trading asset</h3>
@@ -69,7 +70,7 @@ const Index = () => {
           </Form.Item>
         </Space>
         <div className="ww-tc">
-          <Button type="primary" shape="round" onClick={run}>Run</Button>
+          <Button shape="round" onClick={run}>Run</Button>
         </div>
       </Form>
     </div>

@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Collapse, Form, Input, Space, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Global } from '../../../server/Global';
+import './styles.scss';
 
 export default () => {
 
@@ -46,7 +47,7 @@ export default () => {
                 <Input.Password />
               </Form.Item>
               <Button
-                type="primary"
+                // type="primary"
                 style={{ width: '100%'}}
                 onClick={() => {
                   navigate('/home')
@@ -57,7 +58,7 @@ export default () => {
           {
             label: 'Multi-party Login',
             key: '2',
-            children: (<Form>
+            children: (<Form className="ww-multi-party-form">
               <Form.Item
                 label="Email"
               >
@@ -68,11 +69,11 @@ export default () => {
               >
                 <Space>
                   <Input />
-                  <Button>Send Code</Button>
+                  <Button className="ww-mini-btn">Send Code</Button>
                 </Space>
               </Form.Item>
               <Button
-                type="primary"
+                // type="primary"
                 htmlType="submit"
                 style={{ width: '100%'}}
               >Login</Button>

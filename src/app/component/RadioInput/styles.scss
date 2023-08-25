@@ -1,0 +1,29 @@
+@import "../../../styles/theme";
+
+.ww-radio-input-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .ww-radio-input-btn {
+        margin-bottom: 10px;
+        min-width: 128px;
+        font-size: 18px;
+        line-height: 40px;
+        font-weight: 500;
+        color: $primary;
+        border-radius: 10px;
+        text-align: center;
+
+        &.active {
+            background: #ECE9E9E5;
+            box-shadow: 5px 5px 20px 0 #00000040;
+        }
+    }
+
+    .ww-radio-input {
+        min-width: 128px;
+        width: 128px;
+    }
+
+}

@@ -1,8 +1,9 @@
 import HeaderBar from '../../../elements/HeaderBar';
 import React from 'react';
-import { Button, Collapse, Space } from 'antd';
-import { CheckCircleTwoTone } from '@ant-design/icons';
+import { Button, Collapse, Space, Alert, Radio, Checkbox } from 'antd';
+import { CheckCircleOutlined, CheckCircleTwoTone } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import './styles.scss';
 
 export default function SinglePartyAccountPage(props: {}) {
 
@@ -11,54 +12,45 @@ export default function SinglePartyAccountPage(props: {}) {
   return (
     <div className="ww-page-container">
       <HeaderBar text="Single Party Account" />
-
+      <div className="ww-alpha-container">
+        <h2>Single-party account</h2>
+        <div>
+          <Alert
+            className="ww-msg"
+            message="Register successfully"
+            type="success"
+            showIcon
+          />
+        </div>
+        <Button
+          // type="primary"
+          style={{ width: '100%'}}
+          onClick={() => {
+            navigate('/home')
+          }}
+        >Login</Button>
+      </div>
       <div>
-        <Collapse
-          // accordion
-          className="ww-collapse"
-          defaultActiveKey={['Single-party', 'Multi-party']}
-          items={[
-            {
-              label: 'Single-party account',
-              key: 'Single-party',
-              children: (
-                <>
-                  <div>
-                    <Space>
-                      <CheckCircleTwoTone twoToneColor="#52c41a" rev={undefined} />
-                      <h3>Register successfully</h3>
-                    </Space>
-                  </div>
-                  <Button
-                    type="primary"
-                    style={{ width: '100%'}}
-                    onClick={() => {
-                      navigate('/home')
-                    }}
-                  >Login</Button>
-                </>
-              )
-            },
-            {
-              label: 'Multi-party account account',
-              key: 'Multi-party',
-              children: (
-                <>
-                  <p style={{ marginBottom: '1em'}}>
-                    Two other keys will be stored in the wallet server and IPFS.
-                  </p>
-                  <Button
-                    type="primary"
-                    style={{ width: '100%'}}
-                    onClick={() => {
-                      navigate('/multiPartyAccount')
-                    }}
-                  >Register</Button>
-                </>
-              )
-            }
-          ]}
-        />
+        <h2>Multi-party account</h2>
+        <p className="multi-party-account-tip">
+          At least 2 of 3 keys will be required to login successfully
+        </p>
+        <ul className="multi-party-account-tip-list">
+          <li>
+            <p>Wallet server</p>
+            <CheckCircleOutlined rev={undefined} />
+          </li>
+          <li>
+            <p>Decentralized storage</p>
+            <CheckCircleOutlined rev={undefined} />
+          </li>
+        </ul>
+        <Button
+          style={{ width: '100%'}}
+          onClick={() => {
+            navigate('/registerAtMultiParty')
+          }}
+        >Upgrade</Button>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+@import "../../../styles/theme";
+
 .sg-price-wrap {
     display: flex;
     flex-direction: row;
@@ -11,5 +13,25 @@
 
     .sg-price-changes {
         color: #1E772C;
+    }
+}
+
+.spot-grid-page {
+    padding-bottom: 30px;
+    .radio-button {
+        text-align: center;
+    }
+
+    h3 {
+        font-size: 20px;
+        color: $primary;
+    }
+
+    .ant-form-item-label {
+        min-width: 100px;
+    }
+
+    .ant-row {
+        padding: 0 20px;
     }
 }

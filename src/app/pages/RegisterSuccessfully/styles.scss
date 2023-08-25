@@ -1,0 +1,30 @@
+@import "../../../styles/theme";
+
+.register-result-page {
+    h2 {
+        font-size: 28px;
+        color: $primary;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: left;
+        color: $primary;
+    }
+
+    .ant-result {
+        padding: 20px;
+
+        .ant-result-extra {
+            button {
+                margin: 0 20px;
+                //margin-inline-end: initial;
+            }
+        }
+    }
+
+
+
+
+}

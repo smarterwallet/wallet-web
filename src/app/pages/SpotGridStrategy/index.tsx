@@ -2,12 +2,14 @@ import React from 'react';
 import HeaderBar from '../../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Button, Space } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import '../SpotGrid/styles.scss';
+import RadioInput from '../../component/RadioInput';
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="ww-page-container">
+    <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid Strategy'/>
       <Form
         labelCol={{ span: 4 }}
@@ -27,7 +29,7 @@ const Index = () => {
             <div className="sg-price-changes">+3.02%</div>
           </div>
         </Form.Item>
-        <Form.Item>
+        <Form.Item className="radio-button">
           <Radio.Group
             defaultValue="1"
             optionType="button"
@@ -46,19 +48,20 @@ const Index = () => {
         </Form.Item>
         <h3>Grid Mode</h3>
         <Form.Item>
-          <Radio.Group
-            defaultValue="1"
-            optionType="button"
-            buttonStyle="solid"
-          >
-            <Radio.Button value="1">Arithmetic</Radio.Button>
-            <Radio.Button value="2">Geometric</Radio.Button>
-            <Radio.Button value="3">Quantity</Radio.Button>
-          </Radio.Group>
+          <RadioInput data={[
+            {
+              text: 'Arithmetic',
+            },
+            {
+              text: 'Geometric',
+            },
+            {
+              text: 'Quantity',
+            },
+          ]} />
         </Form.Item>
         <div className={'ww-tc'} style={{ marginTop: 40 }}>
           <Button
-            type="primary"
             onClick={() => { navigate('/SpotGridBot') }}
             shape="round"
           >Create a Bot to Run</Button>

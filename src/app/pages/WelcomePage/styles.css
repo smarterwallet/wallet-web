@@ -2,8 +2,7 @@
   padding: 0 20px;
     height: 100%;
     color: #fff;
-    background: linear-gradient(75deg,#4f3c77 0%,#4c1bef 100%);
-    /*background: url("../../../assets/bg.png") no-repeat center 100%;*/
+    background: url("../../../assets/index_bg.jpg") no-repeat center / cover;
 }
 
 .welcome-page-header {

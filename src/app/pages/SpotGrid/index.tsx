@@ -3,6 +3,7 @@ import HeaderBar from '../../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Checkbox, Space, Button, message } from 'antd';
 import { CurrencyType } from '../../types';
 import './styles.scss';
+import RadioInput from '../../component/RadioInput';
 
 const SpotGrid = () => {
 
@@ -15,7 +16,7 @@ const SpotGrid = () => {
   }
 
   return (
-    <div className="ww-page-container">
+    <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid'/>
       <Form
         labelCol={{ span: 3 }}
@@ -35,7 +36,7 @@ const SpotGrid = () => {
             <div className="sg-price-changes">+3.02%</div>
           </div>
         </Form.Item>
-        <Form.Item>
+        <Form.Item className="radio-button">
           <Radio.Group
             defaultValue="1"
             optionType="button"
@@ -54,15 +55,17 @@ const SpotGrid = () => {
         </Form.Item>
         <h3>Grid Mode</h3>
         <Form.Item>
-          <Radio.Group
-            defaultValue="1"
-            optionType="button"
-            buttonStyle="solid"
-          >
-            <Radio.Button value="1">Arithmetic</Radio.Button>
-            <Radio.Button value="2">Geometric</Radio.Button>
-            <Radio.Button value="3">Quantity</Radio.Button>
-          </Radio.Group>
+          <RadioInput data={[
+            {
+              text: 'Arithmetic',
+            },
+            {
+              text: 'Geometric',
+            },
+            {
+              text: 'Quantity',
+            },
+          ]} />
         </Form.Item>
         <h3>Buying Action</h3>
         <Form.Item label="Amount">
@@ -78,8 +81,8 @@ const SpotGrid = () => {
           <Checkbox>Add another strategy</Checkbox>
         </Form.Item>
         <Space style={{ width: '100%', justifyContent: 'center' }} size={40}>
-          <Button type="primary" ghost shape="round" onClick={save}>Save</Button>
-          <Button type="primary" shape="round" onClick={create}>Create</Button>
+          <Button shape="round" onClick={save}>Save</Button>
+          <Button shape="round" onClick={create}>Create</Button>
         </Space>
       </Form>
     </div>
