@@ -1,3 +1,5 @@
+import { JSONBigInt } from "../js/common_utils";
+
 export class HttpUtils {
 
   public static post(api: string, params: any): Promise<{ status: number, body?: any }> {
@@ -14,13 +16,15 @@ export class HttpUtils {
       request.open(method, api);
       request.setRequestHeader('Content-Type', 'application/json');
 
-      let body = JSON.stringify(params);
+      let body = JSONBigInt.stringify(params);
+      // let body = JSON.stringify(params);
       request.send(body);
 
       request.onload = () => {
         let body = null;
         if (request.responseText !== '') {
-          body = JSON.parse(request.responseText);
+          body = JSONBigInt.parse(request.responseText);
+          // body = JSON.parse(request.responseText);
         }
         resolve({
           status: request.status,

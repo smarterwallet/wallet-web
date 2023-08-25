@@ -156,8 +156,8 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    */
   async initAccount(data: any) {
     this._initData = data;
-    this._commonConfig = JSON.parse(JSON.stringify(commonConfig));
     this._hasBeenInit = true;
+    this._commonConfig = JSON.parse(JSON.stringify(commonConfig));
   }
 
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {

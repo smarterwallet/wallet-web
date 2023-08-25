@@ -1,10 +1,5 @@
-const JSONBig = require('json-bigint');
 let runWasmModule;
 
-export const JSONBigInt = JSONBig({
-    storeAsString: true, // 将大整数存储为字符串
-    strict: true, // 启用严格模式，禁用科学计数法
-})
 
 export async function initWasm(buffer) {
     if (!runWasmModule) {
@@ -30,14 +25,14 @@ export async function wasmKeyGenRequestMessage(partnerDataId, prime1, prime2) {
 }
 
 /** sign */
-export async function wasmInitPubKey() {
+export async function wasmInitPubKey(pubKey) {
     console.log("start run initPubKey...")
-    return initPubKey();
+    return initPubKey(pubKey);
 }
 
-export async function wasmInitP1Context() {
+export async function wasmInitP1Context(data) {
     console.log("start run initP1Context...")
-    return initP1Context();
+    return initP1Context(data);
 }
 
 export async function wasmP1Step1() {
@@ -45,13 +40,24 @@ export async function wasmP1Step1() {
     return p1Step1();
 }
 
-export async function wasmP1Step2() {
+export async function wasmP1Step2(proofJson, ecpointJson) {
     console.log("start run p1Step2...")
-    return p1Step2();
+    return p1Step2(proofJson, ecpointJson);
 }
 
-export async function wasmP1Step3() {
+export async function wasmP1Step3(p2Step2Result) {
     console.log("start run p1Step3...")
-    return p1Step3();
+    return p1Step3(p2Step2Result);
 }
 
+// 将JSON中的数字字符串转换为数字
+export const parseNumbers = (obj) => {
+    for (let key in obj) {
+        if (typeof obj[key] === 'object') {
+            parseNumbers(obj[key]);
+        } else if (typeof obj[key] === 'string' && /^\d+$/.test(obj[key])) {
+            obj[key] = BigInt(obj[key]).valueOf();
+        }
+    }
+    return obj
+};

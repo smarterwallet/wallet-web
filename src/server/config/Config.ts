@@ -26,7 +26,8 @@ export class Config {
     public static TOKENS: Assets;
 
     // 启动默认网络
-    public static DEFAULT_NETWORK = "Polygon";
+    public static DEFAULT_NETWORK = "Mumbai";
+    // public static DEFAULT_NETWORK = "Polygon";
     public static TOKEN_PAYMASTER_TOKEN_NAME = "SWT";
 
     public static CURRENT_CHAIN_NAME = this.DEFAULT_NETWORK;
@@ -36,7 +37,7 @@ export class Config {
     }
 
     // 切换网络时调用
-    public static async flush(rawData: string) {
+    private static async flush(rawData: string) {
         console.log("config flush. Data:", rawData);
 
         const configData = JSON.parse(rawData);
