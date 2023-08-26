@@ -43,15 +43,14 @@ export default () => {
             children: (<Form onFinish={login}>
               <Form.Item
                 label="Password"
+                name="password"
               >
                 <Input.Password />
               </Form.Item>
               <Button
                 // type="primary"
+                htmlType="submit"
                 style={{ width: '100%'}}
-                onClick={() => {
-                  navigate('/home')
-                }}
               >Login</Button>
             </Form>)
           },
