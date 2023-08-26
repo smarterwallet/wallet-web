@@ -1,8 +1,14 @@
 import HeaderBar from "../../elements/HeaderBar";
 import React, { useState } from "react";
-import { Button, Col, Collapse, Form, Input, Row, Space } from 'antd';
-import MenuLink from '../../component/MenuLink';
-import { CheckOutlined, EditOutlined, EyeInvisibleOutlined, EyeTwoTone, UndoOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Collapse, Form, Input, Row, Space } from 'antd';
+import {
+  CheckOutlined,
+  EditOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone, LineOutlined,
+  SyncOutlined,
+  UndoOutlined
+} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import './styles.scss'
 
@@ -43,25 +49,9 @@ export default () => {
                   </Col>
                 </Row>
               </Form.Item>
+
               <Form.Item
-                label="Email"
-              >
-                <Row>
-                  <Col span={22}>
-                    <Input value="smartaa@gmail.com"/>
-                  </Col>
-                  <Col span={2} className="icon-wrapper">
-                    {
-                      editEmail ?
-                        <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined}/>
-                        :
-                        <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />
-                    }
-                  </Col>
-                </Row>
-              </Form.Item>
-              <Form.Item
-                label="Password"
+                label="Password for local device"
               >
                 <Row>
                   <Col span={22}>
@@ -77,34 +67,49 @@ export default () => {
                   </Col>
                 </Row>
               </Form.Item>
-
+              <Form.Item
+                label="Email for third-party storage"
+              >
+                <Row>
+                  <Col span={22}>
+                    <Input value="smartaa@gmail.com"/>
+                  </Col>
+                  <Col span={2} className="icon-wrapper">
+                    {
+                      editEmail ?
+                        <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined}/>
+                        :
+                        <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />
+                    }
+                  </Col>
+                </Row>
+              </Form.Item>
             </Form>)
           },
           {
             label: 'My login keys',
             key: '2',
-            children: (<>
+            children: (<div className="login-keys">
               <Row>
-                <Col span={12}>Local storage: </Col>
-                <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined rev={undefined} /></Col>
+                <Col span={22}>My local device</Col>
+                <Col span={1}>
+                  <Checkbox/>
+                </Col>
               </Row>
               <Row>
-                <Col span={12}>Wallet server: </Col>
-                <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined rev={undefined} /></Col>
+                <Col span={22}>Smart AA wallet server</Col>
+                <Col span={1}><Checkbox/></Col>
               </Row>
               <Row>
-                <Col span={12}>IPFS: </Col>
-                <Col span={11}>ekf435dx...</Col>
-                <Col span={1}><UndoOutlined rev={undefined} /></Col>
+                <Col span={22}>Distributed storage (IPFS)</Col>
+                <Col span={1}><Checkbox/></Col>
               </Row>
 
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
-                <Button>Delete -</Button>
-                <Button>Add +</Button>
+                <Button>Upgrade <SyncOutlined rev={undefined} /></Button>
+                <Button>Delete <LineOutlined rev={undefined} /></Button>
               </Space>
-            </>)
+            </div>)
           },
         ]}
       />

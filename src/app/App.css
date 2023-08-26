@@ -121,7 +121,7 @@ a {
 }
 
 .app-navbar {
-    background: #D9D9D940;
+    position: relative;
 }
 
 /* @media (max-width: 850px) {

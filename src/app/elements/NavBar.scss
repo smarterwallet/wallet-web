@@ -1,0 +1,84 @@
+@import "../../styles/theme";
+
+.navbar-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.navbar-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar-button-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.navbar-button-text {
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.navbar-link,
+.navbar-link-active {
+  width: 100px;
+  height: 60px;
+  padding: 10px 0;
+    color: rgba($primary, .65);
+  text-decoration: none;
+}
+
+.navbar-link-active {
+    color: $primary;
+    .navbar-icon-wrap {
+        svg, path {
+            fill: #353535;
+        }
+    }
+}
+
+.navbar-icon-wrap {
+    font-size: 40px;
+
+    svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    svg, path {
+        fill: #707070;
+    }
+}
+
+.ww-bottom-nav {
+    background: #D9D9D940;
+
+    &.ww-welcome-nav {
+        background: #D9D9D940;
+
+        .navbar-button-text {
+            color: #FFFFFFCC;
+        }
+
+        svg, path {
+            fill: #707070;
+        }
+
+        .navbar-link-active {
+            .navbar-button-text {
+                color: #fff;
+            }
+
+            .navbar-icon-wrap {
+                svg, path {
+                    fill: #fff;
+                }
+            }
+        }
+
+    }
+}
+

@@ -5,4 +5,40 @@
         align-items: center;
         font-size: 20px;
     }
+
+    .login-keys {
+        .ant-col {
+            font-size: 20px;
+            line-height: 38px;
+            font-weight: 700;
+        }
+    }
+
+    form {
+        .ant-form-item:last-child{
+            margin-bottom: 0;
+        }
+    }
+
+    .ant-form .ant-form-item {
+        .ant-form-item-label >label::after {
+            visibility: visible;
+        }
+        div.ant-form-item-row {
+            display: block;
+            div.ant-form-item-label {
+                flex: 1;
+            }
+        }
+    }
+
+    .ant-checkbox .ant-checkbox-inner {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    }
+
+    .ant-checkbox-wrapper:hover .ant-checkbox:after {
+        visibility: hidden;
+    }
 }

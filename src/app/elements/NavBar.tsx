@@ -1,33 +1,38 @@
 import React from 'react';
 import NavBarButton from './NavBarButton';
-import './NavBar.css';
+import './NavBar.scss';
 import {AppConfig} from '../AppConfig';
 import {getMenuIcon} from '../util/util';
+import { useLocation } from 'react-router-dom';
 
-class NavBar extends React.Component {
+const NavBar = () => {
 
-  renderButton(menu: any) {
+  const location = useLocation();
+  console.log(location, 'navigate')
+  const isWelComePage = location.pathname === '/';
+
+  const renderButton = (menu: any) => {
     return (
-      <NavBarButton key={menu.text} icon={getMenuIcon(menu.icon)} text={menu.text} to={menu.to} />
+      <NavBarButton key={menu.text} icon={menu.icon} text={menu.text} to={menu.to} />
     )
   }
 
-  render() {
-    let buttons = [];
-    let menu = AppConfig.menu;
 
-    for (let i = 0; i < menu.length; i++) {
-      buttons.push(this.renderButton(menu[i]));
-    }
-    
-    return (
-      <nav>
-        <div className="navbar-container">
-          {buttons}
-        </div>
-      </nav>
-    );
+  let buttons = [];
+  let menu = AppConfig.menu;
+
+  for (let i = 0; i < menu.length; i++) {
+    buttons.push(renderButton(menu[i]));
   }
+
+  return (
+    <nav className={`${isWelComePage ? 'ww-welcome-nav' : ''} ww-bottom-nav`}>
+      <div className="navbar-container">
+        {buttons}
+      </div>
+    </nav>
+  );
+
 }
 
 export default NavBar;

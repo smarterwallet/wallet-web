@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './NavBar.css';
+import './NavBar.scss';
 
 interface NavBarButtonProps {
   icon:string,
@@ -18,7 +18,9 @@ class NavBarButton extends React.Component<NavBarButtonProps, {}> {
     return (
       <NavLink className={({ isActive }) => (isActive ? "navbar-link-active" : "navbar-link")} to={this.props.to}>
         <div className="navbar-button">
-          <img className="navbar-button-icon" src={this.props.icon}></img>
+          <div className="navbar-icon-wrap">
+            {this.props.icon}
+          </div>
           <div className="navbar-button-text">{this.props.text}</div>
         </div>
       </NavLink>
