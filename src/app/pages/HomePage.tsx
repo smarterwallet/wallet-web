@@ -123,9 +123,9 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   render() {
-    // if (!Global.account.isLoggedIn) {
-    //   return <Navigate to="/" replace/>;
-    // }
+    if (!Global.account.isLoggedIn) {
+      return <Navigate to="/" replace/>;
+    }
 
     let address = '';
     let username = localStorage.getItem('username');
