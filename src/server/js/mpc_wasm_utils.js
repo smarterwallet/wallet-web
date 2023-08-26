@@ -45,9 +45,9 @@ export async function wasmP1Step2(proofJson, ecpointJson) {
     return p1Step2(proofJson, ecpointJson);
 }
 
-export async function wasmP1Step3(p2Step2Result) {
+export async function wasmP1Step3(p2Step2Result, message) {
     console.log("start run p1Step3...")
-    return p1Step3(p2Step2Result);
+    return p1Step3(p2Step2Result, message);
 }
 
 // 将JSON中的数字字符串转换为数字
