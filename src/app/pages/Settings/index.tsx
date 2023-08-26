@@ -5,7 +5,7 @@ import {
   CheckOutlined,
   EditOutlined,
   EyeInvisibleOutlined,
-  EyeTwoTone, LineOutlined,
+  EyeTwoTone, LineOutlined, MinusCircleOutlined,
   SyncOutlined,
   UndoOutlined
 } from '@ant-design/icons';
@@ -107,7 +107,7 @@ export default () => {
 
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
                 <Button>Upgrade <SyncOutlined rev={undefined} /></Button>
-                <Button>Delete <LineOutlined rev={undefined} /></Button>
+                <Button>Delete <MinusCircleOutlined rev={undefined} /></Button>
               </Space>
             </div>)
           },
