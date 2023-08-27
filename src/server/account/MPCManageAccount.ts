@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
 import { AccountInterface } from "./AccountInterface";
-import { EOAManageAccount } from "./EOAManageAccount";
 import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
 import { JSONBigInt } from "../js/common_utils";
 import { Config } from "../config/Config";
 import { HttpUtils } from "../utils/HttpUtils";
 import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
+import { hashMessage, joinSignature } from "ethers/lib/utils";
 
 const { arrayify } = require("@ethersproject/bytes");
 
@@ -25,6 +25,8 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
   private _mpcWasmInstance: any;
 
   private _authorization: string;
+
+  private _mpcAddress: string;
 
   constructor() {
     super();
@@ -54,9 +56,18 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     this._authorization = value;
   }
 
+  get mpcAddress(): string {
+    return this._mpcAddress;
+  }
+
+  set mpcAddress(value: string) {
+    this._mpcAddress = value;
+  }
+
   async initAccount(mpcKey: string) {
-    // TODO only for test
-    mpcKey = "{\"Id\":1,\"ShareI\":217846336608636814869730242691162623428602750849327859885486059440886707396967,\"PublicKey\":{\"Curve\":\"secp256k1\",\"X\":21813151983507503395302029099618182021145901011013099920572583206125558516758,\"Y\":49671425612481876155282918131354433515159845133152098589877317033648352777306},\"ChainCode\":\"8700298ba02dc4399722ee5780b6c8941f6031de3788b6bd69d529e9ec5d25de\",\"SharePubKeyMap\":{\"1\":{\"Curve\":\"secp256k1\",\"X\":72028570987944934025156373151523167380442519718362391580784617155013272187769,\"Y\":93688287248850657301208517895383787722033271638455717634452870193797992290602},\"2\":{\"Curve\":\"secp256k1\",\"X\":60843502703945476734713204655662180964958429379404842990456662320579017070952,\"Y\":87483069748555958504231705641021186473714992537449899429345728572632959317890},\"3\":{\"Curve\":\"secp256k1\",\"X\":46261205405204336553406740356964276639162145646919877661047679199346115145801,\"Y\":110010455857167350971875975047238195426068498783803218741316697224349730843919}}}";
+    if (!mpcKey) {
+      return;
+    }
 
     console.log("mpc key:", mpcKey);
 
@@ -71,19 +82,18 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     this._mpcKey = mpcKey;
     this.contractWalletAddressSalt = 0;
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
+    this.ethersWallet = new ethers.Wallet(account.privateKey, this.ethersProvider);
     if (mpcKey != null && mpcKey !== "") {
       console.log("eoaKey not null");
       const initP1KeyDataRes = await mpcWasmUtils.wasmInitP1KeyData(mpcKey);
       console.log("initP1KeyData: ", initP1KeyDataRes);
       this.contractWalletAddress = await this.calcContractWalletAddress();
+      this.deployContractWalletIfNotExist(await this.getOwnerAddress());
     } else {
       console.log("eoakey is null")
       this.contractWalletAddress = null;
     }
     this.contractAddressExist = false;
-
-    // TEST
-    this.ownerSign("1635b3221c01a44dca3775217a1862c5f8df5d214aadfd6e8c0f6471ca28cd75");
   }
 
   async getOwnerAddress(): Promise<string> {
@@ -91,11 +101,14 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       console.log("have not login wallet server");
       return null;
     }
+    if (this.mpcAddress != null && this.mpcAddress !== "") {
+      return this.mpcAddress;
+    }
     // get address
     // params: p1 key, p2 id, random prim1, random prim2
     console.log("start to get address")
-    console.log("start to get random prim(each client only needs to get it once)")
 
+    console.log("start to get random prim(each client only needs to get it once)")
     let primResult;
     // 从 localStorage 获取数据
     const primKey = "primResult";
@@ -135,22 +148,24 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log("Address: " + address);
     console.log("PubKey: " + pubKey);
     const initPubKeyRes = mpcWasmUtils.wasmInitPubKey(pubKey);
-    console.log(`initPubKey: ${initPubKeyRes}`);
+    // console.log(`initPubKey: ${initPubKeyRes}`);
+    this.mpcAddress = address;
     return address;
   }
 
   async ownerSign(message: string): Promise<string> {
-    // TODO message is hex str. how to handle it? need check signature with golang code.
+    let hash = hashMessage(arrayify(message));
+    hash = hash.substring(2);
     // send http request to get address
     console.log("start to init-p2-content")
     let initP2ContentRes = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/init-p2-content", {
       "Authorization": this._authorization,
-      "message": message
+      "message": hash
     })
     console.log("initP2ContentRes: ", initP2ContentRes);
     // Step 0
     // params: p1 key, p2 id, random prim1, random prim2
-    const initP1ContextRes = await mpcWasmUtils.wasmInitP1Context(message);
+    const initP1ContextRes = await mpcWasmUtils.wasmInitP1Context(hash);
     console.log(`initP1Context: ${initP1ContextRes}`);
 
     // p1 step1
@@ -195,30 +210,12 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log("p2Step2Result: ", p2Step2Result);
 
     // p1 step3
-    const p1Step3Res = await mpcWasmUtils.wasmP1Step3(p2Step2Result.body["result"], message);
+    const p1Step3Res = await mpcWasmUtils.wasmP1Step3(p2Step2Result.body["result"], hash);
     console.log(`p1Step2: ${p1Step3Res}`);
 
-    console.log("\n>>> Sign hex string: " + JSONBigInt.parse(p1Step3Res)["data"]["SignHex"]);
-
-    return JSONBigInt.parse(p1Step3Res)["data"]["SignHex"];
-  }
-
-  private bufferToBase64(buf: ArrayBuffer) {
-    const uint8 = new Uint8Array(buf);
-    let str = '';
-    for (let i = 0; i < uint8.byteLength; i++) {
-      str += String.fromCharCode(uint8[i]);
-    }
-    return btoa(str);
-  }
-
-  private base64ToBuffer(base64: string) {
-    const binstr = atob(base64);
-    let buf = new Uint8Array(binstr.length);
-    Array.prototype.forEach.call(binstr, function (ch, i) {
-      buf[i] = ch.charCodeAt(0);
-    });
-    return buf.buffer;
+    const signHex = "0x" + JSONBigInt.parse(p1Step3Res)["data"]["SignHex"];
+    const signForContract = joinSignature(signHex);
+    return signForContract;
   }
 
   private async generateMPCWasmInstance() {

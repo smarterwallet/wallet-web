@@ -1,14 +1,14 @@
-import {Global} from '../Global';
-import {HttpUtils} from '../utils/HttpUtils';
-import {BigNumber, ethers} from "ethers";
-import {divideAndMultiplyByTenPowerN, ETH} from '../../app/util/util';
-import {UserOperation} from "../../app/modals/UserOperation";
-import {Asset, Config} from "../config/Config";
-import {sprintf} from 'sprintf-js';
-import {AccountInterface} from "./AccountInterface";
-import {TxUtils} from "../utils/TxUtils";
+import { Global } from '../Global';
+import { HttpUtils } from '../utils/HttpUtils';
+import { BigNumber, ethers } from "ethers";
+import { divideAndMultiplyByTenPowerN, ETH } from '../../app/util/util';
+import { UserOperation } from "../../app/modals/UserOperation";
+import { Asset, Config } from "../config/Config";
+import { sprintf } from 'sprintf-js';
+import { AccountInterface } from "./AccountInterface";
+import { TxUtils } from "../utils/TxUtils";
 
-const {arrayify} = require("@ethersproject/bytes");
+const { arrayify } = require("@ethersproject/bytes");
 
 const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
@@ -161,13 +161,12 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   }
 
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {
-    let api = Config.BACKEND_API + '/account/onchain/create';
+    let api = Config.BACKEND_API + '/ca/create';
     return await HttpUtils.post(api, params);
   }
 
   async calcContractWalletAddress(): Promise<string> {
     console.log("Owner EOA Address: ", await this.getOwnerAddress());
-    console.log("Salt:", this.contractWalletAddressSalt);
     let contract = new ethers.Contract(Config.ADDRESS_SIMPLE_ACCOUNT_FACTORY, simpleAccountFactoryAbi, this.ethersProvider);
     try {
       return await contract.getAddress(this.getOwnerAddress(), this.contractWalletAddressSalt);
@@ -220,7 +219,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
     console.log("create contract")
     // create smart contract account on chain
-    let params = {"address": contractAddress}
+    let params = { "address": contractAddress }
     let tx = await Global.account.createSmartContractWalletAccount(params);
     await TxUtils.checkTransactionStatus(this.ethersProvider, tx.body["result"]);
 
@@ -298,29 +297,29 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
     // paymaster sign
     let paymasterSignPack = ethers.utils.defaultAbiCoder.encode(
-        ["address", "uint256", "bytes", "bytes", "uint256", "uint256",
-          "uint256", "uint256", "uint256"],
-        [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
-          preVerificationGas, maxFeePerGas, maxPriorityFeePerGas]);
+      ["address", "uint256", "bytes", "bytes", "uint256", "uint256",
+        "uint256", "uint256", "uint256"],
+      [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
+        preVerificationGas, maxFeePerGas, maxPriorityFeePerGas]);
     const paymasterSignPackHash = ethers.utils.keccak256(paymasterSignPack);
     // 测试的TokenPaymaster不包含验证逻辑，所以签名没有进行验证
     const paymasterDataSign = await this.ethersWallet.signMessage(arrayify(paymasterSignPackHash));
     paymasterAndData = ethers.utils.defaultAbiCoder.encode(
-        ["bytes20", "bytes"],
-        [tokenPaymasterAddress, paymasterDataSign]);
+      ["bytes20", "bytes"],
+      [tokenPaymasterAddress, paymasterDataSign]);
 
     // calculation UserOperation hash for sign
     let userOpPack = ethers.utils.defaultAbiCoder.encode(
-        ["address", "uint256", "bytes", "bytes", "uint256", "uint256",
-          "uint256", "uint256", "uint256", "bytes", "bytes"],
-        [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
-          preVerificationGas, maxFeePerGas, maxPriorityFeePerGas, paymasterAndData, signature]);
+      ["address", "uint256", "bytes", "bytes", "uint256", "uint256",
+        "uint256", "uint256", "uint256", "bytes", "bytes"],
+      [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
+        preVerificationGas, maxFeePerGas, maxPriorityFeePerGas, paymasterAndData, signature]);
     // remove signature
     userOpPack = userOpPack.substring(0, userOpPack.length - 64);
     const hash = ethers.utils.keccak256(userOpPack);
-    const {chainId} = await this.ethersProvider.getNetwork();
+    const { chainId } = await this.ethersProvider.getNetwork();
     const packData = ethers.utils.defaultAbiCoder.encode(["bytes32", "address", "uint256"],
-        [hash, entryPointAddress, chainId]);
+      [hash, entryPointAddress, chainId]);
     const userOpHash = ethers.utils.keccak256(packData);
 
     // sender sign UserOperator
@@ -339,7 +338,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       paymasterAndData: paymasterAndData,
       signature: signature,
     };
-    // console.log(userOperation)
+    console.log(userOperation);
     return userOperation;
   }
 
@@ -381,11 +380,11 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return await HttpUtils.get(sprintf(Config.MAIN_TOKEN_TX_LIST_INTERNAL_API, this.contractWalletAddress));
   }
 
-  async getTokenTxListFromThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
+  async getTokenTxListFromThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }> {
     return await HttpUtils.get(sprintf(Config.ERC20_TX_FROM_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
-  async getTokenTxListToThisAddr(tokenContractAddress:string): Promise<{ status: number, body?: any }> {
+  async getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }> {
     return await HttpUtils.get(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 

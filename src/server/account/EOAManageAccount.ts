@@ -1,9 +1,10 @@
-import {ethers} from "ethers";
-import {AccountInterface} from "./AccountInterface";
-import {ERC4337BaseManageAccount} from "./ERC4337BaseManageAccount";
-import {Config} from "../config/Config";
+import { ethers } from "ethers";
+import { AccountInterface } from "./AccountInterface";
+import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
+import { Config } from "../config/Config";
+import { hashMessage } from "ethers/lib/utils";
 
-const {arrayify} = require("@ethersproject/bytes");
+const { arrayify } = require("@ethersproject/bytes");
 
 /**
  * Account Manage
@@ -38,6 +39,7 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
       console.log("eoaKey not null");
       this.ethersWallet = new ethers.Wallet(eoaKey, this.ethersProvider);
       this.contractWalletAddress = await this.calcContractWalletAddress();
+      await this.deployContractWalletIfNotExist(this.contractWalletAddress);
     } else {
       console.log("eoakey is null")
       this.ethersWallet = null;
