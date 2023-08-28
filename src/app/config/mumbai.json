@@ -7,7 +7,7 @@
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
     "backend_api": "https://smarter-api-mumbai-dev.web3-idea.xyz/be",
-    "rpc_api": "https://polygon-mumbai.g.alchemy.com/v2/GmqREz-eRvN6r_lVW8aTY3VipXvn3qKL",
+    "rpc_api": "https://mumbai-rpc.web3-idea.xyz",
     "bundler_api": "https://smarter-api-mumbai.web3-idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
