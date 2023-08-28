@@ -11,32 +11,19 @@ import { TxUtils } from '../../../server/utils/TxUtils';
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const encryptKey = (privKey: string, password: string) => {
-    let str = password + privKey;
-    let key = window.btoa(str); // encrypt
-    // console.log("smarter-wallet-key:", key)
-    localStorage.setItem('smarter-wallet-key', key);
-
-    // generate loginkey
-    str = password + key;
-    key = window.btoa(str); // encrypt
-    // console.log("loginkey:", key)
-    localStorage.setItem('loginkey', key);
-  }
-
   const register = async (values: any) => {
-    if (values.password.trim() === '') {
+    const password = values.password.trim();
+    if (password === '') {
       message.error('Password can not be empty.');
       return;
     }
 
-    if (values.password !== values.repeatPassword) {
+    if (values.password.trim() !== values.repeatPassword.trim()) {
       message.error('The passwords entered twice do not match');
       return;
     }
 
-    let smarterWalletKey = localStorage.getItem('smarter-wallet-key');
-    if (smarterWalletKey != null && smarterWalletKey !== '') {
+    if (Global.account.exsitLocalStorageKey()) {
       message.warning('You have already registered please login directly.');
       return;
     }
@@ -45,7 +32,7 @@ const SignUp = () => {
 
     let account = ethers.Wallet.createRandom();
 
-    encryptKey(account.privateKey, values.password);
+    Global.account.saveKey2LocalStorage(account.privateKey, password);
 
     // create smart contract account on chain
     let params = {
@@ -54,13 +41,10 @@ const SignUp = () => {
     let tx = await Global.account.createSmartContractWalletAccount(params);
     await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
 
+    Global.tempLocalPassword = password;
     Global.account.initAccount(account.privateKey);
-    let address = Global.account.contractWalletAddress;
-
-    localStorage.setItem('address', address);
     Global.account.isLoggedIn = true;
 
-    // this.setState({navigate: '/login', message: ''});
     navigate('/signin/singlePartyAccount')
   }
 

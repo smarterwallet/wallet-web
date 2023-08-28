@@ -11,6 +11,7 @@ export default () => {
 
   const login = async (values: any) => {
     message.info('Login...');
+    // TODO 需要使用AES解密
     let smarterWalletKey = localStorage.getItem('smarter-wallet-key');
     let loginkey = localStorage.getItem('loginkey');
 

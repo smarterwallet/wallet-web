@@ -8,7 +8,6 @@ import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
 import RegisterPage from './pages/RegisterPage';
 import RegisterPwdPage from './pages/RegisterPwdPage';
-import CreateAccountPage from './pages/CreateAccountPage';
 import WelcomePage from './pages/WelcomePage/welcomePage';
 import AppsPage from './pages/AppsPage';
 import AutoTradePage from './pages/AutoTradePage';
@@ -118,7 +117,6 @@ class App extends React.Component<{}, AppState> {
             <Route path="/signin/multi/multiParty-SignUp-OtherPeople" element={<MultiParty_SignUp_OtherPeople />} />
 
             <Route path="/registerPwd" element={<RegisterPwdPage />} />
-            <Route path="/createAccount" element={<CreateAccountPage />} />
             <Route path="/apps" element={<AppsPage />} />
             <Route path="/autoTrade" element={<AutoTradePage />} />
             <Route path="/addTradeBot" element={<AddTradeBotPage />} />

@@ -8,6 +8,8 @@ export class Global {
   public static account: AccountInterface;
   public static initialized: boolean = false;
 
+  public static tempLocalPassword: string;
+
   public static async changeAccountType(accountType: number) {
     this._accountType = accountType;
     await this.init();

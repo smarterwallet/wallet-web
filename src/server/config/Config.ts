@@ -1,3 +1,5 @@
+const commonConfig = require('../../app/config/common.json');
+
 export interface Asset {
     name: string;
     address: string | null;
@@ -22,17 +24,26 @@ export class Config {
     public static BUNDLER_API: string;
     public static RPC_API: string;
     public static BACKEND_API: string;
+    public static DECENTRALIZE_STORAGE_API: string;
     public static BLOCKCHAIN_SCAN: string;
     public static TOKENS: Assets;
+    public static MPC_WASM_URL: string;
 
     // 启动默认网络
     public static DEFAULT_NETWORK = "Mumbai";
     // public static DEFAULT_NETWORK = "Polygon";
     public static TOKEN_PAYMASTER_TOKEN_NAME = "SWT";
+    public static LOCAL_STORAGE_EOA_KEY = 'smarter-wallet-eoa-key-v01'
+    public static LOCAL_STORAGE_MPC_KEY1 = 'smarter-wallet-mpc-key1-v01'
+    public static LOCAL_STORAGE_MPC_KEY3_HASH = 'smarter-wallet-mpc-key3-hash-v01'
+
 
     public static CURRENT_CHAIN_NAME = this.DEFAULT_NETWORK;
 
     public static async init(rawData: string) {
+        const commonConfigJSON = JSON.parse(JSON.stringify(commonConfig));
+        this.MPC_WASM_URL = commonConfigJSON.mpc.wasm.url;
+        this.DECENTRALIZE_STORAGE_API = commonConfigJSON.storage.decentralize_storage_api;
         await this.flush(rawData);
     }
 

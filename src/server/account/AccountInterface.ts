@@ -1,6 +1,6 @@
-import {Asset} from "../config/Config";
-import {BigNumber} from "@ethersproject/bignumber";
-import {ethers} from "ethers";
+import { Asset } from "../config/Config";
+import { BigNumber } from "@ethersproject/bignumber";
+import { ethers } from "ethers";
 
 /**
  * Account Manage Interface
@@ -33,10 +33,6 @@ export interface AccountInterface {
   get ethersProvider(): ethers.providers.JsonRpcProvider;
 
   set ethersProvider(value: ethers.providers.JsonRpcProvider);
-
-  get commonConfig(): any;
-
-  set commonConfig(value: any);
 
   /**
    * Account state
@@ -88,5 +84,12 @@ export interface AccountInterface {
   getTokenTxListFromThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
 
   getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
+
+  saveKey2LocalStorage(key: string, password: string): boolean;
+
+  exsitLocalStorageKey(): boolean;
+
+  getKeyFromLocalStorage(password: string): string;
+  
 }
 

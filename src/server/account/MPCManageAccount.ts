@@ -6,6 +6,7 @@ import { Config } from "../config/Config";
 import { HttpUtils } from "../utils/HttpUtils";
 import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
 import { hashMessage, joinSignature } from "ethers/lib/utils";
+import { CryptologyUtils } from "../utils/CryptologyUtils";
 
 const { arrayify } = require("@ethersproject/bytes");
 
@@ -65,6 +66,8 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
   }
 
   async initAccount(mpcKey: string) {
+    this.mpcWasmInstance = await this.generateMPCWasmInstance();
+
     if (!mpcKey) {
       return;
     }
@@ -73,10 +76,6 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
     let account = ethers.Wallet.createRandom();
     await super.initAccount(account.privateKey);
-
-    this._authorization = "local"
-
-    this.mpcWasmInstance = await this.generateMPCWasmInstance();
 
     this.initData = mpcKey;
     this._mpcKey = mpcKey;
@@ -131,18 +130,15 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log(addressGenMessageJson["data"]);
 
     console.log("start to bind-user-p2")
-    let bindResult = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/bind-user-p2", {
-      "Authorization": this._authorization,
+    let bindResult = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/bind-user-p2", {
       "p1_message_dto": addressGenMessageJson["data"],
       "p1_data_id": 1,
-    });
+    }, this._authorization);
     console.log("bindResult:", bindResult.body);
 
     // send http request to get address
     console.log("start to get address")
-    let getAddressAndPubKeyRes = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/get-address", {
-      "Authorization": this._authorization,
-    })
+    let getAddressAndPubKeyRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/get-address", {}, this._authorization)
     const address = getAddressAndPubKeyRes.body["result"]["address"];
     const pubKey = getAddressAndPubKeyRes.body["result"]["pub_key"];
     console.log("Address: " + address);
@@ -158,10 +154,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     hash = hash.substring(2);
     // send http request to get address
     console.log("start to init-p2-content")
-    let initP2ContentRes = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/init-p2-content", {
-      "Authorization": this._authorization,
+    let initP2ContentRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/init-p2-content", {
       "message": hash
-    })
+    }, this._authorization)
     console.log("initP2ContentRes: ", initP2ContentRes);
     // Step 0
     // params: p1 key, p2 id, random prim1, random prim2
@@ -173,10 +168,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log(`p1Step1: ${p1Step1Res}`);
 
     // p2 step1
-    let p2Step1Result = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/p2-step1", {
-      "Authorization": this._authorization,
+    let p2Step1Result = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/p2-step1", {
       "commitment": JSONBigInt.parse(p1Step1Res)["data"],
-    })
+    }, this._authorization)
     console.log("p2Step1Result: ", p2Step1Result);
 
     let proofJson = p2Step1Result.body["result"]["proof"]
@@ -202,11 +196,10 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log("p1Step2Res cmtDJson: ", JSONBigInt.stringify(cmtDJson));
 
     // p2 step2
-    let p2Step2Result = await HttpUtils.post(Config.BACKEND_API + "/mpc/calc/p2-step2", {
-      "Authorization": this._authorization,
+    let p2Step2Result = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/p2-step2", {
       "cmt_d": cmtDJson,
       "p1_proof": p1ProofJson,
-    })
+    }, this._authorization)
     console.log("p2Step2Result: ", p2Step2Result);
 
     // p1 step3
@@ -220,30 +213,66 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   private async generateMPCWasmInstance() {
     console.log("generateMPCWasmInstance start");
-    const response = await fetch(this.commonConfig.mpc.wasm.url);
+    const response = await fetch(Config.MPC_WASM_URL);
     const buffer = await response.arrayBuffer();
     await mpcWasmUtils.initWasm(buffer);
   }
 
-  private async generateKeys() {
+  public async generateKeys() {
     const keysResult = await mpcWasmUtils.wasmGenerateDeviceData();
     const keysJson = JSONBigInt.parse(keysResult);
     if (keysJson["code"] === 200) {
       console.log("p1JsonData: " + JSONBigInt.stringify(keysJson["data"]["p1JsonData"]));
       console.log("p2JsonData: " + JSONBigInt.stringify(keysJson["data"]["p2JsonData"]));
       console.log("p3JsonData: " + JSONBigInt.stringify(keysJson["data"]["p3JsonData"]));
+      return keysJson["data"];
     } else {
       console.log("generateDeviceData error. Response: " + keysResult);
+      return null;
     }
-    console.log("generateMPCWasmInstance end");
   }
 
-  public async saveKey2WalletServer(key: string) {
+  async saveKey2WalletServer(key: string) {
     let api = Config.BACKEND_API + '/mpc/key/save';
-    return await HttpUtils.post(api, {
-      "Authorization": this._authorization,
+    console.log("this._authorization:", this._authorization)
+    return HttpUtils.postWithAuth(api, {
       "key": key
+    }, this._authorization);
+  }
+
+  saveKey2LocalStorage(key: string, password: string): boolean {
+    key = CryptologyUtils.encrypt(key, password);
+    localStorage.setItem(Config.LOCAL_STORAGE_MPC_KEY1, key);
+    return true;
+  }
+
+  getKeyFromLocalStorage(password: string): string {
+    const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1);
+    return CryptologyUtils.decrypt(keyInLocal, password);
+  }
+
+  saveKeyThirdHash2LocalStorage(key: string, password: string): boolean {
+    key = CryptologyUtils.encrypt(key, password);
+    localStorage.setItem(Config.LOCAL_STORAGE_MPC_KEY3_HASH, key);
+    return true;
+  }
+
+  /**
+   * save key to ipfs
+   * @param key private key
+   * @param password from user input
+   * @returns result
+   */
+  async saveKey2DecentralizeStorage(key: string, password: string) {
+    key = CryptologyUtils.encrypt(key, password);
+    let api = Config.DECENTRALIZE_STORAGE_API + '/ipfs/upload';
+    return HttpUtils.post(api, {
+      "data": key
     });
+  }
+
+  exsitLocalStorageKey(): boolean {
+    return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length == 0;
   }
 
 }

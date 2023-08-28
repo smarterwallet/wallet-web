@@ -13,7 +13,6 @@ const { arrayify } = require("@ethersproject/bytes");
 const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
-const commonConfig = require('../../app/config/common.json');
 
 /**
  * Account Manage Base Class
@@ -56,11 +55,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    * account has login
    */
   private _isLoggedIn: boolean;
-
-  /**
-   * common config
-   */
-  private _commonConfig: any;
 
   constructor() {
     this._contractAddressExist = false;
@@ -141,14 +135,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     this._ethersProvider = value;
   }
 
-  get commonConfig(): any {
-    return this._commonConfig;
-  }
-
-  set commonConfig(value: any) {
-    this._commonConfig = value;
-  }
-
   /**
    * must call initAccount in subclass
    * call it after change network
@@ -157,7 +143,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   async initAccount(data: any) {
     this._initData = data;
     this._hasBeenInit = true;
-    this._commonConfig = JSON.parse(JSON.stringify(commonConfig));
   }
 
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {
@@ -388,5 +373,15 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return await HttpUtils.get(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
+  saveKey2LocalStorage(key: string, password: string): boolean {
+    throw new Error('Method not implemented.');
+  }
+  exsitLocalStorageKey(): boolean {
+    throw new Error('Method not implemented.');
+  }
+  getKeyFromLocalStorage(password: string): string {
+    throw new Error('Method not implemented.');
+  }
+  
 }
 
