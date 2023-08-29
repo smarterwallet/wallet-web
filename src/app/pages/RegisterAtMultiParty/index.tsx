@@ -71,7 +71,8 @@ const RegisterAtMultiParty = () => {
 
   const sendCode = async (values: any) => {
     const email = form.getFieldValue('email');
-    HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
+    message.info("sending...")
+    await HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
       "email": email,
     })
     message.info("send email code success")
