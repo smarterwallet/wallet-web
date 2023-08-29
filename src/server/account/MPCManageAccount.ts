@@ -77,12 +77,11 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     let account = ethers.Wallet.createRandom();
     await super.initAccount(account.privateKey);
 
-    this.initData = mpcKey;
     this._mpcKey = mpcKey;
     this.contractWalletAddressSalt = 0;
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
     this.ethersWallet = new ethers.Wallet(account.privateKey, this.ethersProvider);
-    if (mpcKey != null && mpcKey !== "") {
+    if (mpcKey !== "") {
       console.log("eoaKey not null");
       const initP1KeyDataRes = await mpcWasmUtils.wasmInitP1KeyData(mpcKey);
       console.log("initP1KeyData: ", initP1KeyDataRes);

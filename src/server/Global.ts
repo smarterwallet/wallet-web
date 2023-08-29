@@ -16,6 +16,10 @@ export class Global {
   }
 
   public static async init() {
+    let initData = null;
+    if (this.account != null){
+      initData = this.account.initData;;
+    }
     this.initialized = true;
     switch (this._accountType) {
       case 1:
@@ -28,16 +32,7 @@ export class Global {
         this.account = new MPCManageAccount()
         break;
     }
-    if (this.account == null || Global.account.initData == null) {
-      // init
-      console.log("Global init");
-      await this.account.initAccount(null);
-    } else {
-      // flush
-      console.log("Global flush");
-      await this.account.initAccount(Global.account.initData);
-      this.account.isLoggedIn = true;
-    }
+    await this.account.initAccount(initData);
   }
 
 }

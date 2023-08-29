@@ -20,7 +20,7 @@ const erc20Abi = require('../../data/IERC20.json');
 export class ERC4337BaseManageAccount implements AccountInterface {
 
   /**
-   * a data for init account
+   * a data for init account after change network
    */
   private _initData: any;
 
@@ -141,8 +141,11 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    * @param data
    */
   async initAccount(data: any) {
-    this._initData = data;
-    this._hasBeenInit = true;
+    this.initData = data;
+    this.hasBeenInit = true;
+    if (data != null && data !== "") {
+      this.isLoggedIn = true;
+    }
   }
 
   async createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }> {
