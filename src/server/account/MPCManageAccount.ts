@@ -96,7 +96,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
   }
 
   async getOwnerAddress(): Promise<string> {
-    if (!this._authorization) {
+    if (this._authorization == null || this._authorization === "") {
       console.log("have not login wallet server");
       return null;
     }
@@ -112,11 +112,11 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     // 从 localStorage 获取数据
     const primKey = "primResult";
     let data = localStorage.getItem(primKey);
-    if (data !== null) {
+    if (data != null && data !== "") {
       console.log("read prim from local storage");
       primResult = JSON.parse(data);
     } else {
-      let primRequestResult = await HttpUtils.get(Config.BACKEND_API + "/mpc/calc/random-prim");
+      let primRequestResult = await HttpUtils.get(Config.BACKEND_API + "/mpc/calc/get-prim");
       primResult = primRequestResult.body["result"];
       localStorage.setItem(primKey, JSON.stringify(primResult));
     }
@@ -248,7 +248,11 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   getKeyFromLocalStorage(password: string): string {
     const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1);
-    return CryptologyUtils.decrypt(keyInLocal, password);
+    const data = CryptologyUtils.decrypt(keyInLocal, password);
+    if (data == null || data === "") {
+      return data;
+    }
+    return mpcWasmUtils.parseNumbers(JSONBigInt.parse(data));
   }
 
   saveKeyThirdHash2LocalStorage(key: string, password: string): boolean {

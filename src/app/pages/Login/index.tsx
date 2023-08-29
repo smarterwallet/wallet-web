@@ -46,12 +46,9 @@ export default () => {
 
     const mpcPassword = form.getFieldValue('mpcPassword');
     const mpcKey1 = mpcAccount.getKeyFromLocalStorage(mpcPassword)
-    if (mpcKey1 != null && mpcKey1 !== "") {
-      message.info('Init local MPC key...');
-      // TODO 这里有问题
-      await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
-    } else {
+    if (mpcKey1 == null || mpcKey1 === "") {
       message.error('Local password incorrect');
+      return;
     }
 
     const email = form.getFieldValue('email');
@@ -66,27 +63,13 @@ export default () => {
     }
     message.info("Login success");
 
-
+    message.info('Init local MPC key...');
     mpcAccount.authorization = result.body["result"];
+    await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
+
+    console.log("result.body result:", result.body["result"])
     Global.account.isLoggedIn = true;
     navigate('/home')
-
-    // console.log(email);
-    // console.log(code);
-    // console.log(mpcPassword);
-    // Global.changeAccountType(2);
-    // const eoaAccount  = Global.account as MPCManageAccount;
-    // const mpcKey1 = eoaAccount.getKeyFromLocalStorage(values.password.trim())
-
-    // if (mpcKey1 != null && mpcKey1 !== "") {
-    //   message.info('Login...');
-    //   await Global.account.initAccount(mpcKey1);
-    //   Global.account.isLoggedIn = true;
-
-    //   navigate('/home')
-    // } else {
-    //   message.error('Password incorrect');
-    // }
   }
 
 

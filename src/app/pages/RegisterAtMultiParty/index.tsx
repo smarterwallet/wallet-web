@@ -8,6 +8,7 @@ import { Config } from '../../../server/config/Config';
 import { Global } from '../../../server/Global';
 import { MPCManageAccount } from '../../../server/account/MPCManageAccount';
 import { JSONBigInt } from '../../../server/js/common_utils';
+import { parseNumbers } from '../../../server/js/mpc_wasm_utils';
 
 const RegisterAtMultiParty = () => {
   const navigate = useNavigate();
@@ -36,11 +37,10 @@ const RegisterAtMultiParty = () => {
       message.error("Generate MPC keys error");
       return;
     }
-    const key1 = JSONBigInt.stringify(keys["p1JsonData"])
-    const key2 = JSONBigInt.stringify(keys["p2JsonData"])
-    const key3 = JSONBigInt.stringify(keys["p3JsonData"])
+    const key1 = JSONBigInt.stringify(parseNumbers(keys["p1JsonData"]))
+    const key2 = JSONBigInt.stringify(parseNumbers(keys["p2JsonData"]))
+    const key3 = JSONBigInt.stringify(parseNumbers(keys["p3JsonData"]))
 
-    Global.tempLocalPassword = "1";
     if (Global.tempLocalPassword == null || Global.tempLocalPassword === "") {
       message.error("Local password error")
       return;
