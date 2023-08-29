@@ -108,6 +108,7 @@ a {
 /* app styles */
 
 .app-container {
+    position: relative;
   height: 100vh;
   max-width: 500px;
   margin: auto;

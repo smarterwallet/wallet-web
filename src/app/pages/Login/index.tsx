@@ -1,5 +1,5 @@
 import HeaderBar from "../../elements/HeaderBar";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Collapse, Form, Input, Space, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Global } from '../../../server/Global';
@@ -14,9 +14,18 @@ export default () => {
 
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [activeKey, setActiveKey] = useState('1');
 
   const eoaLogin = async (values: any) => {
-    Global.changeAccountType(1);
+    if ((Global.account as MPCManageAccount)?.key) {
+      setActiveKey('2');
+      message.info('Your account type is mpc account, which requires you to make an email login');
+      return;
+    }
+    if (!values.localPassword) {
+      return message.error('Please input password');
+    }
+    await Global.changeAccountType(1);
     const eoaAccount = Global.account as EOAManageAccount;
     const eoaKey = eoaAccount.getKeyFromLocalStorage(values.localPassword.trim())
 
@@ -78,8 +87,10 @@ export default () => {
       <HeaderBar text='Login' />
       <Collapse
         defaultActiveKey="1"
+        activeKey={activeKey}
         className="ww-collapse"
         accordion
+        onChange={(key) => setActiveKey(key as string)}
         items={[
           {
             label: 'Local login',
@@ -92,7 +103,6 @@ export default () => {
                 <Input.Password />
               </Form.Item>
               <Button
-                // type="primary"
                 htmlType="submit"
                 style={{ width: '100%' }}
               >Login</Button>

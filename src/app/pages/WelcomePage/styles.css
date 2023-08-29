@@ -1,5 +1,6 @@
 .welcome-page {
     position: absolute;
+    box-sizing: border-box;
   padding: 0 20px;
     height: 100%;
     color: #fff;
