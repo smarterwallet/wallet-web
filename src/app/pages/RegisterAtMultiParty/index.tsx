@@ -20,53 +20,53 @@ const RegisterAtMultiParty = () => {
       "email": email,
       "code": code
     })
-    if (result.body["code"] === 200) {
-      message.info("Register success");
-
-      message.info("Init MPC account. Please wait amount.");
-      await Global.changeAccountType(2);
-      const mpc = Global.account as MPCManageAccount;
-      mpc.authorization = result.body["result"];
-      message.info("Start to generate MPC key");
-      const keys = await mpc.generateKeys()
-      if (keys == null || keys === "") {
-        message.error("Generate MPC keys error");
-        return;
-      }
-      const key1 = JSONBigInt.stringify(keys["p1JsonData"])
-      const key2 = JSONBigInt.stringify(keys["p2JsonData"])
-      const key3 = JSONBigInt.stringify(keys["p3JsonData"])
-
-      Global.tempLocalPassword = "1";
-      if (Global.tempLocalPassword == null || Global.tempLocalPassword === "") {
-        message.error("Local password error")
-        return;
-      }
-      if (!mpc.saveKey2LocalStorage(key1, Global.tempLocalPassword)) {
-        message.error("Save key to local storage error")
-        return;
-      }
-      const save2Server = await mpc.saveKey2WalletServer(key2)
-      if (save2Server.body["code"] != 200) {
-        message.error(save2Server.body["message"])
-        return;
-      }
-      const save2DS = await mpc.saveKey2DecentralizeStorage(key3, Global.tempLocalPassword);
-      if (save2DS.status != 200) {
-        message.error("Save key to decentralize storage error")
-        return;
-      }
-      if (!mpc.saveKeyThirdHash2LocalStorage(save2DS.body["result"]["result"], Global.tempLocalPassword)) {
-        message.error("Save third key hash to local storage error")
-        return;
-      }
-
-      Global.tempLocalPassword = null;
-
-      navigate('/registerSuccessfully');
-    } else {
-      message.error(result.body["message"])
+    if (result.body["code"] != 200) {
+      message.error(result.body["message"]);
+      return;
     }
+    message.info("Register success");
+
+    message.info("Init MPC account. Please wait amount.");
+    await Global.changeAccountType(2);
+    const mpc = Global.account as MPCManageAccount;
+    mpc.authorization = result.body["result"];
+    message.info("Start to generate MPC key");
+    const keys = await mpc.generateKeys()
+    if (keys == null || keys === "") {
+      message.error("Generate MPC keys error");
+      return;
+    }
+    const key1 = JSONBigInt.stringify(keys["p1JsonData"])
+    const key2 = JSONBigInt.stringify(keys["p2JsonData"])
+    const key3 = JSONBigInt.stringify(keys["p3JsonData"])
+
+    Global.tempLocalPassword = "1";
+    if (Global.tempLocalPassword == null || Global.tempLocalPassword === "") {
+      message.error("Local password error")
+      return;
+    }
+    if (!mpc.saveKey2LocalStorage(key1, Global.tempLocalPassword)) {
+      message.error("Save key to local storage error")
+      return;
+    }
+    const save2Server = await mpc.saveKey2WalletServer(key2)
+    if (save2Server.body["code"] != 200) {
+      message.error(save2Server.body["message"])
+      return;
+    }
+    const save2DS = await mpc.saveKey2DecentralizeStorage(key3, Global.tempLocalPassword);
+    if (save2DS.status != 200) {
+      message.error("Save key to decentralize storage error")
+      return;
+    }
+    if (!mpc.saveKeyThirdHash2LocalStorage(save2DS.body["result"]["result"], Global.tempLocalPassword)) {
+      message.error("Save third key hash to local storage error")
+      return;
+    }
+
+    Global.tempLocalPassword = null;
+
+    navigate('/registerSuccessfully');
   }
 
   const sendCode = async (values: any) => {
