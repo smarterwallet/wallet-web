@@ -51,7 +51,7 @@ const RegisterAtMultiParty = () => {
     }
     const save2Server = await mpc.saveKey2WalletServer(key2)
     if (save2Server.body["code"] != 200) {
-      message.error(save2Server.body["message"])
+      message.error("Save MPC key to wallet server error. Details: " + save2Server.body["message"])
       return;
     }
     const save2DS = await mpc.saveKey2DecentralizeStorage(key3, Global.tempLocalPassword);

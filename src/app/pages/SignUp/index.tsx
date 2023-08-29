@@ -18,13 +18,13 @@ const SignUp = () => {
       return;
     }
 
-    if (values.password.trim() !== values.repeatPassword.trim()) {
+    if (password !== values.repeatPassword.trim()) {
       message.error('The passwords entered twice do not match');
       return;
     }
 
     if (Global.account.exsitLocalStorageKey()) {
-      message.warning('You have already registered please login directly.');
+      message.error('You have already registered please login directly.');
       return;
     }
 
@@ -32,15 +32,20 @@ const SignUp = () => {
 
     let account = ethers.Wallet.createRandom();
 
-    Global.account.saveKey2LocalStorage(account.privateKey, password);
+    if(!Global.account.saveKey2LocalStorage(account.privateKey, password)){
+      message.error("Save key to local storage error.");
+      return;
+    }
 
     // create smart contract account on chain
     let params = {
       "address": account.address
     }
+    message.info("Start to create wallet...")
     let tx = await Global.account.createSmartContractWalletAccount(params);
     await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
 
+    message.info("Start to init wallet...")
     Global.tempLocalPassword = password;
     Global.account.initAccount(account.privateKey);
     Global.account.isLoggedIn = true;
