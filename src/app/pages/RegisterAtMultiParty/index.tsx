@@ -13,6 +13,8 @@ import { parseNumbers } from '../../../server/js/mpc_wasm_utils';
 const RegisterAtMultiParty = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
   const register = async (values: any) => {
     const email = form.getFieldValue('email');
@@ -71,17 +73,27 @@ const RegisterAtMultiParty = () => {
 
   const sendCode = async (values: any) => {
     const email = form.getFieldValue('email');
-    message.info("sending...")
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Sending...',
+    });
     await HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
       "email": email,
     })
-    message.info("send email code success")
+    messageApi.open({
+      key,
+      type: 'success',
+      content: 'Send email code success!',
+      duration: 2,
+    });
   }
 
   return (
     <div className="ww-page-container rmp-page">
       <HeaderBar text="Multi Party Account" />
       <div className="ww-alpha-container">
+        {contextHolder}
         <h2>Register At Multi Party</h2>
         <Form form={form} onFinish={register}>
           <Form.Item
