@@ -14,11 +14,16 @@ const RegisterAtMultiParty = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
-  const key = 'updatable';
 
   const register = async (values: any) => {
     const email = form.getFieldValue('email');
     const code = form.getFieldValue('code');
+
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Register on Smarter AA Wallet...',
+      duration: 0,
+    });
     const result = await HttpUtils.post(Config.BACKEND_API + "/sw/user/register", {
       "email": email,
       "code": code
@@ -27,13 +32,19 @@ const RegisterAtMultiParty = () => {
       message.error(result.body["message"]);
       return;
     }
-    message.info("Register success");
-
-    message.info("Init MPC account. Please wait amount.");
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Init MPC account...',
+      duration: 0,
+    });
     await Global.changeAccountType(2);
     const mpc = Global.account as MPCManageAccount;
     mpc.authorization = result.body["result"];
-    message.info("Start to generate MPC key");
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Generate MPC key...',
+      duration: 0,
+    });
     const keys = await mpc.generateKeys()
     if (keys == null || keys === "") {
       message.error("Generate MPC keys error");
@@ -47,42 +58,66 @@ const RegisterAtMultiParty = () => {
       message.error("Local password error")
       return;
     }
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save key to local storage...',
+      duration: 0,
+    });
     if (!mpc.saveKey2LocalStorage(key1, Global.tempLocalPassword)) {
       message.error("Save key to local storage error")
       return;
     }
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save MPC key to wallet server...',
+      duration: 0,
+    });
     const save2Server = await mpc.saveKey2WalletServer(key2)
     if (save2Server.body["code"] != 200) {
       message.error("Save MPC key to wallet server error. Details: " + save2Server.body["message"])
       return;
     }
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save key to decentralize storage...',
+      duration: 0,
+    });
     const save2DS = await mpc.saveKey2DecentralizeStorage(key3, Global.tempLocalPassword);
     if (save2DS.status != 200) {
       message.error("Save key to decentralize storage error")
       return;
     }
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save third key hash to local storage...',
+      duration: 0,
+    });
     if (!mpc.saveKeyThirdHash2LocalStorage(save2DS.body["result"]["result"], Global.tempLocalPassword)) {
       message.error("Save third key hash to local storage error")
       return;
     }
 
     Global.tempLocalPassword = null;
-
+    messageApi.success({
+      key: Global.messageTypeKeyLoading,
+      content: 'Register successfully...',
+      duration: 2,
+    });
     navigate('/registerSuccessfully');
   }
 
   const sendCode = async (values: any) => {
     const email = form.getFieldValue('email');
-    messageApi.open({
-      key,
-      type: 'loading',
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
       content: 'Sending...',
+      duration: 0,
     });
     await HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
       "email": email,
     })
-    messageApi.open({
-      key,
+    messageApi.success({
+      key: Global.messageTypeKeyLoading,
       type: 'success',
       content: 'Send email code success!',
       duration: 2,

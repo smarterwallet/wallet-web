@@ -16,7 +16,20 @@ export default () => {
   const [form] = Form.useForm();
   const [activeKey, setActiveKey] = useState('1');
   const [messageApi, contextHolder] = message.useMessage();
-  const key = 'updatable';
+
+  const getLocalMPCKey = (mpcPassword: any) => {
+    try {
+      const mpcKey1 = MPCManageAccount.getKeyFromLocalStorage(mpcPassword);
+      if (mpcKey1 == null || mpcKey1 === "") {
+        message.error('Local password incorrect');
+        return "";
+      }
+      return mpcKey1;
+    } catch (e) {
+      message.error("Local password incorrect");
+      return "";
+    }
+  }
 
   const eoaLogin = async (values: any) => {
     if (Global.isMPCAccount()) {
@@ -29,31 +42,43 @@ export default () => {
     }
     await Global.changeAccountType(1);
     const eoaAccount = Global.account as EOAManageAccount;
-    const eoaKey = eoaAccount.getKeyFromLocalStorage(values.localPassword.trim())
+    const eoaKey = EOAManageAccount.getKeyFromLocalStorage(values.localPassword.trim())
 
     if (eoaKey != null && eoaKey !== "") {
-      message.info('Login...');
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
+        content: 'Login...',
+        duration: 0,
+      });
       await Global.account.initAccount(eoaKey);
       Global.account.isLoggedIn = true;
-
+      messageApi.success({
+        key: Global.messageTypeKeyLoading,
+        content: 'Jump to home page',
+        duration: 2,
+      });
       navigate('/home')
     } else {
       message.error('Password incorrect');
     }
   }
   const sendEmailCode = async (values: any) => {
+    const mpcPassword = form.getFieldValue('mpcPassword');
+    const mpcKey1 = getLocalMPCKey(mpcPassword);
+    if (mpcKey1 == null || mpcKey1 === "") {
+      return;
+    }
     const email = form.getFieldValue('email');
-    messageApi.open({
-      key,
-      type: 'loading',
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
       content: 'Sending...',
+      duration: 0,
     });
     await HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
       "email": email,
     })
-    messageApi.open({
-      key,
-      type: 'success',
+    messageApi.success({
+      key: Global.messageTypeKeyLoading,
       content: 'Send email code success!',
       duration: 2,
     });
@@ -61,31 +86,31 @@ export default () => {
 
   const mpcLogin = async (values: any) => {
     try {
-      messageApi.open({
-        key,
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
         type: 'loading',
+        content: 'Decrpty local MPC key...',
+        duration: 0,
+      });
+      const mpcPassword = form.getFieldValue('mpcPassword');
+      const mpcKey1 = getLocalMPCKey(mpcPassword);
+      if (mpcKey1 == null || mpcKey1 === "") {
+        return;
+      }
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
         content: 'Init MPC account...',
+        duration: 0,
       });
       await Global.changeAccountType(2);
       const mpcAccount = Global.account as MPCManageAccount;
-      messageApi.open({
-        key,
-        type: 'loading',
-        content: 'Decrpty local MPC key...',
-        duration: 2,
-      });
-      const mpcPassword = form.getFieldValue('mpcPassword');
-      const mpcKey1 = mpcAccount.getKeyFromLocalStorage(mpcPassword)
-      if (mpcKey1 == null || mpcKey1 === "") {
-        message.error('Local password incorrect');
-        return;
-      }
 
-      messageApi.open({
-        key,
+
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
         type: 'loading',
         content: 'Login wallet server...',
-        duration: 3,
+        duration: 0,
       });
       const email = form.getFieldValue('email');
       const code = form.getFieldValue('code');
@@ -98,20 +123,19 @@ export default () => {
         return;
       }
 
-      messageApi.open({
-        key,
-        type: 'loading',
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
         content: 'Init local MPC key..',
-        duration: 4,
+        duration: 0,
       });
       mpcAccount.authorization = result.body["result"];
       await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
 
-      messageApi.open({
-        key,
+      messageApi.success({
+        key: Global.messageTypeKeyLoading,
         type: 'success',
         content: 'Jump to home page',
-        duration: 5,
+        duration: 2,
       });
 
       console.log("result.body result:", result.body["result"])
@@ -119,14 +143,15 @@ export default () => {
       navigate('/home')
     } catch (error: any) {
       message.error((error as Error).message);
+      return;
     }
   }
 
 
   return (
     <div className="ww-page-container">
-      {contextHolder}
       <HeaderBar text='Login' />
+      {contextHolder}
       <Collapse
         defaultActiveKey="1"
         activeKey={activeKey}
@@ -187,3 +212,5 @@ export default () => {
     </div>
   )
 }
+
+

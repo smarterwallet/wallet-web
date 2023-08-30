@@ -10,6 +10,7 @@ import { TxUtils } from '../../../server/utils/TxUtils';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const register = async (values: any) => {
     const password = values.password.trim();
@@ -28,11 +29,19 @@ const SignUp = () => {
       return;
     }
 
-    message.info('Registering...');
-
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Create account...',
+      duration: 0
+    });
     let account = ethers.Wallet.createRandom();
 
-    if(!Global.account.saveKey2LocalStorage(account.privateKey, password)){
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save key to local storage...',
+      duration: 0
+    });
+    if (!Global.account.saveKey2LocalStorage(account.privateKey, password)) {
       message.error("Save key to local storage error.");
       return;
     }
@@ -41,22 +50,35 @@ const SignUp = () => {
     let params = {
       "address": account.address
     }
-    message.info("Start to create wallet...")
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Create wallet on chain....',
+      duration: 0
+    });
     let tx = await Global.account.createSmartContractWalletAccount(params);
     await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
 
-    message.info("Start to init wallet...")
+    messageApi.loading({
+      key: Global.messageTypeKeyLoading,
+      content: 'Init Smarter AA Wallet....',
+      duration: 0
+    });
     Global.tempLocalPassword = password;
-    Global.account.initAccount(account.privateKey);
+    await Global.account.initAccount(account.privateKey);
     Global.account.isLoggedIn = true;
-
+    messageApi.success({
+      key: Global.messageTypeKeyLoading,
+      content: 'Jump to single party account page',
+      duration: 0
+    });
     navigate('/signin/singlePartyAccount')
   }
 
   return (
     <div className="ww-page-container">
-      <HeaderBar text='Sign up'/>
+      <HeaderBar text='Sign up' />
       <div className="ww-alpha-container">
+        {contextHolder}
         <h2>Register at local device</h2>
         <Form className="ww-signup-form" onFinish={register}>
           <Form.Item
@@ -83,7 +105,7 @@ const SignUp = () => {
           </Form.Item>
           <Button
             htmlType="submit"
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
           >Register</Button>
         </Form>
       </div>

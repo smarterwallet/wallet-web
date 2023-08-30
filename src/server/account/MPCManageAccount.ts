@@ -264,15 +264,6 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     return true;
   }
 
-  getKeyFromLocalStorage(password: string): string {
-    const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1);
-    const data = CryptologyUtils.decrypt(keyInLocal, password);
-    if (data == null || data === "") {
-      return data;
-    }
-    return mpcWasmUtils.parseNumbers(JSONBigInt.parse(data));
-  }
-
   saveKeyThirdHash2LocalStorage(key: string, password: string): boolean {
     key = CryptologyUtils.encrypt(key, password);
     localStorage.setItem(Config.LOCAL_STORAGE_MPC_KEY3_HASH, key);
@@ -295,6 +286,15 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   existLocalStorageKey(): boolean {
     return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length != 0;
+  }
+
+  static getKeyFromLocalStorage(password: string): string {
+    const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1);
+    const data = CryptologyUtils.decrypt(keyInLocal, password);
+    if (data == null || data === "") {
+      return data;
+    }
+    return mpcWasmUtils.parseNumbers(JSONBigInt.parse(data));
   }
 
 }

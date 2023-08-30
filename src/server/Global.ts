@@ -11,6 +11,8 @@ export class Global {
 
   public static tempLocalPassword: string;
 
+  public static messageTypeKeyLoading = 'loading';
+
   public static async changeAccountType(accountType: number) {
     // if change account type, need set pre object to null
     if(accountType !== this._accountType && this.account != null){

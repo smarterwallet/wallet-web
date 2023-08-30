@@ -89,7 +89,5 @@ export interface AccountInterface {
 
   existLocalStorageKey(): boolean;
 
-  getKeyFromLocalStorage(password: string): string;
-  
 }
 
