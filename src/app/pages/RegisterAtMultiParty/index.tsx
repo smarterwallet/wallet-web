@@ -155,7 +155,7 @@ const RegisterAtMultiParty = () => {
                   }
                   return true;
                 }}
-                storageKey='login-email-send-code'
+                storageKey='multi-part-email-send-code'
               >Send Code</CountDownButton>
             </Space>
           </Form.Item>
