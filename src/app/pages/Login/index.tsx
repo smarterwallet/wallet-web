@@ -15,6 +15,8 @@ export default () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [activeKey, setActiveKey] = useState('1');
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
   const eoaLogin = async (values: any) => {
     if (Global.isMPCAccount()) {
@@ -39,51 +41,91 @@ export default () => {
       message.error('Password incorrect');
     }
   }
-
   const sendEmailCode = async (values: any) => {
     const email = form.getFieldValue('email');
-    HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Sending...',
+    });
+    await HttpUtils.post(Config.BACKEND_API + "/sw/user/email-code", {
       "email": email,
     })
-    message.info("send email code success")
+    messageApi.open({
+      key,
+      type: 'success',
+      content: 'Send email code success!',
+      duration: 2,
+    });
   }
 
   const mpcLogin = async (values: any) => {
-    message.info("Init MPC account. Please wait amount.");
-    await Global.changeAccountType(2);
-    const mpcAccount = Global.account as MPCManageAccount;
+    try {
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Init MPC account...',
+      });
+      await Global.changeAccountType(2);
+      const mpcAccount = Global.account as MPCManageAccount;
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Decrpty local MPC key...',
+        duration: 2,
+      });
+      const mpcPassword = form.getFieldValue('mpcPassword');
+      const mpcKey1 = mpcAccount.getKeyFromLocalStorage(mpcPassword)
+      if (mpcKey1 == null || mpcKey1 === "") {
+        message.error('Local password incorrect');
+        return;
+      }
 
-    const mpcPassword = form.getFieldValue('mpcPassword');
-    const mpcKey1 = mpcAccount.getKeyFromLocalStorage(mpcPassword)
-    if (mpcKey1 == null || mpcKey1 === "") {
-      message.error('Local password incorrect');
-      return;
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Login wallet server...',
+        duration: 3,
+      });
+      const email = form.getFieldValue('email');
+      const code = form.getFieldValue('code');
+      const result = await HttpUtils.post(Config.BACKEND_API + "/sw/user/login", {
+        "email": email,
+        "code": code
+      })
+      if (result.body["code"] != 200) {
+        message.error(result.body["message"]);
+        return;
+      }
+
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Init local MPC key..',
+        duration: 4,
+      });
+      mpcAccount.authorization = result.body["result"];
+      await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
+
+      messageApi.open({
+        key,
+        type: 'success',
+        content: 'Jump to home page',
+        duration: 5,
+      });
+
+      console.log("result.body result:", result.body["result"])
+      Global.account.isLoggedIn = true;
+      navigate('/home')
+    } catch (error: any) {
+      message.error((error as Error).message);
     }
-
-    const email = form.getFieldValue('email');
-    const code = form.getFieldValue('code');
-    const result = await HttpUtils.post(Config.BACKEND_API + "/sw/user/login", {
-      "email": email,
-      "code": code
-    })
-    if (result.body["code"] != 200) {
-      message.error(result.body["message"]);
-      return;
-    }
-    message.info("Login success");
-
-    message.info('Init local MPC key...');
-    mpcAccount.authorization = result.body["result"];
-    await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
-
-    console.log("result.body result:", result.body["result"])
-    Global.account.isLoggedIn = true;
-    navigate('/home')
   }
 
 
   return (
     <div className="ww-page-container">
+      {contextHolder}
       <HeaderBar text='Login' />
       <Collapse
         defaultActiveKey="1"

@@ -7,6 +7,7 @@ import { HttpUtils } from "../utils/HttpUtils";
 import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
 import { hashMessage, joinSignature } from "ethers/lib/utils";
 import { CryptologyUtils } from "../utils/CryptologyUtils";
+import { Exception } from "sass";
 
 const { arrayify } = require("@ethersproject/bytes");
 
@@ -116,6 +117,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       primResult = JSON.parse(data);
     } else {
       let primRequestResult = await HttpUtils.get(Config.BACKEND_API + "/mpc/calc/get-prim");
+      if (primRequestResult.body["code"] != 200) {
+        throw new Error(primRequestResult.body["message"]);
+      }
       primResult = primRequestResult.body["result"];
       localStorage.setItem(primKey, JSON.stringify(primResult));
     }
@@ -133,11 +137,17 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       "p1_message_dto": addressGenMessageJson["data"],
       "p1_data_id": 1,
     }, this._authorization);
+    if (bindResult.body["code"] != 200) {
+      throw new Error(bindResult.body["message"]);
+    }
     console.log("bindResult:", bindResult.body);
 
     // send http request to get address
     console.log("start to get address")
     let getAddressAndPubKeyRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/get-address", {}, this._authorization)
+    if (getAddressAndPubKeyRes.body["code"] != 200) {
+      throw new Error(getAddressAndPubKeyRes.body["message"]);
+    }
     const address = getAddressAndPubKeyRes.body["result"]["address"];
     const pubKey = getAddressAndPubKeyRes.body["result"]["pub_key"];
     console.log("Address: " + address);
@@ -157,6 +167,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       "message": hash
     }, this._authorization)
     console.log("initP2ContentRes: ", initP2ContentRes);
+    if (initP2ContentRes.body["code"] != 200) {
+      throw new Error(initP2ContentRes.body["message"]);
+    }
     // Step 0
     // params: p1 key, p2 id, random prim1, random prim2
     const initP1ContextRes = await mpcWasmUtils.wasmInitP1Context(hash);
@@ -171,6 +184,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       "commitment": JSONBigInt.parse(p1Step1Res)["data"],
     }, this._authorization)
     console.log("p2Step1Result: ", p2Step1Result);
+    if (p2Step1Result.body["code"] != 200) {
+      throw new Error(p2Step1Result.body["message"]);
+    }
 
     let proofJson = p2Step1Result.body["result"]["proof"]
     console.log("p2Step1Result proofJson: ", proofJson);
@@ -200,6 +216,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
       "p1_proof": p1ProofJson,
     }, this._authorization)
     console.log("p2Step2Result: ", p2Step2Result);
+    if (p2Step2Result.body["code"] != 200) {
+      throw new Error(p2Step2Result.body["message"]);
+    }
 
     // p1 step3
     const p1Step3Res = await mpcWasmUtils.wasmP1Step3(p2Step2Result.body["result"], hash);

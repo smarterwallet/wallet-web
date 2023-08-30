@@ -20,9 +20,7 @@ export class HttpUtils {
       request.open(method, api);
       request.setRequestHeader('Content-Type', 'application/json');
       if (auth != null && auth !== "") {
-        console.log("auth:", auth)
         request.setRequestHeader('Authorization', auth);
-        console.log("request:",request);
       }
       let body = JSONBigInt.stringify(params);
       // let body = JSON.stringify(params);
