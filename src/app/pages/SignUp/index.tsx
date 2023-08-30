@@ -23,7 +23,7 @@ const SignUp = () => {
       return;
     }
 
-    if (Global.account.exsitLocalStorageKey()) {
+    if (Global.account.existLocalStorageKey()) {
       message.error('You have already registered please login directly.');
       return;
     }

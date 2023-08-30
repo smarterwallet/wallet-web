@@ -17,7 +17,7 @@ export default () => {
   const [activeKey, setActiveKey] = useState('1');
 
   const eoaLogin = async (values: any) => {
-    if ((Global.account as MPCManageAccount)?.key) {
+    if (Global.isMPCAccount()) {
       setActiveKey('2');
       message.info('Your account type is mpc account, which requires you to make an email login');
       return;

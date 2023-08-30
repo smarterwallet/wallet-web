@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { AccountInterface } from "./AccountInterface";
 import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
 import { Config } from "../config/Config";
-import { hashMessage } from "ethers/lib/utils";
 import { CryptologyUtils } from "../utils/CryptologyUtils";
 
 const { arrayify } = require("@ethersproject/bytes");
@@ -67,8 +66,8 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
     return true;
   }
 
-  exsitLocalStorageKey(): boolean {
-    return localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY) != null && localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY).length == 0;
+  existLocalStorageKey(): boolean {
+    return localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY) != null && localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY).length != 0;
   }
 
   getKeyFromLocalStorage(password: string): string {

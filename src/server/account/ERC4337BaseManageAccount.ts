@@ -379,7 +379,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   saveKey2LocalStorage(key: string, password: string): boolean {
     throw new Error('Method not implemented.');
   }
-  exsitLocalStorageKey(): boolean {
+  existLocalStorageKey(): boolean {
     throw new Error('Method not implemented.');
   }
   getKeyFromLocalStorage(password: string): string {

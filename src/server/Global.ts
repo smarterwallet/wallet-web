@@ -1,6 +1,7 @@
 import { EOAManageAccount } from './account/EOAManageAccount';
 import { AccountInterface } from "./account/AccountInterface";
 import { MPCManageAccount } from "./account/MPCManageAccount";
+import { Config } from './config/Config';
 
 export class Global {
   private static _accountType: number;
@@ -11,13 +12,17 @@ export class Global {
   public static tempLocalPassword: string;
 
   public static async changeAccountType(accountType: number) {
+    // if change account type, need set pre object to null
+    if(accountType !== this._accountType && this.account != null){
+      this.account = null;
+    }
     this._accountType = accountType;
     await this.init();
   }
 
   public static async init() {
     let initData = null;
-    if (this.account != null){
+    if (this.account != null) {
       initData = this.account.initData;;
     }
     this.initialized = true;
@@ -33,6 +38,10 @@ export class Global {
         break;
     }
     await this.account.initAccount(initData);
+  }
+
+  public static isMPCAccount() {
+    return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length != 0;
   }
 
 }

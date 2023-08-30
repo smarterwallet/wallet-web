@@ -274,8 +274,8 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     });
   }
 
-  exsitLocalStorageKey(): boolean {
-    return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length == 0;
+  existLocalStorageKey(): boolean {
+    return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length != 0;
   }
 
 }
