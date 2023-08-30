@@ -9,6 +9,7 @@ import { Global } from '../../../server/Global';
 import { MPCManageAccount } from '../../../server/account/MPCManageAccount';
 import { JSONBigInt } from '../../../server/js/common_utils';
 import { parseNumbers } from '../../../server/js/mpc_wasm_utils';
+import CountDownButton from '../../component/CountDownButton';
 
 const RegisterAtMultiParty = () => {
   const navigate = useNavigate();
@@ -143,7 +144,19 @@ const RegisterAtMultiParty = () => {
           >
             <Space>
               <Input />
-              <Button className="ww-mini-btn" onClick={sendCode}>Send Code</Button>
+              <CountDownButton
+                className="ww-mini-btn"
+                onClick={sendCode}
+                valid={() => {
+                  const email = form.getFieldValue('email');
+                  if (!email) {
+                    message.error('Please input email');
+                    return false;
+                  }
+                  return true;
+                }}
+                storageKey='login-email-send-code'
+              >Send Code</CountDownButton>
             </Space>
           </Form.Item>
           <Form.Item>

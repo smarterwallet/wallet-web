@@ -1,5 +1,5 @@
 import HeaderBar from "../../elements/HeaderBar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Collapse, Form, Input, Space, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Global } from '../../../server/Global';
@@ -9,6 +9,7 @@ import { MPCManageAccount } from "../../../server/account/MPCManageAccount";
 import { HttpUtils } from "../../../server/utils/HttpUtils";
 import { Config } from "../../../server/config/Config";
 import { JSONBigInt } from "../../../server/js/common_utils";
+import CountDownButton from '../../component/CountDownButton';
 
 export default () => {
 
@@ -32,6 +33,7 @@ export default () => {
   }
 
   const eoaLogin = async (values: any) => {
+    console.log('login');
     if (Global.isMPCAccount()) {
       setActiveKey('2');
       message.info('Your account type is mpc account, which requires you to make an email login');
@@ -62,13 +64,13 @@ export default () => {
       message.error('Password incorrect');
     }
   }
-  const sendEmailCode = async (values: any) => {
+  const sendEmailCode = async () => {
+    const email = form.getFieldValue('email');
     const mpcPassword = form.getFieldValue('mpcPassword');
     const mpcKey1 = getLocalMPCKey(mpcPassword);
     if (mpcKey1 == null || mpcKey1 === "") {
       return;
     }
-    const email = form.getFieldValue('email');
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Sending...',
@@ -197,11 +199,22 @@ export default () => {
               >
                 <Space>
                   <Input />
-                  <Button className="ww-mini-btn" onClick={sendEmailCode}>Send Code</Button>
+                  <CountDownButton
+                    className="ww-mini-btn"
+                    onClick={sendEmailCode}
+                    valid={() => {
+                      const email = form.getFieldValue('email');
+                      if (!email) {
+                        message.error('Please input email');
+                        return false;
+                      }
+                      return true;
+                    }}
+                    storageKey='login-email-send-code'
+                  >Send Code</CountDownButton>
                 </Space>
               </Form.Item>
               <Button
-                // type="primary"
                 htmlType="submit"
                 style={{ width: '100%' }}
               >Login</Button>
