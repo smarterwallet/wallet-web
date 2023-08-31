@@ -7,7 +7,7 @@ import { HttpUtils } from "../utils/HttpUtils";
 import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
 import { hashMessage, joinSignature } from "ethers/lib/utils";
 import { CryptologyUtils } from "../utils/CryptologyUtils";
-import { Exception } from "sass";
+import { Global } from "../Global";
 
 const { arrayify } = require("@ethersproject/bytes");
 
@@ -25,8 +25,6 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
    * wasm instance
    */
   private _mpcWasmInstance: any;
-
-  private _authorization: string;
 
   private _mpcAddress: string;
 
@@ -50,14 +48,6 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     this._mpcWasmInstance = value;
   }
 
-  get authorization(): string {
-    return this._authorization;
-  }
-
-  set authorization(value: string) {
-    this._authorization = value;
-  }
-
   get mpcAddress(): string {
     return this._mpcAddress;
   }
@@ -74,29 +64,28 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     }
 
     console.log("mpc key:", mpcKey);
-
-    let account = ethers.Wallet.createRandom();
-    await super.initAccount(account.privateKey);
+    await super.initAccount(mpcKey);
 
     this._mpcKey = mpcKey;
     this.contractWalletAddressSalt = 0;
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
+    let account = ethers.Wallet.createRandom();
     this.ethersWallet = new ethers.Wallet(account.privateKey, this.ethersProvider);
     if (mpcKey !== "") {
-      console.log("eoaKey not null");
+      console.log("mpc not null");
       const initP1KeyDataRes = await mpcWasmUtils.wasmInitP1KeyData(mpcKey);
       console.log("initP1KeyData: ", initP1KeyDataRes);
       this.contractWalletAddress = await this.calcContractWalletAddress();
       this.deployContractWalletIfNotExist(await this.getOwnerAddress());
     } else {
-      console.log("eoakey is null")
+      console.log("mpc is null")
       this.contractWalletAddress = null;
     }
     this.contractAddressExist = false;
   }
 
   async getOwnerAddress(): Promise<string> {
-    if (this._authorization == null || this._authorization === "") {
+    if (Global.authorization == null || Global.authorization === "") {
       console.log("have not login wallet server");
       return null;
     }
@@ -136,7 +125,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     let bindResult = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/bind-user-p2", {
       "p1_message_dto": addressGenMessageJson["data"],
       "p1_data_id": 1,
-    }, this._authorization);
+    }, Global.authorization);
     if (bindResult.body["code"] != 200) {
       throw new Error(bindResult.body["message"]);
     }
@@ -144,7 +133,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
     // send http request to get address
     console.log("start to get address")
-    let getAddressAndPubKeyRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/get-address", {}, this._authorization)
+    let getAddressAndPubKeyRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/get-address", {}, Global.authorization)
     if (getAddressAndPubKeyRes.body["code"] != 200) {
       throw new Error(getAddressAndPubKeyRes.body["message"]);
     }
@@ -165,7 +154,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     console.log("start to init-p2-content")
     let initP2ContentRes = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/init-p2-content", {
       "message": hash
-    }, this._authorization)
+    }, Global.authorization)
     console.log("initP2ContentRes: ", initP2ContentRes);
     if (initP2ContentRes.body["code"] != 200) {
       throw new Error(initP2ContentRes.body["message"]);
@@ -182,7 +171,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     // p2 step1
     let p2Step1Result = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/p2-step1", {
       "commitment": JSONBigInt.parse(p1Step1Res)["data"],
-    }, this._authorization)
+    }, Global.authorization)
     console.log("p2Step1Result: ", p2Step1Result);
     if (p2Step1Result.body["code"] != 200) {
       throw new Error(p2Step1Result.body["message"]);
@@ -214,7 +203,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     let p2Step2Result = await HttpUtils.postWithAuth(Config.BACKEND_API + "/mpc/calc/p2-step2", {
       "cmt_d": cmtDJson,
       "p1_proof": p1ProofJson,
-    }, this._authorization)
+    }, Global.authorization)
     console.log("p2Step2Result: ", p2Step2Result);
     if (p2Step2Result.body["code"] != 200) {
       throw new Error(p2Step2Result.body["message"]);
@@ -252,10 +241,10 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   async saveKey2WalletServer(key: string) {
     let api = Config.BACKEND_API + '/mpc/key/save';
-    console.log("this._authorization:", this._authorization)
+    console.log("this._authorization:", Global.authorization)
     return HttpUtils.postWithAuth(api, {
       "key": key
-    }, this._authorization);
+    }, Global.authorization);
   }
 
   saveKey2LocalStorage(key: string, password: string): boolean {

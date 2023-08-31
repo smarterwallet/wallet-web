@@ -40,7 +40,7 @@ const RegisterAtMultiParty = () => {
     });
     await Global.changeAccountType(2);
     const mpc = Global.account as MPCManageAccount;
-    mpc.authorization = result.body["result"];
+    Global.authorization = result.body["result"];
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Generate MPC key...',

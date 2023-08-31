@@ -13,11 +13,11 @@ const SignUp = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const register = async (values: any) => {
-    const password = values.password.trim();
-    if (password === '') {
+    if (values.password == null || values.password === '' || values.repeatPassword == null || values.repeatPassword === '') {
       message.error('Password can not be empty.');
       return;
     }
+    const password = values.password.trim();
 
     if (password !== values.repeatPassword.trim()) {
       message.error('The passwords entered twice do not match');

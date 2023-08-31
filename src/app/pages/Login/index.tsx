@@ -105,6 +105,7 @@ export default () => {
       const mpcPassword = form.getFieldValue('mpcPassword');
       const mpcKey1 = getLocalMPCKey(mpcAccount, mpcPassword);
       if (mpcKey1 == null || mpcKey1 === "") {
+        messageApi.destroy();
         return;
       }
 
@@ -130,7 +131,7 @@ export default () => {
         content: 'Init local MPC key..',
         duration: 0,
       });
-      mpcAccount.authorization = result.body["result"];
+      Global.authorization = result.body["result"];
       await Global.account.initAccount(JSONBigInt.stringify(mpcKey1));
 
       messageApi.success({

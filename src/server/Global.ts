@@ -13,6 +13,8 @@ export class Global {
 
   public static messageTypeKeyLoading = 'loading';
 
+  public static authorization: string;
+
   public static accountType(): number {
     return Global._accountType;
   }
@@ -29,7 +31,7 @@ export class Global {
   public static async init() {
     let initData = null;
     if (this.account != null) {
-      initData = this.account.initData;;
+      initData = this.account.initData;
     }
     this.initialized = true;
     switch (this._accountType) {
