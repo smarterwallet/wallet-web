@@ -288,13 +288,19 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length != 0;
   }
 
-  static getKeyFromLocalStorage(password: string): string {
+  getKeyFromLocalStorage(password: string): string {
     const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1);
     const data = CryptologyUtils.decrypt(keyInLocal, password);
     if (data == null || data === "") {
       return data;
     }
     return mpcWasmUtils.parseNumbers(JSONBigInt.parse(data));
+  }
+
+  deleteKeyFromLocalStorage(): void {
+    localStorage.removeItem(Config.LOCAL_STORAGE_EOA_KEY);
+    localStorage.removeItem(Config.LOCAL_STORAGE_MPC_KEY1);
+    localStorage.removeItem(Config.LOCAL_STORAGE_MPC_KEY3_HASH);
   }
 
 }

@@ -85,9 +85,15 @@ export interface AccountInterface {
 
   getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
 
+  /**
+   * handle key
+   */
   saveKey2LocalStorage(key: string, password: string): boolean;
 
   existLocalStorageKey(): boolean;
 
+  getKeyFromLocalStorage(password: string): string;
+
+  deleteKeyFromLocalStorage(): void;
 }
 

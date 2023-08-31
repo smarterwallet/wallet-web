@@ -1,6 +1,8 @@
 import React from 'react';
 import './AppsPage.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
+import { Global } from '../../server/Global';
+import { message } from 'antd';
 
 class AppsPage extends React.Component {
 
@@ -13,7 +15,14 @@ class AppsPage extends React.Component {
     );
   }
 
+  
+
   render() {
+    if (!Global.account.isLoggedIn) {
+      message.error("Please login first");
+      return <Navigate to="/" replace />;
+    }
+
     return (
       <div className="apps-page">
         <div className="apps-page-header">Apps</div>

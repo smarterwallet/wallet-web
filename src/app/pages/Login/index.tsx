@@ -10,6 +10,7 @@ import { HttpUtils } from "../../../server/utils/HttpUtils";
 import { Config } from "../../../server/config/Config";
 import { JSONBigInt } from "../../../server/js/common_utils";
 import CountDownButton from '../../component/CountDownButton';
+import { AccountInterface } from "../../../server/account/AccountInterface";
 
 export default () => {
 
@@ -18,9 +19,9 @@ export default () => {
   const [activeKey, setActiveKey] = useState('1');
   const [messageApi, contextHolder] = message.useMessage();
 
-  const getLocalMPCKey = (mpcPassword: any) => {
+  const getLocalMPCKey = (mpcAccount: AccountInterface, mpcPassword: any) => {
     try {
-      const mpcKey1 = MPCManageAccount.getKeyFromLocalStorage(mpcPassword);
+      const mpcKey1 = mpcAccount.getKeyFromLocalStorage(mpcPassword);
       if (mpcKey1 == null || mpcKey1 === "") {
         message.error('Local password incorrect');
         return "";
@@ -44,7 +45,7 @@ export default () => {
     }
     await Global.changeAccountType(1);
     const eoaAccount = Global.account as EOAManageAccount;
-    const eoaKey = EOAManageAccount.getKeyFromLocalStorage(values.localPassword.trim())
+    const eoaKey = eoaAccount.getKeyFromLocalStorage(values.localPassword.trim())
 
     if (eoaKey != null && eoaKey !== "") {
       messageApi.loading({
@@ -66,11 +67,6 @@ export default () => {
   }
   const sendEmailCode = async () => {
     const email = form.getFieldValue('email');
-    const mpcPassword = form.getFieldValue('mpcPassword');
-    const mpcKey1 = getLocalMPCKey(mpcPassword);
-    if (mpcKey1 == null || mpcKey1 === "") {
-      return;
-    }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Sending...',
@@ -90,23 +86,22 @@ export default () => {
     try {
       messageApi.loading({
         key: Global.messageTypeKeyLoading,
-        type: 'loading',
-        content: 'Decrpty local MPC key...',
-        duration: 0,
-      });
-      const mpcPassword = form.getFieldValue('mpcPassword');
-      const mpcKey1 = getLocalMPCKey(mpcPassword);
-      if (mpcKey1 == null || mpcKey1 === "") {
-        return;
-      }
-      messageApi.loading({
-        key: Global.messageTypeKeyLoading,
         content: 'Init MPC account...',
         duration: 0,
       });
       await Global.changeAccountType(2);
       const mpcAccount = Global.account as MPCManageAccount;
-
+      messageApi.loading({
+        key: Global.messageTypeKeyLoading,
+        type: 'loading',
+        content: 'Decrpty local MPC key...',
+        duration: 0,
+      });
+      const mpcPassword = form.getFieldValue('mpcPassword');
+      const mpcKey1 = getLocalMPCKey(mpcAccount, mpcPassword);
+      if (mpcKey1 == null || mpcKey1 === "") {
+        return;
+      }
 
       messageApi.loading({
         key: Global.messageTypeKeyLoading,

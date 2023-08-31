@@ -13,9 +13,13 @@ export class Global {
 
   public static messageTypeKeyLoading = 'loading';
 
+  public static accountType(): number {
+    return Global._accountType;
+  }
+
   public static async changeAccountType(accountType: number) {
     // if change account type, need set pre object to null
-    if(accountType !== this._accountType && this.account != null){
+    if (accountType !== this._accountType && this.account != null) {
       this.account = null;
     }
     this._accountType = accountType;

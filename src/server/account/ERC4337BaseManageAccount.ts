@@ -382,6 +382,11 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   existLocalStorageKey(): boolean {
     throw new Error('Method not implemented.');
   }
-  
+  deleteKeyFromLocalStorage(): void {
+    throw new Error('Method not implemented.');
+  }
+  getKeyFromLocalStorage(password: string): string {
+    throw new Error('Method not implemented.');
+  }
 }
 

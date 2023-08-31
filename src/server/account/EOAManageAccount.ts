@@ -70,8 +70,12 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
     return localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY) != null && localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY).length != 0;
   }
 
-  static getKeyFromLocalStorage(password: string): string {
+  getKeyFromLocalStorage(password: string): string {
     const keyInLocal = localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY);
     return CryptologyUtils.decrypt(keyInLocal, password);
+  }
+
+  deleteKeyFromLocalStorage(): void {
+    localStorage.removeItem(Config.LOCAL_STORAGE_EOA_KEY);
   }
 }
