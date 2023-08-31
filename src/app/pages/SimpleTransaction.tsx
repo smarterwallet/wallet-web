@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login/LoginPage.css';
 import HeaderBar from '../elements/HeaderBar';
 import { Global } from '../../server/Global';
@@ -10,130 +10,132 @@ import { message } from 'antd';
 const polygonConfig = require('../config/polygon.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
 
-interface SimpleTransactionState {
-    txTo: string;
-    txValue: string;
-    gasPrice: string;
-    alert: string;
-    selectedAsset: string;
-}
 
-class SimpleTransactionPage extends React.Component<{}, SimpleTransactionState> {
+const SimpleTransactionPage = (props: any) => {
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            txTo: '',
-            txValue: '',
-            gasPrice: '0',
-            alert: '',
-            selectedAsset: 'Matic'
-        }
+  const [txTo, setTxTo] = useState('');
+  const [txValue, setTxValue] = useState('');
+  const [gasPrice, setGasPrice] = useState('0');
+  const [selectedAsset, setSelectedAsset] = useState('Matic');
 
-        this.onToChange = this.onToChange.bind(this);
-        this.onValueChange = this.onValueChange.bind(this);
-        this.onAssetChange = this.onAssetChange.bind(this);
-        this.onGasFeeChange = this.onGasFeeChange.bind(this);
+  const [messageApi, contextHolder] = message.useMessage();
+  const onSendKey = 'onSend';
+  const flushConfigKey = 'flushConfig';
 
-        this.flushConfig(Config.DEFAULT_NETWORK);
+  const onSend = async () => {
+    if (selectedAsset.trim() === '' || gasPrice.toString() === "0" || txTo.trim() === '' || txValue.trim() === '') {
+      message.error('Params can not be empty or zero');
+      return;
     }
 
-    onToChange(e: any) {
-        this.setState({ txTo: e.currentTarget.value });
-    };
+    messageApi.open({
+      key: onSendKey,
+      type: 'loading',
+      content: "Sending " + selectedAsset,
+    });
 
-    onValueChange(e: any) {
-        this.setState({ txValue: e.currentTarget.value });
-    };
-
-    onGasFeeChange(e: any) {
-        this.setState({ gasPrice: e.currentTarget.value });
-    };
-
-    onAssetChange(e: any) {
-        this.setState({ selectedAsset: e.currentTarget.value });
-    };
-
-    componentDidMount(): void {
+    try {
+      const sendGasPrice  = BigNumber.from(gasPrice);
+      if (selectedAsset === "Matic") {
+        await Global.account.sendMainToken(txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice);
+      } else if (selectedAsset === "SWT") {
+        await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+      } else if (selectedAsset === "USDC") {
+        // TODO USDC need approve on chain first
+        await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+      } else {
+        message.error("unknown asset: " + selectedAsset)
+        messageApi.destroy(onSendKey)
+      }
+    } catch (error) {
+      message.error(error.toString())
+      messageApi.destroy(onSendKey)
+      return;
     }
+    messageApi.open({
+      key: onSendKey,
+      type: 'success',
+      content: "Sent " + selectedAsset + " success",
+    });
+  }
 
-    async onSend() {
-        if (this.state.selectedAsset.trim() === '' || this.state.gasPrice.toString() === "0" || this.state.txTo.trim() === '' || this.state.txValue.trim() === '') {
-            message.error('Params can not be empty or zero');
-            return;
-        }
+  useEffect(() => {
+    flushConfig(Config.DEFAULT_NETWORK)
+  }, []);
 
-        message.info("Sending " + this.state.selectedAsset);
-        try {
-            const gasPrice  = BigNumber.from(this.state.gasPrice);
-            if (this.state.selectedAsset === "Matic") {
-                await Global.account.sendMainToken(this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
-            } else if (this.state.selectedAsset === "SWT") {
-                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice)
-            } else if (this.state.selectedAsset === "USDC") {
-                // TODO USDC need approve on chain first
-                await Global.account.sendERC20Token(Config.TOKENS[this.state.selectedAsset].address, this.state.txValue, this.state.txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice)
-            } else {
-                this.setState({ alert: "unknown asset: " + this.state.selectedAsset });
-            }
-        } catch (error) {
-            this.setState({ alert: error.toString() });
-            return;
-        }
-        message.info("Sent " + this.state.selectedAsset + " success");
+  const flushConfig = async (chainName: string) => {
+    messageApi.open({
+      key: flushConfigKey,
+      type: 'loading',
+      content: 'Init ' + chainName + ' config',
+    });
+    switch (chainName.toLowerCase()) {
+      case "polygon":
+        await Config.init(JSON.stringify(polygonConfig));
+        break;
+      case "mumbai":
+        await Config.init(JSON.stringify(polygonMumbaiConfig));
+        break;
     }
+    const price = await Global.account.getGasPrice();
+    messageApi.destroy(flushConfigKey);
+    setGasPrice(price.toString());
+  }
 
-    async flushConfig(chainName: string) {
-        message.info('Init ' + chainName + ' config');
-        switch (chainName.toLowerCase()) {
-            case "polygon":
-                await Config.init(JSON.stringify(polygonConfig));
-                break;
-            case "mumbai":
-                await Config.init(JSON.stringify(polygonMumbaiConfig));
-                break;
-        }
-        const price = await Global.account.getGasPrice();
-        this.setState({ gasPrice: price.toString() })
-        await new Promise(resolve => setTimeout(resolve, 800));
-    }
+  if (!Global.account.isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
 
-    render() {
-        if (!Global.account.isLoggedIn) {
-            return <Navigate to="/" replace />;
-        }
+  return (
+    <div className="login-page">
+      {contextHolder}
+      <HeaderBar text='Send Transaction' />
+      <br />
+      <div>Chain:</div>
+      <select onChange={async event => await flushConfig(event.target.value)}>
+        <option value="Polygon">Polygon</option>
+        <option value="Mumbai">Mumbai</option>
+      </select>
+      <br />
+      <div>Asset:</div>
+      <select
+        value={selectedAsset}
+        onChange={(e) => {
+          setSelectedAsset(e.currentTarget.value)
+        }}
+      >
+        <option value="Matic">Matic</option>
+        <option value="SWT">SWT</option>
+      </select>
+      <br />
+      <div>Send To:</div>
+      <input
+        type="string"
+        value={txTo}
+        onChange={(e) => setTxTo(e.currentTarget.value)}
+      />
+      <br />
+      <div>Amount:</div>
+      <input
+        type="string"
+        value={txValue}
+        onChange={(e) => setTxValue(e.currentTarget.value)}
+      />
+      <br />
+      <div>Gas Price(Wei):</div>
+      <input
+        type="number"
+        value={gasPrice}
+        onChange={(e) => setGasPrice(e.currentTarget.value)}
+      />
+      <br /><br />
+      <button
+        className='simple-transaction-page-button'
+        onClick={() => onSend()}
+      >Send</button>
+    </div>
+  )
+};
 
-        return (
-            <div className="login-page">
-                <HeaderBar text='Send Transaction' />
-                <br />
-                <div>Chain:</div>
-                <select onChange={async event => await this.flushConfig(event.target.value)}>
-                    <option value="Polygon">Polygon</option>
-                    <option value="Mumbai">Mumbai</option>
-                </select>
-                <br />
-                <div>Asset:</div>
-                <select value={this.state.selectedAsset} onChange={this.onAssetChange}>
-                    <option value="Matic">Matic</option>
-                    <option value="SWT">SWT</option>
-                    {/*<option value="USDC">USDC</option>*/}
-                </select>
-                <br />
-                <div>Send To:</div>
-                <input type="string" value={this.state.txTo} onChange={this.onToChange} />
-                <br />
-                <div>Amount:</div>
-                <input type="string" value={this.state.txValue} onChange={this.onValueChange} />
-                <br />
-                <div>Gas Price(Wei):</div>
-                <input type="number" value={this.state.gasPrice} onChange={this.onGasFeeChange} />
-                <br /><br />
-                <button className='simple-transaction-page-button' onClick={async () => await this.onSend()}>Send
-                </button>
-            </div>
-        );
-    }
-}
 
 export default SimpleTransactionPage;
