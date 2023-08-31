@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
-      <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+      <script>
+          if (window.screen.width < 500) {
+            document.write('<meta name="viewport" content="target-densitydpi=device-dpi,shrink-to-fit=no,width=500,maximum-scale=2.0,user-scalable=no"/>')
+          } else {
+            document.write('<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>')
+          }
+      </script>
       <meta name="theme-color" content="#000000" />
     <meta
       name="description"
