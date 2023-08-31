@@ -35,6 +35,10 @@ export default () => {
 
   const eoaLogin = async (values: any) => {
     console.log('login');
+    if (!Global.account.existLocalStorageKey()) {
+      message.error('You need register first');
+      return;
+    }
     if (Global.isMPCAccount()) {
       setActiveKey('2');
       message.info('Your account type is mpc account, which requires you to make an email login');
@@ -46,7 +50,7 @@ export default () => {
     await Global.changeAccountType(1);
     const eoaAccount = Global.account as EOAManageAccount;
     const eoaKey = eoaAccount.getKeyFromLocalStorage(values.localPassword.trim())
-
+    console.log("eoaKey:", eoaKey)
     if (eoaKey != null && eoaKey !== "") {
       messageApi.loading({
         key: Global.messageTypeKeyLoading,
@@ -63,6 +67,7 @@ export default () => {
       navigate('/home')
     } else {
       message.error('Password incorrect');
+      return;
     }
   }
   const sendEmailCode = async () => {

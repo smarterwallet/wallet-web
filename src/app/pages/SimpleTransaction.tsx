@@ -16,7 +16,7 @@ const SimpleTransactionPage = (props: any) => {
   const [txTo, setTxTo] = useState('');
   const [txValue, setTxValue] = useState('');
   const [gasPrice, setGasPrice] = useState('0');
-  const [selectedAsset, setSelectedAsset] = useState('Matic');
+  const [selectedAsset, setSelectedAsset] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage();
   const onSendKey = 'onSend';
@@ -41,7 +41,6 @@ const SimpleTransactionPage = (props: any) => {
       } else if (selectedAsset === "SWT") {
         await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else if (selectedAsset === "USDC") {
-        // TODO USDC need approve on chain first
         await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else {
         message.error("unknown asset: " + selectedAsset)
@@ -77,6 +76,7 @@ const SimpleTransactionPage = (props: any) => {
         await Config.init(JSON.stringify(polygonMumbaiConfig));
         break;
     }
+    await Global.init();
     const price = await Global.account.getGasPrice();
     messageApi.destroy(flushConfigKey);
     setGasPrice(price.toString());
@@ -92,7 +92,7 @@ const SimpleTransactionPage = (props: any) => {
       <HeaderBar text='Send Transaction' />
       <br />
       <div>Chain:</div>
-      <select onChange={async event => await flushConfig(event.target.value)}>
+      <select onChange={async event => await flushConfig(event.target.value)} defaultValue={Config.DEFAULT_NETWORK}>
         <option value="Polygon">Polygon</option>
         <option value="Mumbai">Mumbai</option>
       </select>
@@ -104,7 +104,7 @@ const SimpleTransactionPage = (props: any) => {
           setSelectedAsset(e.currentTarget.value)
         }}
       >
-        <option value="Matic">Matic</option>
+        <option value="Matic" defaultChecked>Matic</option>
         <option value="SWT">SWT</option>
       </select>
       <br />
@@ -120,6 +120,14 @@ const SimpleTransactionPage = (props: any) => {
         type="string"
         value={txValue}
         onChange={(e) => setTxValue(e.currentTarget.value)}
+      />
+      <br />
+      <div>Gas TokenPayer:</div>
+      <input
+        type="string"
+        value={"SWT"}
+        disabled
+        onChange={(e) => {}}
       />
       <br />
       <div>Gas Price(Wei):</div>
