@@ -6,7 +6,8 @@
     }
 
     .ant-collapse {
-        margin: 0 -$pagePadding;
+        margin-left: -$pagePadding;
+        margin-right: -$pagePadding;
         color: $primary;
 
         .ant-collapse-content {
