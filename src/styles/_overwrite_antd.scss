@@ -6,7 +6,7 @@
     }
 
     .ant-collapse {
-        margin: 0 -20px;
+        margin: 0 -$pagePadding;
         color: $primary;
 
         .ant-collapse-content {
@@ -22,7 +22,7 @@
         }
 
         .ant-collapse-header {
-            padding: 12px 20px;
+            padding: 12px $pagePadding;
             padding-inline-start: 20px;
             align-items: center;
 
@@ -32,7 +32,7 @@
         }
 
         .ant-collapse-content>.ant-collapse-content-box {
-            padding: 16px 20px 30px;
+            padding: 16px $pagePadding 30px;
         }
 
 
@@ -64,8 +64,8 @@
                         font-size: 20px;
                         font-weight: 700;
                         color: $primary;
-                        line-height: 40px;
-                        height: 40px;
+                        line-height: $btnHeight;
+                        height: $btnHeight;
                     }
                 }
             }
@@ -75,13 +75,12 @@
     .ant-btn {
         font-size: 20px;
         font-weight: 700;
-        height: 50px;
+        height: $btnHeight;
         color: $primary;
         border-radius: 10px;
 
         &.ww-mini-btn {
             font-size: 18px;
-            height: 40px;
         }
     }
 
@@ -114,9 +113,9 @@
         border-radius: 10px;
 
         .ant-radio-button-wrapper {
-            height: 40px;
+            height: $btnHeight;
             font-size: 18px;
-            line-height: 40px;
+            line-height: $btnHeight;
             border: 0;
             color: $primary;
             background: transparent;

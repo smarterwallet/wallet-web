@@ -2,7 +2,7 @@
 @import "overwrite_antd";
 
 .ww-page-container {
-    padding: 0 20px;
+    padding: 0 $pagePadding;
     min-height: 100%;
     color: $primary;
     //background: url("../assets/inner_bg.png") no-repeat center 100%;
