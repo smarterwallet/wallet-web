@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import yuxStorage from '../utils/DBUtils';
 import { AccountInterface } from "./AccountInterface";
 import * as mpcWasmUtils from '../js/mpc_wasm_utils.js';
 import { JSONBigInt } from "../js/common_utils";
@@ -8,6 +9,7 @@ import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
 import { hashMessage, joinSignature } from "ethers/lib/utils";
 import { CryptologyUtils } from "../utils/CryptologyUtils";
 import { Global } from "../Global";
+import { ab2str, str2ab } from '../utils/TxUtils';
 
 const { arrayify } = require("@ethersproject/bytes");
 
@@ -220,8 +222,25 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   private async generateMPCWasmInstance() {
     console.log("generateMPCWasmInstance start");
-    const response = await fetch(Config.MPC_WASM_URL);
-    const buffer = await response.arrayBuffer();
+    let buffer;
+    try {
+      // @ts-ignore
+      const bufferStr = (await yuxStorage.getItem('MPC_WASM')) as string;
+      if (bufferStr) {
+        buffer = str2ab(bufferStr);
+      } else {
+        console.log('no cache of MPC_WASM')
+      }
+    } catch (e) {
+    }
+
+    if (buffer.byteLength === 0) {
+      const response = await fetch(Config.MPC_WASM_URL);
+      buffer = await response.arrayBuffer();
+      // @ts-ignore
+      await yuxStorage.setItem('MPC_WASM', ab2str(buffer));
+    }
+
     await mpcWasmUtils.initWasm(buffer);
   }
 
