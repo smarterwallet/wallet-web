@@ -7,17 +7,17 @@
 ## Install
 
 ```shell
-npm i
+pnpm i
 ```
 
 ## Build
 
 ```shell
-npm run build
+pnpm run build
 ```
 
 ## Run
 
 ```shell
-npm run start
+pnpm run start
 ```
