@@ -116,13 +116,16 @@ a {
 }
 
 .app-page {
-  height: calc(100vh - 80px);
+  height: 100vh;
   overflow-y: auto;
   /*background-color: var(--page-color);*/
 }
 
 .app-navbar {
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* @media (max-width: 850px) {
