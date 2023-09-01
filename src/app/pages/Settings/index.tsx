@@ -46,6 +46,8 @@ export default () => {
       return;
     }
     Global.account.deleteKeyFromLocalStorage();
+    Global.account.isLoggedIn = false;
+    return <Navigate to="/" replace />;
   }
 
   if (!Global.account.isLoggedIn) {
