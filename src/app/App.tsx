@@ -21,14 +21,12 @@ import { Config } from '../server/config/Config';
 import RegisterAccountTypePage from './pages/signin/RegisterAccountTypePage';
 import AutomaticTrading from './pages/AutomaticTrading';
 import GridStrategies from './pages/GridStrategies';
-import SpotGrid from './pages/SpotGrid';
 import SpotGridStrategy from './pages/SpotGridStrategy';
 import SpotGridBot from './pages/SpotGridBot';
 import Settings from './pages/Settings';
 import SinglePartyAccountPage from './pages/signin/single/SinglePartyAccountPage';
 import MultiPartyQuantityChoosePage from './pages/signin/multi/MultiPartyQuantityChoosePage';
 import MultiPartyBackupKeysPage from './pages/signin/multi/MultiPartyBackupKeysPage';
-import MultiPartyChooseMenuPage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiPartyChooseStorePage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiParty_SignUp_Local from './pages/signin/multi/MultiParty_SignUp_Local';
 import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignUp_OtherPeople';
@@ -57,9 +55,9 @@ class App extends React.Component<{}, AppState> {
     };
 
     if (!this.state.maintenance) {
-      Config.init(JSON.stringify(polygonConfig)).then((e) => {
+      Config.init(JSON.stringify(polygonConfig)).then(() => {
         console.log('config init success');
-        Global.init().then((e) => {
+        Global.init().then(() => {
           console.log('global variable init success');
         });
       });
@@ -68,7 +66,7 @@ class App extends React.Component<{}, AppState> {
     this.setInitialized = this.setInitialized.bind(this);
     this.onAccountChanged = this.onAccountChanged.bind(this);
 
-    window.addEventListener('beforeunload', function (e) {
+    window.addEventListener('beforeunload', function () {
       // Global.network.disconnect();
     });
   }
@@ -127,7 +125,6 @@ class App extends React.Component<{}, AppState> {
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
-            <Route path="/spotGrid" element={<SpotGrid />} />
             <Route path="/spotGridStrategy" element={<SpotGridStrategy />} />
             <Route path="/spotGridBot" element={<SpotGridBot />} />
             <Route path="/autotradebotok"  element={<AutotradebotOK />} />

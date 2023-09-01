@@ -3,9 +3,8 @@ import HeaderBar from '../../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Button, Space, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import '../SpotGrid/styles.scss';
-import RadioInput from '../../component/RadioInput';
 
-const Index = () => {
+const SpotGridStrategy = () => {
   const [to, setTo] = useState("falls to");
   const [by, setBy] = useState("falls by");
   const [buyin, setBuyin] = useState("Buy in")
@@ -100,4 +99,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default SpotGridStrategy;
