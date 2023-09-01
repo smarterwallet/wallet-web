@@ -122,10 +122,12 @@ a {
 }
 
 .app-navbar {
-    position: absolute;
-    left: 0;
-    right: 0;
+    position: fixed;
+    left: 50%;
+    width: 500px;
+    margin-left: -250px;
     bottom: 0;
+    /*transform: translate3d(-50%, 0, 0);*/
 }
 
 /* @media (max-width: 850px) {
