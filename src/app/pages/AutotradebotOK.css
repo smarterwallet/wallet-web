@@ -1,0 +1,27 @@
+@import "../../styles/_theme.scss";
+
+h2 {
+  color: #053346;
+}
+
+.rt-page {
+  padding: 0 20px;
+}
+
+.rt-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.rt-page-image {
+  width: 100px;
+  height: 100px;
+}
+
+.rt-page-text {
+  color: #053346;
+  padding: 20px 70px 60px 70px;
+  font-size: 14px;
+}

@@ -36,6 +36,7 @@ import SignUp from './pages/SignUp';
 import MultiPartyAccount from './pages/MultiPartyAccount';
 import RegisterAtMultiParty from './pages/RegisterAtMultiParty';
 import RegisterSuccessfully from './pages/RegisterSuccessfully';
+import AutotradebotOK from './pages/AutotradebotOK';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -129,6 +130,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/spotGrid" element={<SpotGrid />} />
             <Route path="/spotGridStrategy" element={<SpotGridStrategy />} />
             <Route path="/spotGridBot" element={<SpotGridBot />} />
+            <Route path="/autotradebotok"  element={<AutotradebotOK />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
