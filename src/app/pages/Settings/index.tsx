@@ -51,7 +51,7 @@ export default () => {
   }
 
   if (!Global.account.isLoggedIn) {
-    message.error("Please login first");
+    message.error("Please sign in first");
     return <Navigate to="/" replace />;
   }
 
