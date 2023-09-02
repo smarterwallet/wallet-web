@@ -6,8 +6,6 @@ import SitePage from './pages/SitePage';
 import LoadingPage from './pages/LoadingPage';
 import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
-import RegisterPage from './pages/RegisterPage';
-import RegisterPwdPage from './pages/RegisterPwdPage';
 import WelcomePage from './pages/WelcomePage/welcomePage';
 import AppsPage from './pages/AppsPage';
 import AutoTradePage from './pages/AutoTradePage';
@@ -18,7 +16,7 @@ import AssetPage from './pages/AssetPage';
 import LoginPage from './pages/Login';
 import SimpleTransactionPage from './pages/SimpleTransaction';
 import { Config } from '../server/config/Config';
-import RegisterAccountTypePage from './pages/signin/RegisterAccountTypePage';
+import SignupAccountTypePage from './pages/signin/SignupAccountTypePage';
 import AutomaticTrading from './pages/AutomaticTrading';
 import GridStrategies from './pages/GridStrategies';
 import SpotGridStrategy from './pages/SpotGridStrategy';
@@ -32,8 +30,8 @@ import MultiParty_SignUp_Local from './pages/signin/multi/MultiParty_SignUp_Loca
 import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignUp_OtherPeople';
 import SignUp from './pages/SignUp';
 import MultiPartyAccount from './pages/MultiPartyAccount';
-import RegisterAtMultiParty from './pages/RegisterAtMultiParty';
-import RegisterSuccessfully from './pages/RegisterSuccessfully';
+import SignupAtMultiParty from './pages/SignupAtMultiParty';
+import SignupSuccessfully from './pages/SignupSuccessfully';
 import AutotradebotOK from './pages/AutotradebotOK';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
@@ -98,16 +96,15 @@ class App extends React.Component<{}, AppState> {
         <Routes>
           <Route path="/" element={<SitePage />}>
             <Route index element={<WelcomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signin" element={<LoginPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/asset/:id" element={<AssetPage />} />
-            <Route path="/register" element={<RegisterPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/multiPartyAccount" element={<MultiPartyAccount />} />
-            <Route path="/registerAtMultiParty" element={<RegisterAtMultiParty />} />
-            <Route path="/registerSuccessfully" element={<RegisterSuccessfully />} />
-            <Route path="/signin/registerAccountType" element={<RegisterAccountTypePage />} />
+            <Route path="/signupAtMultiParty" element={<SignupAtMultiParty />} />
+            <Route path="/signupSuccessfully" element={<SignupSuccessfully />} />
+            <Route path="/signin/signupAccountType" element={<SignupAccountTypePage />} />
             <Route path="/signin/singlePartyAccount" element={<SinglePartyAccountPage />} />
             <Route path="/signin/multi/multiPartyQuantityChoosePage" element={<MultiPartyQuantityChoosePage />} />
             <Route path="/signin/multi/multiPartyBackupKeysPage" element={<MultiPartyBackupKeysPage />} />
@@ -115,7 +112,6 @@ class App extends React.Component<{}, AppState> {
             <Route path="/signin/multi/multiParty-SignUp-Local" element={<MultiParty_SignUp_Local />} />
             <Route path="/signin/multi/multiParty-SignUp-OtherPeople" element={<MultiParty_SignUp_OtherPeople />} />
 
-            <Route path="/registerPwd" element={<RegisterPwdPage />} />
             <Route path="/apps" element={<AppsPage />} />
             <Route path="/autoTrade" element={<AutoTradePage />} />
             <Route path="/addTradeBot" element={<AddTradeBotPage />} />

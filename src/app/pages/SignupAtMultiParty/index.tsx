@@ -11,7 +11,7 @@ import { JSONBigInt } from '../../../server/js/common_utils';
 import { parseNumbers } from '../../../server/js/mpc_wasm_utils';
 import CountDownButton from '../../component/CountDownButton';
 
-const RegisterAtMultiParty = () => {
+const SignupAtMultiParty = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -101,7 +101,7 @@ const RegisterAtMultiParty = () => {
     Global.tempLocalPassword = null;
     messageApi.success({
       key: Global.messageTypeKeyLoading,
-      content: 'Register successfully...',
+      content: 'Sign up successfully...',
       duration: 2,
     });
     navigate('/registerSuccessfully');
@@ -174,4 +174,4 @@ const RegisterAtMultiParty = () => {
   );
 };
 
-export default RegisterAtMultiParty;
+export default SignupAtMultiParty;

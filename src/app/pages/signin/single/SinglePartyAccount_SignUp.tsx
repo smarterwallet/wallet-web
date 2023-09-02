@@ -18,7 +18,7 @@ export default function SinglePartyAccount_SignUp(props: { onChange?: () => void
         </Form.Item>
         <div className="ww-tc">
           <Button block color="primary" size="large">
-            Register
+            Sign up
           </Button>
         </div>
       </Form>

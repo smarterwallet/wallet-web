@@ -36,7 +36,7 @@ export default () => {
   const eoaLogin = async (values: any) => {
     console.log('login');
     if (!Global.account.existLocalStorageKey()) {
-      message.error('You need register first');
+      message.error('You need sign up first');
       return;
     }
     if (Global.isMPCAccount()) {
@@ -153,7 +153,7 @@ export default () => {
 
   return (
     <div className="ww-page-container">
-      <HeaderBar text='Login' />
+      <HeaderBar text='Sign in' />
       {contextHolder}
       <Collapse
         defaultActiveKey="1"
@@ -163,7 +163,7 @@ export default () => {
         onChange={(key) => setActiveKey(key as string)}
         items={[
           {
-            label: 'Local login',
+            label: 'Local sign in',
             key: '1',
             children: (<Form onFinish={eoaLogin}>
               <Form.Item
@@ -175,11 +175,11 @@ export default () => {
               <Button
                 htmlType="submit"
                 style={{ width: '100%' }}
-              >Login</Button>
+              >Sign in</Button>
             </Form>)
           },
           {
-            label: 'Multi-party Login',
+            label: 'Multi-party sign in',
             key: '2',
             children: (<Form form={form} className="ww-multi-party-form" onFinish={mpcLogin}>
               <Form.Item
@@ -218,7 +218,7 @@ export default () => {
               <Button
                 htmlType="submit"
                 style={{ width: '100%' }}
-              >Login</Button>
+              >Sign in</Button>
             </Form>)
           },
         ]}

@@ -19,12 +19,12 @@ class WelcomePage extends React.Component {
         </div>
 
         <NavLink className="welcome-page-button-container" to="/signup">
-          <div className="welcome-page-button-text">Register a smart contract account</div>
+          <div className="welcome-page-button-text">Sign up</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
 
-        <NavLink className="welcome-page-button-container" to="/login">
-          <div className="welcome-page-button-text">Login</div>
+        <NavLink className="welcome-page-button-container" to="/signin">
+          <div className="welcome-page-button-text">Sign in</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
 

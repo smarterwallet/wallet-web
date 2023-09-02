@@ -36,7 +36,7 @@ class AppsPage extends React.Component {
 
         <div className='apps-page-title'>Account Management Apps</div>
         <div className='apps-page-app-container'>
-          {this.renderApp('/icon/login.png', 'Login & Register', '/register')}
+          {this.renderApp('/icon/login.png', 'Sign in & Sign up', '/signup')}
           {this.renderApp('/icon/access.png', 'Access Control', '')}
           {this.renderApp('/icon/security.png', 'Security Privacy', '')}
         </div>

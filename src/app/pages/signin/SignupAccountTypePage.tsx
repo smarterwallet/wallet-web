@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import React from 'react';
 import SWCell from '../../component/SWCell';
 
-export default function RegisterAccountTypePage(props: {}) {
+export default function SignupAccountTypePage(props: {}) {
   return (
     <div className="px-[20px]">
       <HeaderBar text="Account Signup" />

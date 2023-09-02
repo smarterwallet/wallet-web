@@ -12,7 +12,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const register = async (values: any) => {
+  const signUp = async (values: any) => {
     if (values.password == null || values.password === '' || values.repeatPassword == null || values.repeatPassword === '') {
       message.error('Password can not be empty.');
       return;
@@ -25,7 +25,7 @@ const SignUp = () => {
     }
 
     if (Global.account.existLocalStorageKey()) {
-      message.error('You have already registered please login directly.');
+      message.error('You have already signed up please login directly.');
       return;
     }
 
@@ -79,8 +79,8 @@ const SignUp = () => {
       <HeaderBar text='Sign up' />
       <div className="ww-alpha-container">
         {contextHolder}
-        <h2>Register at local device</h2>
-        <Form className="ww-signup-form" onFinish={register}>
+        <h2>Sign up at local device</h2>
+        <Form className="ww-signup-form" onFinish={signUp}>
           <Form.Item
             label="Password"
             name="password"
@@ -106,7 +106,7 @@ const SignUp = () => {
           <Button
             htmlType="submit"
             style={{ width: '100%' }}
-          >Register</Button>
+          >Sign up</Button>
         </Form>
       </div>
     </div>

@@ -96,7 +96,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   onLogout() {
-    this.setState({question: 'Are you sure you want to log out?'});
+    this.setState({question: 'Are you sure you want to sign out?'});
   }
 
   async copyUrl() {

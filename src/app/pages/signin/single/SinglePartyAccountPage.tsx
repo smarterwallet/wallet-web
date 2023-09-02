@@ -17,7 +17,7 @@ export default function SinglePartyAccountPage(props: {}) {
         <div>
           <Alert
             className="ww-msg"
-            message="Register successfully"
+            message="Sign up successfully"
             type="success"
             showIcon
           />
@@ -48,7 +48,7 @@ export default function SinglePartyAccountPage(props: {}) {
         <Button
           style={{ width: '100%'}}
           onClick={() => {
-            navigate('/registerAtMultiParty')
+            navigate('/signupAtMultiParty')
           }}
         >Upgrade</Button>
       </div>
