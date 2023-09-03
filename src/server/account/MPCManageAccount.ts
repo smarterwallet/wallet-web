@@ -234,7 +234,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     } catch (e) {
     }
 
-    if (buffer.byteLength === 0) {
+    if (buffer == null || buffer.byteLength === 0) {
       const response = await fetch(Config.MPC_WASM_URL);
       buffer = await response.arrayBuffer();
       // @ts-ignore
