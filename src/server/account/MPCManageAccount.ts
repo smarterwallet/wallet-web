@@ -222,7 +222,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   private async generateMPCWasmInstance() {
     console.log("generateMPCWasmInstance start");
-    let buffer;
+    let buffer = null;
     try {
       // @ts-ignore
       const bufferStr = (await yuxStorage.getItem('MPC_WASM')) as string;
