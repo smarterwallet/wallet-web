@@ -13,6 +13,7 @@ const SignUp = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const signUp = async (values: any) => {
+    console.log(Global.account, 'Global.account')
     if (values.password == null || values.password === '' || values.repeatPassword == null || values.repeatPassword === '') {
       message.error('Password can not be empty.');
       return;
@@ -24,7 +25,7 @@ const SignUp = () => {
       return;
     }
 
-    if (Global.account.existLocalStorageKey()) {
+    if (Global.account?.existLocalStorageKey()) {
       message.error('You have already signed up please login directly.');
       return;
     }

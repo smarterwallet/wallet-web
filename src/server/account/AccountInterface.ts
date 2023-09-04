@@ -95,5 +95,7 @@ export interface AccountInterface {
   getKeyFromLocalStorage(password: string): string;
 
   deleteKeyFromLocalStorage(): void;
+
+  upgradeKey(password: string): boolean;
 }
 

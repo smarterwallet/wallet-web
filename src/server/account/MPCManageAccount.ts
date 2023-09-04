@@ -311,5 +311,9 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     localStorage.removeItem(Config.LOCAL_STORAGE_MPC_KEY3_HASH);
   }
 
+  upgradeKey(password: string): boolean {
+    return this.saveKey2LocalStorage(this.key, password);
+  }
+
 }
 

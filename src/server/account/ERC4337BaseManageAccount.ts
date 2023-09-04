@@ -388,5 +388,9 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   getKeyFromLocalStorage(password: string): string {
     throw new Error('Method not implemented.');
   }
+
+  upgradeKey(password: string): boolean {
+    throw new Error('Method not implemented.');
+  }
 }
 

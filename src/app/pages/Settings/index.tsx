@@ -19,6 +19,8 @@ export default () => {
   const [editPassword, setEditPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [form] = Form.useForm();
+
   const [username, setUsername] = useState(localStorage.getItem('username') ?? '');
   const email = localStorage.getItem('email') ?? '';
 
@@ -69,7 +71,7 @@ export default () => {
           {
             label: 'My account info',
             key: '1',
-            children: (<Form>
+            children: (<Form form={form}>
               <Form.Item
                 label="Username"
               >
@@ -107,6 +109,7 @@ export default () => {
 
               <Form.Item
                 label="Password for local device"
+                name="password"
               >
                 <Row>
                   <Col span={22}>
@@ -120,7 +123,17 @@ export default () => {
                   <Col span={2} className="icon-wrapper">
                     {
                       editPassword ?
-                        <CheckOutlined onClick={() => setEditPassword(false)} rev={undefined} />
+                        <CheckOutlined
+                          onClick={() => {
+                            setEditPassword(false);
+                            const password = form.getFieldValue('password');
+                            if (password) {
+                              Global.account.upgradeKey(password);
+                              message.success('Setup successful!');
+                            }
+                          }}
+                          rev={undefined}
+                        />
                         :
                         <EditOutlined onClick={() => setEditPassword(true)} rev={undefined} />
                     }
@@ -132,7 +145,7 @@ export default () => {
               >
                 <Row>
                   <Col span={22}>
-                    <Input value={email} />
+                    <Input value={email} disabled />
                   </Col>
                   {/*<Col span={2} className="icon-wrapper">*/}
                   {/*  {*/}
