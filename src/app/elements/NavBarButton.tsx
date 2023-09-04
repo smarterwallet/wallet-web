@@ -12,7 +12,7 @@ interface NavBarButtonProps {
 
 const NavBarButton = (props: NavBarButtonProps) => {
   const location = useLocation();
-  const active = props.match ? props.to.match(props.match) : props.to === location.pathname;
+  const active = props.match ? location.pathname.match(props.match) : props.to === location.pathname;
   return (
     <NavLink className={active ? "navbar-link-active" : "navbar-link"} to={props.to}>
       <div className="navbar-button">
