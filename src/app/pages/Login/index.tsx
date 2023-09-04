@@ -141,7 +141,8 @@ export default () => {
         duration: 2,
       });
 
-      console.log("result.body result:", result.body["result"])
+      console.log("result.body result:", result.body["result"]);
+      localStorage.setItem('email', email);
       Global.account.isLoggedIn = true;
       navigate('/home')
     } catch (error: any) {

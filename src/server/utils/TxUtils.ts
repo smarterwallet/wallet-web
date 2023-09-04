@@ -11,15 +11,11 @@ export class TxUtils {
     }
 }
 
-export const ab2str = (buf: ArrayBuffer) => {
-  // @ts-ignore
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+export const ab2str = (buffer: ArrayBuffer) => {
+  const decoder = new TextDecoder('utf-8');
+  return decoder.decode(buffer);
 }
 export const str2ab = (str: string) => {
-  const buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-  const bufView = new Uint16Array(buf);
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
+  const encoder = new TextEncoder();
+  return encoder.encode(str).buffer;
 }
