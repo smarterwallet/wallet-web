@@ -55,6 +55,8 @@ export default () => {
     return <Navigate to="/" replace />;
   }
 
+  console.log(Global.account);
+
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
     return <Navigate to="/" replace />;

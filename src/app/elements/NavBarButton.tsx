@@ -1,31 +1,28 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import './NavBar.scss';
 
 interface NavBarButtonProps {
-  icon:string,
-  text:string,
-  to:string,
-  align?:string
+  icon: React.ReactElement;
+  text:string;
+  to:string;
+  match: RegExp;
 }
 
-class NavBarButton extends React.Component<NavBarButtonProps, {}> {
-  constructor(props: NavBarButtonProps) {
-    super(props);
-  }
 
-  render() {
-    return (
-      <NavLink className={({ isActive }) => (isActive ? "navbar-link-active" : "navbar-link")} to={this.props.to}>
-        <div className="navbar-button">
-          <div className="navbar-icon-wrap">
-            {this.props.icon}
-          </div>
-          <div className="navbar-button-text">{this.props.text}</div>
+const NavBarButton = (props: NavBarButtonProps) => {
+  const location = useLocation();
+  const active = props.match ? props.to.match(props.match) : props.to === location.pathname;
+  return (
+    <NavLink className={active ? "navbar-link-active" : "navbar-link"} to={props.to}>
+      <div className="navbar-button">
+        <div className="navbar-icon-wrap">
+          {props.icon}
         </div>
-      </NavLink>
-    );
-  }
+        <div className="navbar-button-text">{props.text}</div>
+      </div>
+    </NavLink>
+  )
 }
 
 export default NavBarButton;

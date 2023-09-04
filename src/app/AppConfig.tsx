@@ -19,6 +19,7 @@ export class AppConfig {
             p-id="4212"></path>
         </svg>),
       to: '/',
+      match: /^\/(home)?$/,
       loggedIn: false
     },
     {
