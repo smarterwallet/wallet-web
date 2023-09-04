@@ -19,6 +19,9 @@ export default () => {
   const [editPassword, setEditPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [username, setUsername] = useState(localStorage.getItem('username') ?? '');
+  const email = localStorage.getItem('email') ?? '';
+
   const navigate = useNavigate();
   const upgrade = async (values: any) => {
     message.info("Comming soon");
@@ -72,12 +75,29 @@ export default () => {
               >
                 <Row>
                   <Col span={22}>
-                    <Input value="Smart AA" />
+                    <Input
+                      value={username}
+                      disabled={!editUsername}
+                      placeholder="Please input username"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setUsername(value);
+                      }}
+                    />
                   </Col>
                   <Col span={2} className="icon-wrapper">
                     {
                       editUsername ?
-                        <CheckOutlined onClick={() => setEditUsername(false)} rev={undefined} />
+                        <CheckOutlined
+                          onClick={() => {
+                            setEditUsername(false);
+                            localStorage.setItem('username', username);
+                            if (username) {
+                              message.success('Setup successful!');
+                            }
+                          }}
+                          rev={undefined}
+                        />
                         :
                         <EditOutlined onClick={() => setEditUsername(true)} rev={undefined} />
                     }
@@ -90,7 +110,12 @@ export default () => {
               >
                 <Row>
                   <Col span={22}>
-                    <Input.Password />
+                    <Input.Password
+                      disabled={!editPassword}
+                      onChange={(e) => {
+
+                      }}
+                    />
                   </Col>
                   <Col span={2} className="icon-wrapper">
                     {
@@ -107,16 +132,16 @@ export default () => {
               >
                 <Row>
                   <Col span={22}>
-                    <Input value="smartaa@gmail.com" />
+                    <Input value={email} />
                   </Col>
-                  <Col span={2} className="icon-wrapper">
-                    {
-                      editEmail ?
-                        <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined} />
-                        :
-                        <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />
-                    }
-                  </Col>
+                  {/*<Col span={2} className="icon-wrapper">*/}
+                  {/*  {*/}
+                  {/*    editEmail ?*/}
+                  {/*      <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined} />*/}
+                  {/*      :*/}
+                  {/*      <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />*/}
+                  {/*  }*/}
+                  {/*</Col>*/}
                 </Row>
               </Form.Item>
             </Form>)
