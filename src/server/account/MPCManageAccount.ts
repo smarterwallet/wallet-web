@@ -222,25 +222,26 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   private async generateMPCWasmInstance() {
     console.log("generateMPCWasmInstance start");
-    let buffer = null;
-    try {
-      // @ts-ignore
-      const bufferStr = (await yuxStorage.getItem('MPC_WASM')) as string;
-      if (bufferStr) {
-        buffer = str2ab(bufferStr);
-      } else {
-        console.log('no cache of MPC_WASM')
-      }
-    } catch (e) {
-    }
+    const response = await fetch(Config.MPC_WASM_URL);
+    let buffer = await response.arrayBuffer();
+    // let buffer = null;
+    // try {
+    //   // @ts-ignore
+    //   const bufferStr = (await yuxStorage.getItem('MPC_WASM')) as string;
+    //   if (bufferStr) {
+    //     buffer = str2ab(bufferStr);
+    //   } else {
+    //     console.log('no cache of MPC_WASM')
+    //   }
+    // } catch (e) {
+    // }
 
-    if (buffer == null || buffer.byteLength === 0) {
-      const response = await fetch(Config.MPC_WASM_URL);
-      buffer = await response.arrayBuffer();
-      // @ts-ignore
-      await yuxStorage.setItem('MPC_WASM', ab2str(buffer));
-    }
-
+    // if (buffer == null || buffer.byteLength === 0) {
+    //   const response = await fetch(Config.MPC_WASM_URL);
+    //   buffer = await response.arrayBuffer();
+    //   // @ts-ignore
+    //   await yuxStorage.setItem('MPC_WASM', ab2str(buffer));
+    // }
     await mpcWasmUtils.initWasm(buffer);
   }
 
@@ -311,7 +312,7 @@ export class MPCManageAccount extends ERC4337BaseManageAccount implements Accoun
     localStorage.removeItem(Config.LOCAL_STORAGE_MPC_KEY3_HASH);
   }
 
-  upgradeKey(password: string): boolean {
+  updateLocalKey(password: string): boolean {
     return this.saveKey2LocalStorage(this.key, password);
   }
 

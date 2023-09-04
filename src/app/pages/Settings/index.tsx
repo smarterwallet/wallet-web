@@ -130,7 +130,7 @@ export default () => {
                             setEditPassword(false);
                             const password = form.getFieldValue('password');
                             if (password) {
-                              Global.account.upgradeKey(password);
+                              Global.account.updateLocalKey(password);
                               message.success('Setup successful!');
                             }
                           }}
@@ -142,23 +142,25 @@ export default () => {
                   </Col>
                 </Row>
               </Form.Item>
-              <Form.Item
-                label="Email for third-party storage"
-              >
-                <Row>
-                  <Col span={22}>
-                    <Input value={email} disabled />
-                  </Col>
-                  {/*<Col span={2} className="icon-wrapper">*/}
-                  {/*  {*/}
-                  {/*    editEmail ?*/}
-                  {/*      <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined} />*/}
-                  {/*      :*/}
-                  {/*      <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />*/}
-                  {/*  }*/}
-                  {/*</Col>*/}
-                </Row>
-              </Form.Item>
+              {
+                email != null && email != "" && <Form.Item
+                  label="Email for third-party storage"
+                >
+                  <Row>
+                    <Col span={22}>
+                      <Input value={email} disabled />
+                    </Col>
+                    {/*<Col span={2} className="icon-wrapper">*/}
+                    {/*  {*/}
+                    {/*    editEmail ?*/}
+                    {/*      <CheckOutlined onClick={() => setEditEmail(false)} rev={undefined} />*/}
+                    {/*      :*/}
+                    {/*      <EditOutlined onClick={() => setEditEmail(true)} rev={undefined} />*/}
+                    {/*  }*/}
+                    {/*</Col>*/}
+                  </Row>
+                </Form.Item>
+              }
             </Form>)
           },
           {

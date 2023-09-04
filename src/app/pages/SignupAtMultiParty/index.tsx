@@ -31,6 +31,7 @@ const SignupAtMultiParty = () => {
     })
     if (result.body["code"] != 200) {
       message.error(result.body["message"]);
+      messageApi.destroy();
       return;
     }
     messageApi.loading({
@@ -49,6 +50,7 @@ const SignupAtMultiParty = () => {
     const keys = await mpc.generateKeys()
     if (keys == null || keys === "") {
       message.error("Generate MPC keys error");
+      messageApi.destroy();
       return;
     }
     const key1 = JSONBigInt.stringify(parseNumbers(keys["p1JsonData"]))
@@ -66,6 +68,7 @@ const SignupAtMultiParty = () => {
     });
     if (!mpc.saveKey2LocalStorage(key1, Global.tempLocalPassword)) {
       message.error("Save key to local storage error")
+      messageApi.destroy();
       return;
     }
     messageApi.loading({
@@ -76,6 +79,7 @@ const SignupAtMultiParty = () => {
     const save2Server = await mpc.saveKey2WalletServer(key2)
     if (save2Server.body["code"] != 200) {
       message.error("Save MPC key to wallet server error. Details: " + save2Server.body["message"])
+      messageApi.destroy();
       return;
     }
     messageApi.loading({
@@ -86,6 +90,7 @@ const SignupAtMultiParty = () => {
     const save2DS = await mpc.saveKey2DecentralizeStorage(key3, Global.tempLocalPassword);
     if (save2DS.status != 200) {
       message.error("Save key to decentralize storage error")
+      messageApi.destroy();
       return;
     }
     messageApi.loading({
@@ -95,6 +100,7 @@ const SignupAtMultiParty = () => {
     });
     if (!mpc.saveKeyThirdHash2LocalStorage(save2DS.body["result"]["result"], Global.tempLocalPassword)) {
       message.error("Save third key hash to local storage error")
+      messageApi.destroy();
       return;
     }
 
@@ -104,7 +110,7 @@ const SignupAtMultiParty = () => {
       content: 'Sign up successfully...',
       duration: 2,
     });
-    navigate('/registerSuccessfully');
+    navigate('/signupSuccessfully');
   }
 
   const sendCode = async (values: any) => {

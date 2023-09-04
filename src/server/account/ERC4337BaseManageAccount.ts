@@ -389,7 +389,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     throw new Error('Method not implemented.');
   }
 
-  upgradeKey(password: string): boolean {
+  updateLocalKey(password: string): boolean {
     throw new Error('Method not implemented.');
   }
 }

@@ -55,6 +55,7 @@ const SimpleTransactionPage = (props: any) => {
       key: onSendKey,
       type: 'success',
       content: "Sent " + selectedAsset + " success",
+      duration: 5
     });
   }
 

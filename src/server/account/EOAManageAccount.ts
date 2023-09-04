@@ -79,7 +79,7 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
     localStorage.removeItem(Config.LOCAL_STORAGE_EOA_KEY);
   }
 
-  upgradeKey(password: string): boolean {
+  updateLocalKey(password: string): boolean {
     return this.saveKey2LocalStorage(this.eoaKey, password);
   }
 }
