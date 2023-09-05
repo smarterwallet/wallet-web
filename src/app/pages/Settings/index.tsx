@@ -185,7 +185,7 @@ export default () => {
               </Row> */}
 
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
-                <Button onClick={upgrade}>Upgrade  <SyncOutlined rev={undefined} /></Button>
+                <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
                 <Button onClick={showModalDeleteKeys}>Delete <MinusCircleOutlined rev={undefined} /></Button>
               </Space>
               <Modal title="DELETE KEYS" open={isModalOpen} onOk={handleDeleteKey} onCancel={handleCancelDeleteKey}>
