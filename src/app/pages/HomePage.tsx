@@ -6,6 +6,7 @@ import {BsFiles} from 'react-icons/bs';
 import {Asset, Config} from "../../server/config/Config";
 import QuestionModal from "../modals/QuestionModal";
 import AlertModal from "../modals/AlertModal";
+import { message } from 'antd';
 
 const polygonConfig = require('../config/polygon.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
@@ -100,6 +101,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
+    message.success('The copy succeeded')
     await navigator.clipboard.writeText(Global.account.contractWalletAddress);
   }
 
