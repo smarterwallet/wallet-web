@@ -55,7 +55,7 @@ export default () => {
     return <Navigate to="/" replace />;
   }
 
-  console.log(Global.account);
+  const isMPC = Global.accountType() === 2;
 
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
@@ -185,7 +185,14 @@ export default () => {
               </Row> */}
 
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
-                <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
+                {
+                  isMPC ?
+                    <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
+                    :
+                    <Button onClick={() => {
+                      navigate('/signupAtMultiParty')
+                    }}>Upgrade  <SyncOutlined rev={undefined} /></Button>
+                }
                 <Button onClick={showModalDeleteKeys}>Delete <MinusCircleOutlined rev={undefined} /></Button>
               </Space>
               <Modal title="DELETE KEYS" open={isModalOpen} onOk={handleDeleteKey} onCancel={handleCancelDeleteKey}>
