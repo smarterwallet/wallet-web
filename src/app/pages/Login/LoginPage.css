@@ -15,3 +15,11 @@
   background-color: #D9D9D9;
   box-shadow: 5px 5px 20px 0px #00000040;
 }
+
+.transaction-spin {
+    height: 100%;
+}
+
+.transaction-spin .ant-spin-nested-loading >div>.ant-spin .ant-spin-text {
+    font-size: 22px;
+}

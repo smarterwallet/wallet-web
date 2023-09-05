@@ -95,7 +95,9 @@ const SimpleTransactionPage = (props: any) => {
   return (
     <Spin
       spinning={sending}
+      size="large"
       tip={"Sending " + selectedAsset}
+      className="transaction-spin"
       style={{
         height: '100%'
       }}
