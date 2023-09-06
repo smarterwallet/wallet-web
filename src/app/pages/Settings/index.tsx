@@ -27,7 +27,7 @@ export default () => {
 
   const navigate = useNavigate();
   const upgrade = async (values: any) => {
-    message.info("Comming soon");
+    message.info("Coming soon");
   }
 
   const showModalDeleteKeys = () => {
