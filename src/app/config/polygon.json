@@ -6,7 +6,7 @@
   },
   "api": {
     "blockchain_scan": "https://polygonscan.com/tx/",
-    "backend_api": "https://smarter-api-polygon.web3-idea.xyz/be",
+    "backend_api": "https://smarter-api-polygon.web3-idea.xyz/be/api/v1",
     "rpc_api": "https://polygon-rpc.web3-idea.xyz",
     "bundler_api": "https://smarter-api-polygon.web3-idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=4U977NBK8MNJNK2QEMTMABEQD6UWV99SUX&address=%s",
