@@ -50,7 +50,6 @@ export default () => {
     await Global.changeAccountType(1);
     const eoaAccount = Global.account as EOAManageAccount;
     const eoaKey = eoaAccount.getKeyFromLocalStorage(values.localPassword.trim())
-    console.log("eoaKey:", eoaKey)
     if (eoaKey != null && eoaKey !== "") {
       messageApi.loading({
         key: Global.messageTypeKeyLoading,

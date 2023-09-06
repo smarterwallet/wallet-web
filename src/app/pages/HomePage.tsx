@@ -101,7 +101,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
-    message.success('Public addresscopied to clipboard')
+    message.success('Public address copied to clipboard')
     await navigator.clipboard.writeText(Global.account.contractWalletAddress);
   }
 

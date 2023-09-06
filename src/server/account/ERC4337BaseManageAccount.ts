@@ -188,7 +188,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     }
   }
 
-  async deployContractWalletIfNotExist(contractAddress: string) {
+  async deployContractWalletIfNotExist(ownerAddress: string) {
     if (this.ethersWallet == null) {
       console.log("ethersWallet has not been init.")
       return;
@@ -207,7 +207,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
     console.log("create contract")
     // create smart contract account on chain
-    let params = { "address": contractAddress }
+    let params = { "address": ownerAddress }
     let tx = await Global.account.createSmartContractWalletAccount(params);
     await TxUtils.checkTransactionStatus(this.ethersProvider, tx.body["result"]);
 

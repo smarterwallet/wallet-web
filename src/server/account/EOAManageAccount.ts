@@ -39,7 +39,7 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
       console.log("eoaKey not null");
       this.ethersWallet = new ethers.Wallet(eoaKey, this.ethersProvider);
       this.contractWalletAddress = await this.calcContractWalletAddress();
-      await this.deployContractWalletIfNotExist(this.contractWalletAddress);
+      await this.deployContractWalletIfNotExist(this.ethersWallet.address);
     } else {
       console.log("eoakey is null")
       this.ethersWallet = null;
