@@ -72,7 +72,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   onQuestionYes() {
-    Global.account.isLoggedIn = false;
+    // Global.account.isLoggedIn = false;
     this.forceUpdate();
   }
 
