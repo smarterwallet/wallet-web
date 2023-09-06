@@ -6,7 +6,7 @@
   },
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
-    "backend_api": "https://smarter-api-mumbai-dev.web3-idea.xyz/be/api/v1",
+    "backend_api": "https://smarter-api-mumbai.web3-idea.xyz/be/api/v1",
     "rpc_api": "https://mumbai-rpc.web3-idea.xyz",
     "bundler_api": "https://smarter-api-mumbai.web3-idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
