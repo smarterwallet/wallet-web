@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Checkbox, Col, Collapse, Form, Input, Row, Space, message, Modal } from 'antd';
 import {
+  ArrowUpOutlined,
   CheckOutlined,
   EditOutlined,
   MinusCircleOutlined,
@@ -191,7 +192,7 @@ export default () => {
                     :
                     <Button onClick={() => {
                       navigate('/signupAtMultiParty')
-                    }}>Upgrade  <SyncOutlined rev={undefined} /></Button>
+                    }}>Upgrade  <ArrowUpOutlined rev={undefined} /></Button>
                 }
                 <Button onClick={showModalDeleteKeys}>Delete <MinusCircleOutlined rev={undefined} /></Button>
               </Space>
