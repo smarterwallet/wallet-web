@@ -4,19 +4,22 @@ import { LeftOutlined } from '@ant-design/icons';
 
 interface HeaderBarProps {
   text: string;
+  returnable?: boolean;
 }
 
-class HeaderBar extends React.Component<HeaderBarProps, {}> {
-  render() {
-    return (
-      <div className="header-bar" onClick={()=> window.history.back()}>
-        <img className="header-bar-icon" src="/icon/arrow-left.png" />
-        {/*<LeftOutlined className="header-bar-icon" rev={undefined} />*/}
+const HeaderBar = (props: HeaderBarProps) => {
+  const { text, returnable = true } = props;
+  return (
+    <div className="header-bar" onClick={()=> window.history.back()}>
+      {
+        returnable && (
+          <img className="header-bar-icon" src="/icon/arrow-left.png" />
+        )
+      }
 
-        <div className="header-bar-text">{this.props.text}</div>
-      </div>
-    );
-  }
+      <div className="header-bar-text">{text}</div>
+    </div>
+  );
 }
 
 export default HeaderBar;

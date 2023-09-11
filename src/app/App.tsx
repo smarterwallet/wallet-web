@@ -33,6 +33,7 @@ import MultiPartyAccount from './pages/MultiPartyAccount';
 import SignupAtMultiParty from './pages/SignupAtMultiParty';
 import SignupSuccessfully from './pages/SignupSuccessfully';
 import AutotradebotOK from './pages/AutotradebotOK';
+import Demand from './pages/Demand';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -98,6 +99,7 @@ class App extends React.Component<{}, AppState> {
             <Route index element={<WelcomePage />} />
             <Route path="/signin" element={<LoginPage />} />
             <Route path="/home" element={<HomePage />} />
+            <Route path="/demand" element={<Demand />} />
             <Route path="/asset/:id" element={<AssetPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/settings" element={<Settings />} />
