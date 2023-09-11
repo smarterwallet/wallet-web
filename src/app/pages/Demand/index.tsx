@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import HeaderBar from '../../elements/HeaderBar';
 import './styles.scss';
-import { AppstoreOutlined, KeyOutlined } from '@ant-design/icons';
-import { IconKey, IconMicrophone, IconProtect, IconPurse, IconTransferMoney, IconUsers } from '../Icons';
-import { Popover } from 'antd';
+import { IconMicrophone } from '../Icons';
 import demandsCategory from './demandsCfg';
 import SwitchDemandApp from '../../component/SwitchDemandApp';
 
