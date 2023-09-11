@@ -1,5 +1,7 @@
 import { SettingOutlined } from '@ant-design/icons';
 
+const wwNavType = localStorage.getItem('wwNavType');
+
 export class AppConfig {
   public static siteName = 'Smarter Wallet';
   public static secretPassword = 'ploy';
@@ -22,19 +24,34 @@ export class AppConfig {
       match: /^\/(home)?$/,
       loggedIn: false
     },
-    {
-      text: 'Apps',
-      icon: (
-        <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-             p-id="6051" width="16" height="16">
-          <path
-            d="M960 288.32V768l-416.128 237.76V530.368L960 288.32zM64 291.776l415.872 238.72v475.2L64 768V291.776z m682.88-157.504l176.832 100.992L512 475.008 339.648 376.192l407.232-241.92zM512 0l170.944 97.728-407.488 241.6-178.368-102.272L512 0z"
-            fill="#727272" p-id="6052"></path>
-        </svg>
-      ),
-      to: '/apps',
-      loggedIn: false
-    },
+    wwNavType === '/apps' ?
+      {
+        text: 'Apps',
+        icon: (
+          <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+               p-id="6051" width="16" height="16">
+            <path
+              d="M960 288.32V768l-416.128 237.76V530.368L960 288.32zM64 291.776l415.872 238.72v475.2L64 768V291.776z m682.88-157.504l176.832 100.992L512 475.008 339.648 376.192l407.232-241.92zM512 0l170.944 97.728-407.488 241.6-178.368-102.272L512 0z"
+              fill="#727272" p-id="6052"></path>
+          </svg>
+        ),
+        to: '/apps',
+        loggedIn: false
+      }
+    :
+      {
+        text: 'Demand',
+        icon: (
+          <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+               p-id="6051" width="16" height="16">
+            <path
+              d="M960 288.32V768l-416.128 237.76V530.368L960 288.32zM64 291.776l415.872 238.72v475.2L64 768V291.776z m682.88-157.504l176.832 100.992L512 475.008 339.648 376.192l407.232-241.92zM512 0l170.944 97.728-407.488 241.6-178.368-102.272L512 0z"
+              fill="#727272" p-id="6052"></path>
+          </svg>
+        ),
+        to: '/demand',
+        loggedIn: false
+      } ,
     {
       text: 'Settings',
       icon: <SettingOutlined rev={undefined}/>,

@@ -15,6 +15,7 @@ const SwitchDemandApp = ({ to }: IProps) => {
       className="switch-demand-app"
       onClick={() => {
         navigate(to);
+        localStorage.setItem('wwNavType', to);
       }}
     >
       <AppstoreOutlined rev={undefined} />
