@@ -1,5 +1,6 @@
 import { IconKey, IconProtect, IconPurse, IconTransferMoney, IconUsers } from '../Icons';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowDownOutlined, ArrowUpOutlined, RightOutlined } from '@ant-design/icons';
 
 const LoginRecovery = (
@@ -28,30 +29,36 @@ const LoginRecovery = (
 const tradeToEarn = (
   <ul className="extra-content trade-to-earn-extra">
     <li>
-      <div className="front-icon"/>
-      <div className="txt">
-        Standard return: 4%~8%
-      </div>
-      <RightOutlined rev={undefined} />
+      <Link to="/tradeToEarn/standard">
+        <div className="front-icon"/>
+        <div className="txt">
+          Standard return: 4%~8%
+        </div>
+        <RightOutlined rev={undefined} />
+      </Link>
     </li>
     <li>
-      <div className="front-icon">
-        <ArrowUpOutlined rev={undefined} />
-      </div>
+      <Link to="/tradeToEarn/higher">
+        <div className="front-icon">
+          <ArrowUpOutlined rev={undefined} />
+        </div>
 
-      <div className="txt">
-        Higher return and risks
-      </div>
-      <RightOutlined rev={undefined} />
+        <div className="txt">
+          Higher return and risks
+        </div>
+        <RightOutlined rev={undefined} />
+      </Link>
     </li>
     <li>
-      <div className="front-icon">
-        <ArrowDownOutlined rev={undefined} />
-      </div>
-      <div className="txt">
-        Lower return and risks
-      </div>
-      <RightOutlined rev={undefined} />
+      <Link to="/tradeToEarn/lower">
+        <div className="front-icon">
+          <ArrowDownOutlined rev={undefined} />
+        </div>
+        <div className="txt">
+          Lower return and risks
+        </div>
+        <RightOutlined rev={undefined} />
+      </Link>
     </li>
   </ul>
 )
