@@ -1,9 +1,9 @@
 import React from 'react';
 import './HomePage.css';
-import {Navigate, NavLink} from 'react-router-dom';
-import {Global} from '../../server/Global';
-import {BsFiles} from 'react-icons/bs';
-import {Asset, Config} from "../../server/config/Config";
+import { Navigate, NavLink } from 'react-router-dom';
+import { Global } from '../../server/Global';
+import { BsFiles } from 'react-icons/bs';
+import { Asset, Config } from "../../server/config/Config";
 import QuestionModal from "../modals/QuestionModal";
 import AlertModal from "../modals/AlertModal";
 import { message } from 'antd';
@@ -40,7 +40,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
-    let newAsset = {...this.state.asset};
+    let newAsset = { ...this.state.asset };
     for (let key in Config.TOKENS) {
       newAsset[key] = {
         asset: Config.TOKENS[key],
@@ -49,27 +49,36 @@ class HomePage extends React.Component<{}, HomePageState> {
       };
     }
 
-    this.setState({asset: newAsset});
+    this.setState({ asset: newAsset });
     this.flushAsset();
   }
 
   async flushAsset() {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== "") {
-      let newAsset: {[key: string]: any}  = {};
+      let promises = [];
       for (let key in Config.TOKENS) {
-        if(Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null){
-          const balance = await Global.account.getBalanceOf(Config.TOKENS[key]);
-          newAsset[key] = {
-            asset: Config.TOKENS[key],
-            amount: balance,
-            sort: Config.TOKENS[key].sort
-          };
+        if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
+          promises.push(Global.account.getBalanceOf(Config.TOKENS[key]).then(balance => {
+            return {
+              key: key,
+              asset: Config.TOKENS[key],
+              amount: balance,
+              sort: Config.TOKENS[key].sort
+            };
+          }));
         }
       }
 
-      this.setState({asset: newAsset});
+      let results = await Promise.all(promises);
+      let newAsset: any = {};
+      for (let result of results) {
+        newAsset[result.key] = result;
+      }
+
+      this.setState({ asset: newAsset });
     }
   }
+
 
   onQuestionYes() {
     // Global.account.isLoggedIn = false;
@@ -77,27 +86,27 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   onQuestionNo() {
-    this.setState({question: ''});
+    this.setState({ question: '' });
   }
 
   renderAsset(key: string, icon: string, name: string, amount: string, usd: number) {
     return (
-        <div key={key}>
-          <NavLink className='home-page-asset-row' to={'/asset/' + name}>
-            <img className="home-page-asset-icon" src={icon}/>
-            <div className="home-page-asset-name">{name}</div>
-            <div>
-              <div
-                  className="home-page-asset-amount">{Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}</div>
-              <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
-            </div>
-          </NavLink>
-        </div>
+      <div key={key}>
+        <NavLink className='home-page-asset-row' to={'/asset/' + name}>
+          <img className="home-page-asset-icon" src={icon} />
+          <div className="home-page-asset-name">{name}</div>
+          <div>
+            <div
+              className="home-page-asset-amount">{Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}</div>
+            <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
+          </div>
+        </NavLink>
+      </div>
     );
   }
 
   onLogout() {
-    this.setState({question: 'Are you sure you want to sign out?'});
+    this.setState({ question: 'Are you sure you want to sign out?' });
   }
 
   async copyUrl() {
@@ -126,7 +135,7 @@ class HomePage extends React.Component<{}, HomePageState> {
 
   render() {
     if (!Global.account.isLoggedIn) {
-      return <Navigate to="/" replace/>;
+      return <Navigate to="/" replace />;
     }
 
     let address = '';
@@ -143,24 +152,24 @@ class HomePage extends React.Component<{}, HomePageState> {
           <img className="home-page-header-icon" src="/icon/portrait.png" />
           <div>
             <div className="home-page-header-username">{username}</div>
-            <div style={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={() => this.copyUrl()}>
+            <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => this.copyUrl()}>
               <div className="home-page-header-address">{address}</div>
-              <BsFiles color='gray'/>
+              <BsFiles color='gray' />
             </div>
           </div>
           <select
-              defaultValue={Config.CURRENT_CHAIN_NAME}
-              className="home-page-header-select"
-              onChange={async event => {
-                this.setState({alert: 'Switch to ' + event.target.value});
-                await this.flushConfigAndAsset(event.target.value);
-                this.setState({alert: ''});
-              }}
+            defaultValue={Config.CURRENT_CHAIN_NAME}
+            className="home-page-header-select"
+            onChange={async event => {
+              this.setState({ alert: 'Switch to ' + event.target.value });
+              await this.flushConfigAndAsset(event.target.value);
+              this.setState({ alert: '' });
+            }}
           >
             <option value="Polygon">Polygon</option>
             <option value="Mumbai">Mumbai</option>
           </select>
-          <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()}/>
+          <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()} />
         </div>
 
         <div className='home-page-balance-container'>
@@ -170,15 +179,15 @@ class HomePage extends React.Component<{}, HomePageState> {
 
         <div>
           {Object.entries(this.state.asset).sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
-              .map(([key, assetInfo], index) => (
-                  this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0)
-              ))}
+            .map(([key, assetInfo], index) => (
+              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0)
+            ))}
         </div>
 
-        <br/>
+        <br />
 
-        <AlertModal message={this.state.alert} button={null} onClose={() => this.setState({alert: ''})}/>
-        <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo}/>
+        <AlertModal message={this.state.alert} button={null} onClose={() => this.setState({ alert: '' })} />
+        <QuestionModal message={this.state.question} onYes={this.onQuestionYes} onNo={this.onQuestionNo} />
       </div>
     );
   }

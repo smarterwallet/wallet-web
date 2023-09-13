@@ -1,6 +1,7 @@
 import { Asset } from "../config/Config";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
+import { UserOperation } from "../../app/modals/UserOperation";
 
 /**
  * Account Manage Interface
@@ -68,11 +69,13 @@ export interface AccountInterface {
    */
   ownerSign(hash: string): Promise<string>;
 
-  sendUserOperation(params: any): Promise<{ status: number, body?: any }>
+  sendUserOperation(op: UserOperation, entryPointAddress: string): Promise<{ status: number, body?: any }>
 
-  sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  getUserOperationByHash(opHash: string): Promise<{ status: number, body?: any }>;
 
-  sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  sendTxTransferMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
+  sendTxTransferERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
   /**
    * get tx list interface
@@ -97,5 +100,13 @@ export interface AccountInterface {
   deleteKeyFromLocalStorage(): void;
 
   updateLocalKey(password: string): boolean;
+
+  /**
+   * auto trading
+   */
+  signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string>;
+
+  sendTxAddStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
 }
 

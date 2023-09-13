@@ -38,13 +38,13 @@ const SimpleTransactionPage = (props: any) => {
     setSending(true);
 
     try {
-      const sendGasPrice  = BigNumber.from(gasPrice);
+      const sendGasPrice = BigNumber.from(gasPrice);
       if (selectedAsset === "Matic") {
-        await Global.account.sendMainToken(txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice);
+        await Global.account.sendTxTransferMainToken(txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice);
       } else if (selectedAsset === "SWT") {
-        await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+        await Global.account.sendTxTransferERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else if (selectedAsset === "USDC") {
-        await Global.account.sendERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+        await Global.account.sendTxTransferERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else {
         message.error("unknown asset: " + selectedAsset)
         // messageApi.destroy(onSendKey)
@@ -142,7 +142,7 @@ const SimpleTransactionPage = (props: any) => {
           type="string"
           value={"SWT"}
           disabled
-          onChange={(e) => {}}
+          onChange={(e) => { }}
         />
         <br />
         <div>Gas Price(Wei):</div>

@@ -7,12 +7,15 @@ import { Asset, Config } from "../config/Config";
 import { sprintf } from 'sprintf-js';
 import { AccountInterface } from "./AccountInterface";
 import { TxUtils } from "../utils/TxUtils";
+import { JSONBigInt } from '../js/common_utils';
 
 const { arrayify } = require("@ethersproject/bytes");
 
 const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
+// TODO 
+const autoTrandingAbi = require('../../data/IERC20.json');
 
 /**
  * Account Manage Base Class
@@ -221,7 +224,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
 
   async getContractWalletAddressNonce(): Promise<string> {
     let contract = new ethers.Contract(this.contractWalletAddress, simpleAccountAbi, this.ethersProvider);
-
     try {
       return (await contract.nonce()).toBigInt();
     } catch (error) {
@@ -243,6 +245,14 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return gasPrice.mul(BigNumber.from(this._feeRate)).div(BigNumber.from(100))
   }
 
+  async ownerSign(hash: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
+
+  /**
+   * Build tx
+   */
   protected sendMainTokenCall(toAddress: string, amount: BigNumber): string {
     const accountContract = new ethers.Contract("", simpleAccountAbi, this.ethersProvider);
     return accountContract.interface.encodeFunctionData('execute', [toAddress, amount, "0x"]);
@@ -255,11 +265,24 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return accountContract.interface.encodeFunctionData('execute', [contractAddress, 0, transferCallData]);
   }
 
-  async ownerSign(hash: string): Promise<string> {
-    return await this.ethersWallet.signMessage(arrayify(hash));
+  protected otherContractCall(contractAddress: string, erc20Abi: string, funName: string, params: any): string {
+    const accountContract = new ethers.Contract("", simpleAccountAbi, this.ethersProvider);
+    const otherContract = new ethers.Contract(contractAddress, erc20Abi, this.ethersProvider);
+    const callData = otherContract.interface.encodeFunctionData(funName, params);
+    return accountContract.interface.encodeFunctionData('execute', [contractAddress, 0, callData]);
   }
 
-  async buildTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation> {
+  async buildTransferTokenTx(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation> {
+    let callData;
+    if (contractAddress != null) {
+      callData = this.sendERC20TokenCall(contractAddress, toAddress, ETH(amount));
+    } else {
+      callData = this.sendMainTokenCall(toAddress, ETH(amount));
+    }
+    return this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+  }
+
+  async buildTx(callData: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation> {
     const senderAddress = this.contractWalletAddress;
     const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
@@ -268,12 +291,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       throw new Error(`You must have one TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
     }
     const initCode = "0x";
-    let callData;
-    if (contractAddress != null) {
-      callData = this.sendERC20TokenCall(contractAddress, toAddress, ETH(amount));
-    } else {
-      callData = this.sendMainTokenCall(toAddress, ETH(amount));
-    }
+
     // TODO 参数确定方式还需要讨论
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;
@@ -290,7 +308,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       [senderAddress, nonce, initCode, callData, callGasLimit, verificationGasLimit,
         preVerificationGas, maxFeePerGas, maxPriorityFeePerGas]);
     const paymasterSignPackHash = ethers.utils.keccak256(paymasterSignPack);
-    // 测试的TokenPaymaster不包含验证逻辑，所以签名没有进行验证
+    // The tested TokenPaymaster did not contain verification logic, so the signature was not verified
     const paymasterDataSign = await this.ethersWallet.signMessage(arrayify(paymasterSignPackHash));
     paymasterAndData = ethers.utils.defaultAbiCoder.encode(
       ["bytes20", "bytes"],
@@ -330,36 +348,9 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return userOperation;
   }
 
-  async sendMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
-    let op = await this.buildTx(null, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    return await this.sendUserOperation({
-      "jsonrpc": "2.0",
-      "id": 1,
-      "method": "eth_sendUserOperation",
-      "params": [
-        op,
-        entryPointAddress
-      ]
-    });
-  }
-
-  async sendERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
-    let op = await this.buildTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    return await this.sendUserOperation({
-      "jsonrpc": "2.0",
-      "id": 1,
-      "method": "eth_sendUserOperation",
-      "params": [
-        op,
-        entryPointAddress
-      ]
-    });
-  }
-
-  async sendUserOperation(params: any): Promise<{ status: number, body?: any }> {
-    return await HttpUtils.post(Config.BUNDLER_API, params);
-  }
-
+  /**
+   * transaction list API
+   */
   async getMainTokenTxList(): Promise<{ status: number, body?: any }> {
     return await HttpUtils.get(sprintf(Config.MAIN_TOKEN_TX_LIST_API, this.contractWalletAddress));
   }
@@ -376,15 +367,21 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return await HttpUtils.get(sprintf(Config.ERC20_TX_TO_LIST_API, tokenContractAddress, this.contractWalletAddress.substring(2)));
   }
 
+  /**
+   * Key management
+   */
   saveKey2LocalStorage(key: string, password: string): boolean {
     throw new Error('Method not implemented.');
   }
+
   existLocalStorageKey(): boolean {
     throw new Error('Method not implemented.');
   }
+
   deleteKeyFromLocalStorage(): void {
     throw new Error('Method not implemented.');
   }
+
   getKeyFromLocalStorage(password: string): string {
     throw new Error('Method not implemented.');
   }
@@ -392,5 +389,74 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   updateLocalKey(password: string): boolean {
     throw new Error('Method not implemented.');
   }
+
+  /**
+   * Bundelr API
+   */
+  async sendUserOperation(op: UserOperation, entryPointAddress: string): Promise<{ status: number, body?: any }> {
+    const params = {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_sendUserOperation",
+      "params": [
+        op,
+        entryPointAddress
+      ]
+    };
+    return await HttpUtils.post(Config.BUNDLER_API, params);
+  }
+
+  async getUserOperationByHash(opHash: string): Promise<{ status: number, body?: any }> {
+    const params = {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_getUserOperationByHash",
+      "params": [
+        opHash,
+      ]
+    };
+    return await HttpUtils.post(Config.BUNDLER_API, params);
+  }
+
+  async getTxHashByUserOperationHash(opHash: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    return await this.getUserOperationByHash(opHash);
+  }
+
+  /**
+  * Token tranaction
+  */
+  async sendTxTransferMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    let op = await this.buildTransferTokenTx(null, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    return await this.sendUserOperation(op, entryPointAddress);
+  }
+
+  async sendTxTransferERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    let op = await this.buildTransferTokenTx(contractAddress, amount, toAddress, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    return await this.sendUserOperation(op, entryPointAddress);
+  }
+
+  async sendTxApproveERC20Token(contractAddress: string, toAddress: string, amount: BigNumber, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    let callData = this.otherContractCall(contractAddress, erc20Abi, "approve", [toAddress, amount]);
+    const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    return await this.sendUserOperation(op, entryPointAddress);
+  }
+
+  /**
+   * APP: auto trading
+   */
+  // function execSwap(uint256 strategyId, address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
+  async signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string> {
+    let callData = this.otherContractCall(contractAddress, autoTrandingAbi, "execSwap", params);
+    const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    return JSONBigInt.stringify(op);
+  }
+
+  // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
+  async sendTxAddStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    let callData = this.otherContractCall(contractAddress, autoTrandingAbi, "addStrategy", params);
+    const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    return await this.sendUserOperation(op, entryPointAddress);
+  }
+
 }
 

@@ -30,8 +30,8 @@ export class Config {
     public static MPC_WASM_URL: string;
 
     // 启动默认网络
-    // public static DEFAULT_NETWORK = "Mumbai";
-    public static DEFAULT_NETWORK = "Polygon";
+    public static DEFAULT_NETWORK = "Mumbai";
+    // public static DEFAULT_NETWORK = "Polygon";
     public static TOKEN_PAYMASTER_TOKEN_NAME = "SWT";
     public static LOCAL_STORAGE_EOA_KEY = 'smarter-wallet-eoa-key-v01'
     public static LOCAL_STORAGE_MPC_KEY1 = 'smarter-wallet-mpc-key1-v01'
