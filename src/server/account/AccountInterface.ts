@@ -73,9 +73,13 @@ export interface AccountInterface {
 
   getUserOperationByHash(opHash: string): Promise<{ status: number, body?: any }>;
 
+  getUserOperationReceipt(opHash: string): Promise<{ status: number, body?: any }>;
+
   sendTxTransferMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
   sendTxTransferERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
+  sendTxApproveERC20Token(contractAddress: string, toAddress: string, amount: BigNumber, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
   /**
    * get tx list interface

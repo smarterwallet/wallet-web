@@ -8,7 +8,7 @@
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
     "backend_api": "https://smarter-api-mumbai.web3-idea.xyz/be/api/v1",
     "rpc_api": "https://mumbai-rpc.web3-idea.xyz",
-    "bundler_api": "https://smarter-api-mumbai.web3-idea.xyz/bundler/",
+    "bundler_api": "http://127.0.0.1:4337",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "erc20_tx_from_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
@@ -31,8 +31,16 @@
       "type": 2,
       "icon": "/icon/usdc.png"
     },
-    "USDC": {
+    "USWT": {
       "sort": 2,
+      "name": "USWT",
+      "address": "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d",
+      "decimals": 18,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    },
+    "USDC": {
+      "sort": 3,
       "name": "USDC",
       "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
       "decimals": 6,

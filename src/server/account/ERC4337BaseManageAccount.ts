@@ -15,7 +15,7 @@ const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
 // TODO 
-const autoTrandingAbi = require('../../data/IERC20.json');
+const autoTrandingAbi = require('../../data/AutoTrading.json');
 
 /**
  * Account Manage Base Class
@@ -212,7 +212,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     // create smart contract account on chain
     let params = { "address": ownerAddress }
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.checkTransactionStatus(this.ethersProvider, tx.body["result"]);
+    await TxUtils.waitForTransactionUntilOnChain(this.ethersProvider, tx.body["result"]);
 
     let newContractAddress = this.contractWalletAddress;
 
@@ -411,6 +411,18 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       "jsonrpc": "2.0",
       "id": 1,
       "method": "eth_getUserOperationByHash",
+      "params": [
+        opHash,
+      ]
+    };
+    return await HttpUtils.post(Config.BUNDLER_API, params);
+  }
+
+  async getUserOperationReceipt(opHash: string): Promise<{ status: number, body?: any }> {
+    const params = {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_getUserOperationReceipt",
       "params": [
         opHash,
       ]

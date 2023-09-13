@@ -57,7 +57,7 @@ const SignUp = () => {
       duration: 0
     });
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
+    await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, tx.body["result"]);
 
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
