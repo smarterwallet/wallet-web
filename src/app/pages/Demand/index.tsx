@@ -11,11 +11,18 @@ const Demand = () => {
 
   const [activeExtra, setActiveExtra] = useState('');
 
+  const inputDemand = (e: any) => {
+    if(e.keyCode == 13 ||e.keyCode == 9){
+      e.preventDefault();//禁止键盘默认事件
+      HttpUtils.post('https://smarter-api-da.web3-idea.xyz/v1/demand', {
+        "category": "trade2Earn",
+        "demand": e.target.value
+      })
+    }
+  }
+
   useEffect(() => {
-    HttpUtils.post('https://smarter-api-da.web3-idea.xyz//v1/demand', {
-      "category": "trade2Earn",
-      "demand": "I want High return and low risk"
-    })
+
   }, [])
 
   return (
@@ -60,7 +67,7 @@ const Demand = () => {
       </div>
       <div className="other-demand">
         <div className="txt">
-          <Input type="text" placeholder="What else do you want?"/>
+          <Input type="text" placeholder="What else do you want?" onKeyDown={inputDemand}/>
         </div>
         {/*<div className="icon-wrap">*/}
         {/*  {IconMicrophone}*/}
