@@ -120,6 +120,17 @@
             border-radius: 24px;
         }
 
+        input {
+            display: block;
+            width: 100%;
+            border: 0;
+            background: transparent;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
         .icon {
             opacity: 0.5;
 

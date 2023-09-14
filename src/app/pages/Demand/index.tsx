@@ -50,10 +50,12 @@ const Demand = () => {
       }
       </div>
       <div className="other-demand">
-        <div className="txt">What else do you want?</div>
-        <div className="icon-wrap">
-          {IconMicrophone}
+        <div className="txt">
+          <input type="text" placeholder="What else do you want?"/>
         </div>
+        {/*<div className="icon-wrap">*/}
+        {/*  {IconMicrophone}*/}
+        {/*</div>*/}
       </div>
     </div>
   );
