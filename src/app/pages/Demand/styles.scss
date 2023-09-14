@@ -125,6 +125,8 @@
             width: 100%;
             border: 0;
             background: transparent;
+            // rewrite antd style
+            box-shadow: none;
 
             &:focus {
                 outline: none;

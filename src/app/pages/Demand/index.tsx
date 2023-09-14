@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderBar from '../../elements/HeaderBar';
 import './styles.scss';
 import { IconMicrophone } from '../Icons';
 import demandsCategory from './demandsCfg';
 import SwitchDemandApp from '../../component/SwitchDemandApp';
+import { HttpUtils } from '../../../server/utils/HttpUtils';
+import { Input } from 'antd';
 
 const Demand = () => {
 
   const [activeExtra, setActiveExtra] = useState('');
+
+  useEffect(() => {
+    HttpUtils.post('https://smarter-api-da.web3-idea.xyz//v1/demand', {
+      "category": "trade2Earn",
+      "demand": "I want High return and low risk"
+    })
+  }, [])
 
   return (
     <div className="ww-page-container page-demand">
@@ -51,7 +60,7 @@ const Demand = () => {
       </div>
       <div className="other-demand">
         <div className="txt">
-          <input type="text" placeholder="What else do you want?"/>
+          <Input type="text" placeholder="What else do you want?"/>
         </div>
         {/*<div className="icon-wrap">*/}
         {/*  {IconMicrophone}*/}
