@@ -14,7 +14,6 @@ const { arrayify } = require("@ethersproject/bytes");
 const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
-// TODO 
 const autoTrandingAbi = require('../../data/AutoTrading.json');
 
 /**
@@ -292,7 +291,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     }
     const initCode = "0x";
 
-    // TODO 参数确定方式还需要讨论
+    // TODO The way in which parameters are determined needs to be discussed
     const callGasLimit = 210000;
     const verificationGasLimit = 210000;
     const preVerificationGas = 210000;
