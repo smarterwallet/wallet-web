@@ -2,7 +2,8 @@
   "address": {
     "address_simple_account_factory": "0xA02867e1b8410a810Ca3b4875A7A33C89846Ea10",
     "address_token_paymaster": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
-    "address_entrypoint": "0x081d5B6e93B686cEA78B87f5f96Ec274cC6FFe41"
+    "address_entrypoint": "0x081d5B6e93B686cEA78B87f5f96Ec274cC6FFe41",
+    "address_auto_trading": "0x0987e55f3d11847ef4099dabfb38c6acbd8acfc5"
   },
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",

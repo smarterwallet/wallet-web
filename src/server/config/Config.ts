@@ -17,6 +17,7 @@ export class Config {
     public static ADDRESS_SIMPLE_ACCOUNT_FACTORY: string;
     public static ADDRESS_TOKEN_PAYMASTER: string;
     public static ADDRESS_ENTRYPOINT: string;
+    public static ADDRESS_AUTO_TRADING: string;
     public static MAIN_TOKEN_TX_LIST_API: string;
     public static MAIN_TOKEN_TX_LIST_INTERNAL_API: string;
     public static ERC20_TX_FROM_LIST_API: string;
@@ -55,6 +56,7 @@ export class Config {
         this.ADDRESS_SIMPLE_ACCOUNT_FACTORY = configData.address.address_simple_account_factory;
         this.ADDRESS_TOKEN_PAYMASTER = configData.address.address_token_paymaster;
         this.ADDRESS_ENTRYPOINT = configData.address.address_entrypoint;
+        this.ADDRESS_AUTO_TRADING = configData.address.address_auto_trading;
         this.MAIN_TOKEN_TX_LIST_API = configData.api.matic_tx_list_api;
         this.MAIN_TOKEN_TX_LIST_INTERNAL_API = configData.api.matic_tx_list_internal_api;
         this.ERC20_TX_FROM_LIST_API = configData.api.erc20_tx_from_list_api;

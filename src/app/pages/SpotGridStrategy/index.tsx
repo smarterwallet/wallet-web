@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import '../SpotGrid/styles.scss';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { JSONBigInt } from '../../../server/js/common_utils';
 import { TxUtils } from '../../../server/utils/TxUtils';
 
@@ -35,7 +35,7 @@ const SpotGridStrategy = () => {
   }
 
   const save = async () => {
-    const autoTradingContractAddress = "0x65436754380ed699CEb8f2f8D99D5E9FB54a6B6B";
+    const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Approve tokenA...',
@@ -44,7 +44,7 @@ const SpotGridStrategy = () => {
     const price = await Global.account.getGasPrice();
     // aprove USWT
     const approveERC20TokenA = await Global.account.sendTxApproveERC20Token(
-      "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d", autoTradingContractAddress,
+      Config.TOKENS["USWT"].address, autoTradingContractAddress,
       BigNumber.from(10000), Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
     console.log("approveERC20TokenA:", approveERC20TokenA);
     let approveTokenAHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
@@ -65,12 +65,12 @@ const SpotGridStrategy = () => {
     });
     // aprove SWT
     const approveERC20TokenB = await Global.account.sendTxApproveERC20Token(
-      "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4", autoTradingContractAddress,
+      Config.TOKENS["SWT"].address, autoTradingContractAddress,
       BigNumber.from(10000), Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
     console.log("approveERC20TokenB:", approveERC20TokenB);
     let approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
     while (approveTokenBHash.body.result === undefined) {
-      approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
+      approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
     }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -88,7 +88,7 @@ const SpotGridStrategy = () => {
     // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
     const addStrategy = await Global.account.sendTxAddStrategy(
       autoTradingContractAddress,
-      ["0x4B63443E5eeecE233AADEC1359254c5C601fB7f4", "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d", 10000, 3000, 100],
+      [Config.TOKENS["SWT"].address, Config.TOKENS["USWT"].address, 10000, 3000, 100],
       Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
     console.log("addStrategy:", addStrategy);
     let addStrategyHash = await Global.account.getUserOperationReceipt(addStrategy["body"]["result"]);
@@ -102,7 +102,7 @@ const SpotGridStrategy = () => {
     });
     // check transaction status
     await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, addStrategyHash["body"]["result"]["receipt"]["transactionHash"]);
-    const strategyId = addStrategyHash["body"]["result"]["receipt"]["logs"][0]["topics"][1];
+    const strategyId = parseInt(addStrategyHash["body"]["result"]["receipt"]["logs"][0]["topics"][2], 16);
     console.log("strategyId:", strategyId);
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -113,7 +113,7 @@ const SpotGridStrategy = () => {
     // function execSwap(uint256 strategyId, address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
     const signTx = await Global.account.signTxTradingStrategy(
       autoTradingContractAddress,
-      [strategyId, "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4", "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d", 10000, 3000, 100],
+      [strategyId, Config.TOKENS["SWT"].address, Config.TOKENS["USWT"].address, 10000, 3000, 100],
       Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
     console.log("signTx:", [signTx, Config.ADDRESS_ENTRYPOINT]);
     messageApi.loading({
@@ -133,7 +133,7 @@ const SpotGridStrategy = () => {
     message.error("Please sign in first");
     return <Navigate to="/" replace />;
   }
-  
+
   return (
     <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid Strategy' />

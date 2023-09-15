@@ -292,9 +292,9 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     const initCode = "0x";
 
     // TODO The way in which parameters are determined needs to be discussed
-    const callGasLimit = 210000;
-    const verificationGasLimit = 210000;
-    const preVerificationGas = 210000;
+    const callGasLimit = 500000;
+    const verificationGasLimit = 500000;
+    const preVerificationGas = 500000;
     const maxFeePerGas = gasPrice;
     const maxPriorityFeePerGas = gasPrice;
     let paymasterAndData;
@@ -459,6 +459,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   async signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string> {
     let callData = this.otherContractCall(contractAddress, autoTrandingAbi, "execSwap", params);
     const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+    await this.sendUserOperation(op, entryPointAddress);
     return JSONBigInt.stringify(op);
   }
 
