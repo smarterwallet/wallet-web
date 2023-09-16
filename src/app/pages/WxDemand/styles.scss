@@ -2,6 +2,7 @@
 
 .page-wx-demand {
 
+    position: relative;
     display: flex;
     flex-direction: column;
 
@@ -16,13 +17,14 @@
     .app-store-icon {
         font-size: 40px;
         position: absolute;
-        top: 26px;
+        top: 22px;
         right: 26px;
         color: #666;
     }
 
     .demand-content {
         margin-top: 0;
+        margin-bottom: 20px;
         padding: 20px;
         background: #FFFFFFB2;
         box-shadow: 5px 5px 20px 0 #00000040;
@@ -209,9 +211,6 @@
         }
     }
 
-    .empty-flex {
-        flex: 1;
-    }
 
     .main-txt {
         font-size: 22px;

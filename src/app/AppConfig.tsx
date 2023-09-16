@@ -50,6 +50,7 @@ export class AppConfig {
           </svg>
         ),
         to: '/demand',
+        match: /Demand/,
         loggedIn: false
       } ,
     {
