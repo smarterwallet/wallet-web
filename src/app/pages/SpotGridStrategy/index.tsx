@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderBar from '../../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Button, Space, message } from 'antd';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -8,6 +8,8 @@ import { Config } from '../../../server/config/Config';
 import { BigNumber, ethers } from 'ethers';
 import { JSONBigInt } from '../../../server/js/common_utils';
 import { TxUtils } from '../../../server/utils/TxUtils';
+import { HttpUtils } from '../../../server/utils/HttpUtils';
+
 
 const SpotGridStrategy = () => {
   const [to, setTo] = useState("falls to");
@@ -17,6 +19,19 @@ const SpotGridStrategy = () => {
   const [lossresult, setLossresult] = useState("2%~4%");
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+  
+
+  // useEffect(() => {
+  //   fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       const price = data.ethereum.usd;
+  //       setEthPrice(price);
+  //     })
+  //     .catch(error => {
+  //       console.error("Error:", error);
+  //     });
+  // }, []);
 
   const onTosell = () => {
     setTo("rises to");
@@ -32,6 +47,12 @@ const SpotGridStrategy = () => {
     setBuyin("Buy in");
     setYieldresult("8%~5%");
     setLossresult("2%~4%");
+  }
+  const fetchPirce = async () => {
+
+    let ret =  await HttpUtils.get("http://");
+
+    
   }
 
   const save = async () => {
@@ -129,6 +150,28 @@ const SpotGridStrategy = () => {
     });
   }
 
+  const [ethPrice, setEthPrice] = useState<number | null>(null);
+
+
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('ethereum');
+
+  useEffect(() => {
+    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${selectedCurrency.toLowerCase()}&vs_currencies=usd`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const price = data[selectedCurrency.toLowerCase()].usd;
+        setEthPrice(price);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  }, [selectedCurrency]);
+    
+  const handleCurrencyChange = (value: string) => {
+    setSelectedCurrency(value);
+  };
+
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
     return <Navigate to="/" replace />;
@@ -145,15 +188,20 @@ const SpotGridStrategy = () => {
           <div className="sg-price-wrap">
             {contextHolder}
             <Select
-              defaultValue={'ETH'}
+              defaultValue={'ethereum'}
               style={{ width: 120 }}
               options={[
-                { value: 'ETH', label: 'ETH' },
-                { value: 'Matic', label: 'Matic' },
+                { value: 'ethereum', label: 'ETH' },
+                { value: 'matic-network', label: 'Matic' },
               ]}
+              onChange={handleCurrencyChange}
+
             />
-            <div className="sg-price">$30000</div>
-            <div className="sg-price-changes">+3.02%</div>
+            <div className="sg-price">
+            ${ethPrice}
+          
+            </div>
+            <div className="sg-price-changes"></div>
           </div>
         </Form.Item>
         <Form.Item className="radio-button">
