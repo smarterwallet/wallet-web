@@ -24,7 +24,7 @@ export class AppConfig {
       match: /^\/(home)?$/,
       loggedIn: false
     },
-    wwNavType === '/apps' ?
+    (wwNavType === '/apps' && !window.location.href.includes('wxDemand')) ?
       {
         text: 'Apps',
         icon: (
