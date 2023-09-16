@@ -459,7 +459,6 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   async signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string> {
     let callData = this.otherContractCall(contractAddress, autoTrandingAbi, "execSwap", params);
     const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    await this.sendUserOperation(op, entryPointAddress);
     return JSONBigInt.stringify(op);
   }
 
