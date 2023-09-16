@@ -35,6 +35,8 @@ import SignupSuccessfully from './pages/SignupSuccessfully';
 import AutotradebotOK from './pages/AutotradebotOK';
 import Demand from './pages/Demand';
 import TradeToEarn from './pages/TradeToEarn';
+import WxDemand from './pages/WxDemand';
+import WxDemandItem from './pages/WxDemand/wxDemandItem';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -128,6 +130,8 @@ class App extends React.Component<{}, AppState> {
             <Route path="/spotGridBot" element={<SpotGridBot />} />
             <Route path="/autotradebotok"  element={<AutotradebotOK />} />
             <Route path="/tradeToEarn/:risk"  element={<TradeToEarn />} />
+            <Route path="/wxDemand"  element={<WxDemand />} />
+            <Route path="/wxDemandItem/:category"  element={<WxDemandItem />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

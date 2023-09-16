@@ -8,6 +8,10 @@ const NavBar = () => {
 
   const location = useLocation();
   const isWelComePage = location.pathname === '/';
+  //
+  // if (location.pathname.includes('wxDemand')) {
+  //   return null;
+  // }
 
 
   return (
