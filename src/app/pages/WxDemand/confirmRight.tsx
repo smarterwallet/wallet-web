@@ -1,6 +1,6 @@
 import React from 'react';
 // @ts-ignore
-import mapleLeafImg from './img/mapleLeaf.png'; // @ts-ignore
+import lhyImg from './img/lhy.png'; // @ts-ignore
 import nostrImg from './img/nostr.png'; // @ts-ignore
 import lensProtocolImg from './img/lensProtocol.png'; // @ts-ignore
 import farcasterImg from './img/farcaster.png'; // @ts-ignore
@@ -12,8 +12,8 @@ const ConfirmRight = () => {
     <div className="confirm-right">
       <h2>1. Qtum的AIGC内容链上确权</h2>
       <div className="img-content">
-        <p>树叶都红了，枫叶落下了，秋天真的来了！</p>
-        <img src={mapleLeafImg} alt=""/>
+        <p>蓝花楹开，给大地带来梦幻的色彩，秋天已来。</p>
+        <img src={lhyImg} alt=""/>
       </div>
       <h2>2. 同步到您的其他社媒账号</h2>
       <ul className="media-list">
