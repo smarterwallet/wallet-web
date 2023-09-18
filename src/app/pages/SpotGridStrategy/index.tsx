@@ -21,17 +21,57 @@ const SpotGridStrategy = () => {
   const [messageApi, contextHolder] = message.useMessage();
   
 
-  // useEffect(() => {
-  //   fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd")
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       const price = data.ethereum.usd;
-  //       setEthPrice(price);
-  //     })
-  //     .catch(error => {
-  //       console.error("Error:", error);
-  //     });
-  // }, []);
+  const onFinish = (values: any) => {
+    console.log("Form values:", values);
+  };
+  
+  const saveSignedTxs = async () => {
+    let params = {
+      "address":  Global.account.contractWalletAddress,
+      "token0": "USWT",
+      "token1": "SWT",
+      "fee": 100,
+      "buy_sign": "signature1",
+      "sell_sign": "signature2"
+
+
+
+    };
+    let api = Config.BACKEND_API + '/at/strategies/signed-txs';
+     console.log("this._authorization:", Global.authorization)
+
+    let ret = await HttpUtils.post(api, params);
+    console.log(ret);
+
+  }
+
+  const saveStrategy = async () => {
+    let params = 
+      {
+        "address": Global.account.contractWalletAddress,
+        "token0": "USWT",
+        "token1": "SWT",
+        "fee": 100,
+        "amount": 0.1,
+        "buy_price": 1,
+        "sell_price": 1.1,
+        "stop_loss_price": 0.9,
+        "position_open": false,
+        "state": 0,
+        "return_rate": 0
+      
+
+
+
+    };
+    let api = Config.BACKEND_API + '/at/strategies/signed-txs';
+     console.log("this._authorization:", Global.authorization)
+
+    let ret = await HttpUtils.post(api, params);
+    console.log(ret);
+
+  }
+
 
   const onTosell = () => {
     setTo("rises to");
@@ -48,14 +88,13 @@ const SpotGridStrategy = () => {
     setYieldresult("8%~5%");
     setLossresult("2%~4%");
   }
-  const fetchPirce = async () => {
 
-    let ret =  await HttpUtils.get("http://");
 
-    
-  }
+ 
 
   const save = async () => {
+    form.submit();
+
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -142,6 +181,12 @@ const SpotGridStrategy = () => {
       content: 'Save strage...',
       duration: 0
     });
+
+    let params = {
+      address: strategyId,
+      signTx: signTx,
+      
+    }
     // TODO save to backend
     messageApi.success({
       key: "success",
@@ -153,14 +198,14 @@ const SpotGridStrategy = () => {
   const [ethPrice, setEthPrice] = useState<number | null>(null);
 
 
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('ethereum');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('SWT');
 
   useEffect(() => {
-    fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${selectedCurrency.toLowerCase()}&vs_currencies=usd`)
+    fetch(`https://smarter-api-at.web3-idea.xyz/at/price/current/${selectedCurrency.toUpperCase()}/USWT/3000`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const price = data[selectedCurrency.toLowerCase()].usd;
+        const price = data.current_price.toFixed(4)
         setEthPrice(price);
       })
       .catch(error => {
@@ -171,6 +216,14 @@ const SpotGridStrategy = () => {
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
   };
+
+  const [selectedRadio, setSelectedRadio] = useState<string>("1");
+  const [form] = Form.useForm(); // 创建表单实例
+
+  const handleRadioChange = (e: any) => {
+    setSelectedRadio(e.target.value);
+  };
+
 
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
@@ -183,16 +236,19 @@ const SpotGridStrategy = () => {
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 16 }}
+        onFinish={onFinish}
+        form={form}
+
       >
         <Form.Item wrapperCol={{ span: 20 }}>
           <div className="sg-price-wrap">
             {contextHolder}
             <Select
-              defaultValue={'ethereum'}
+              defaultValue={'SWT'}
               style={{ width: 120 }}
               options={[
-                { value: 'ethereum', label: 'ETH' },
-                { value: 'matic-network', label: 'Matic' },
+                { value: 'SWT', label: 'SWT' },
+                // { value: 'matic-network', label: 'Matic' },
               ]}
               onChange={handleCurrencyChange}
 
@@ -209,31 +265,36 @@ const SpotGridStrategy = () => {
             defaultValue="1"
             optionType="button"
             buttonStyle="solid"
+            onChange={handleRadioChange}
+
           >
             <Radio.Button value="1" onClick={onTobuy}>Buy at low</Radio.Button>
             <Radio.Button value="2" onClick={onTosell}>Sell at high</Radio.Button>
           </Radio.Group>
         </Form.Item>
+
+        {selectedRadio === "1" && (
+        <div id="buy">
         <h3>When the price</h3>
         <Space>
-          <Form.Item label={by}>
+          <Form.Item label={by} name="fallsBy">
             <InputNumber style={{ width: '167%' }} placeholder="%" />
           </Form.Item>
           <Form.Item label="or" colon={false}>
           </Form.Item>
         </Space>
-        <Form.Item label={to}>
+        <Form.Item label={to} name="fallsTo">
           <InputNumber style={{ width: '100%' }} placeholder="USD" />
         </Form.Item>
         <h3>{buyin}</h3>
         <Space>
-          <Form.Item label="proportion">
+          <Form.Item label="proportion" name="buyInProportion">
             <InputNumber style={{ width: '167%' }} placeholder="%" />
           </Form.Item>
           <Form.Item label="or" colon={false}>
           </Form.Item>
         </Space>
-        <Form.Item label="quantity">
+        <Form.Item label="quantity"  name="buyInQuantity">
           <InputNumber style={{ width: '100%' }} placeholder="ETH" />
         </Form.Item>
         <h3>Estimated result</h3>
@@ -244,12 +305,57 @@ const SpotGridStrategy = () => {
             <div className="sg-yield-label">Loss:</div>
             <div className="sg-yield">{lossresult}</div>
           </div>
-        </Form.Item>
+          </Form.Item>
+          
+        </div>
+        )}
+        
+        {selectedRadio === "2" && (
+
+          <div id="sell">
+            <h3>When the price</h3>
+            <Space>
+              <Form.Item label={by} name="riseBy">
+                <InputNumber style={{ width: '167%' }} placeholder="%" />
+              </Form.Item>
+              <Form.Item label="or" colon={false}>
+              </Form.Item>
+            </Space>
+            <Form.Item label={to} name="riseTo">
+              <InputNumber style={{ width: '100%' }} placeholder="USD" />
+            </Form.Item>
+            <h3>{buyin}</h3>
+            <Space>
+              <Form.Item label="proportion" name="sellOutProportion">
+                <InputNumber style={{ width: '167%' }} placeholder="%" />
+              </Form.Item>
+              <Form.Item label="or" colon={false}>
+              </Form.Item>
+            </Space>
+            <Form.Item label="quantity"  name="sellOutQuantity">
+              <InputNumber style={{ width: '100%' }} placeholder="ETH" />
+            </Form.Item>
+            <h3>Estimated result</h3>
+            <Form.Item wrapperCol={{ span: 14 }}>
+              <div className="sg-price-wrap">
+                <div className="sg-yield-label">Yield:</div>
+                <div className="sg-yield">{yieldresult}</div>
+                <div className="sg-yield-label">Loss:</div>
+                <div className="sg-yield">{lossresult}</div>
+              </div>
+            </Form.Item>
+          
+          </div>
+        )}
+        
         <Space style={{ width: '100%', justifyContent: 'center' }} size={80}>
           <Button shape="round" onClick={save}>Save</Button>
           <Button shape="round" onClick={() => { navigate('/SpotGridBot') }}>Create+</Button>
         </Space>
       </Form>
+
+
+   
     </div>
   );
 };
