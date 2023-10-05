@@ -23,54 +23,43 @@ const SpotGridStrategy = () => {
 
   const onFinish = (values: any) => {
     console.log("Form values:", values);
+    console.log(selectedRadio)
+
+    let key = "";
+    if (selectedRadio === "1") {
+      console.log("buy")
+       key = "buyStrategyKey";
+      localStorage.setItem(key, JSON.stringify(values));
+      messageApi.success({
+        key: "success",
+        content: 'Save Buy Strategy success',
+        duration: 2,
+      });
+      
+      
+    } else if (selectedRadio === "2") {
+       key = "sellStrategyKey";
+       localStorage.setItem(key, JSON.stringify(values));
+
+       messageApi.success({
+        key: "success",
+        content: 'Save Sell Strategy success',
+        duration: 2,
+      });
+    }
+    let str = localStorage.getItem(key);
+    console.log(str);
+    // let choice = parseInt(selectedRadio, 10);
+    // if (selectedRadio == "1") {//buy
+      
+    // } else if (selectedRadio == "2") {//sell
+      
+    // }
+
   };
   
-  const saveSignedTxs = async () => {
-    let params = {
-      "address":  Global.account.contractWalletAddress,
-      "token0": "USWT",
-      "token1": "SWT",
-      "fee": 100,
-      "buy_sign": "signature1",
-      "sell_sign": "signature2"
 
 
-
-    };
-    let api = Config.BACKEND_API + '/at/strategies/signed-txs';
-     console.log("this._authorization:", Global.authorization)
-
-    let ret = await HttpUtils.post(api, params);
-    console.log(ret);
-
-  }
-
-  const saveStrategy = async () => {
-    let params = 
-      {
-        "address": Global.account.contractWalletAddress,
-        "token0": "USWT",
-        "token1": "SWT",
-        "fee": 100,
-        "amount": 0.1,
-        "buy_price": 1,
-        "sell_price": 1.1,
-        "stop_loss_price": 0.9,
-        "position_open": false,
-        "state": 0,
-        "return_rate": 0
-      
-
-
-
-    };
-    let api = Config.BACKEND_API + '/at/strategies/signed-txs';
-     console.log("this._authorization:", Global.authorization)
-
-    let ret = await HttpUtils.post(api, params);
-    console.log(ret);
-
-  }
 
 
   const onTosell = () => {
@@ -90,9 +79,14 @@ const SpotGridStrategy = () => {
   }
 
 
+  const save = async () => {
+    form.submit();
+
+
+  }
  
 
-  const save = async () => {
+  const saveBak = async () => {
     form.submit();
 
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
@@ -178,7 +172,7 @@ const SpotGridStrategy = () => {
     console.log("signTx:", [signTx, Config.ADDRESS_ENTRYPOINT]);
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
-      content: 'Save strage...',
+      content: 'Save Strategy...',
       duration: 0
     });
 
@@ -190,9 +184,12 @@ const SpotGridStrategy = () => {
     // TODO save to backend
     messageApi.success({
       key: "success",
-      content: 'Save strage success',
+      content: 'Save Strategy success',
       duration: 2,
     });
+
+    
+    
   }
 
   const [ethPrice, setEthPrice] = useState<number | null>(null);
@@ -200,12 +197,14 @@ const SpotGridStrategy = () => {
 
   const [selectedCurrency, setSelectedCurrency] = useState<string>('SWT');
 
+  let priceUrl = "https://smarter-api-at.web3-idea.xyz/api/v1/price/current/simple/0x4B63443E5eeecE233AADEC1359254c5C601fB7f4/0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d"
   useEffect(() => {
-    fetch(`https://smarter-api-at.web3-idea.xyz/at/price/current/${selectedCurrency.toUpperCase()}/USWT/3000`)
+    fetch(priceUrl)
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const price = data.current_price.toFixed(4)
+        let ethValue = ethers.utils.formatEther(data.result+"");
+        const price = parseFloat(parseFloat(ethValue).toFixed(4))
         setEthPrice(price);
       })
       .catch(error => {
@@ -224,6 +223,63 @@ const SpotGridStrategy = () => {
     setSelectedRadio(e.target.value);
   };
 
+
+  const createStrategy = async () => {
+
+    let params = {
+      "owner_address":   Global.account.contractWalletAddress,
+      "token_from": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
+      "token_from_num": "10000",
+      "token_to": "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d",
+      "token_to_num": "50000",
+      "user_operation": {
+          "sender": "0xC020dD374e043a10Ea60F927F4819199AeDc4fE6",
+          "nonce": "40",
+          "initCode": "0x",
+          "callData": "0xb61d27f60000000000000000000000003afe80976e9d75ff7e104c187f15f75e77ad114f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c45f9fd69500000000000000000000000000000000000000000000000000000000000000040000000000000000000000004b63443e5eeece233aadec1359254c5c601fb7f4000000000000000000000000f981ac497a0fe7ad2dd670185c6e7d511bf36d6d00000000000000000000000000000000000000000000000000000000000027100000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000",
+          "callGasLimit": "210000",
+          "verificationGasLimit": "210000",
+          "preVerificationGas": "210000",
+          "maxFeePerGas": "2861229855",
+          "maxPriorityFeePerGas": "2861229855",
+          "paymasterAndData": "0x4b63443e5eeece233aadec1359254c5c601fb7f400000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000041049a948df7e8c9909c1beb819f97aaac38c09c85a586fe0d2c0bd698c1bbbb222dc99429b74c2a432b1264888051716956f5224b96d59a79106f722986406fa11c00000000000000000000000000000000000000000000000000000000000000",
+          "signature": "signTx"
+      }
+    }
+
+   
+    console.log(params);
+
+    let api = "https://smarter-api-at.web3-idea.xyz/api/v1/strategy/simple";
+
+    console.log(params);
+    let ret = await HttpUtils.post(api, params);
+    console.log(ret);
+    
+    let key = "";
+    if (selectedRadio === "1") {
+      console.log("buy")
+       key = "buyStrategyKey";
+       messageApi.success({
+        key: "success",
+        content: 'Create Buy Strategy Success',
+        duration: 2,
+      });
+      
+      
+    } else if (selectedRadio === "2") {
+      key = "sellStrategyKey";
+      messageApi.success({
+        key: "success",
+        content: 'Create Sell Strategy Success',
+        duration: 2,
+      });
+    }
+    
+    
+  }
+ 
+  
 
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
@@ -276,22 +332,32 @@ const SpotGridStrategy = () => {
         {selectedRadio === "1" && (
         <div id="buy">
         <h3>When the price</h3>
-        <Space>
+        <Space size={5}>
           <Form.Item label={by} name="fallsBy">
-            <InputNumber style={{ width: '167%' }} placeholder="%" />
+                <InputNumber style={{ width: '100%' }} placeholder="%"
+              
+                />
           </Form.Item>
-          <Form.Item label="or" colon={false}>
+          <Form.Item label="OR" colon={false}>
           </Form.Item>
         </Space>
+       
         <Form.Item label={to} name="fallsTo">
-          <InputNumber style={{ width: '100%' }} placeholder="USD" />
-        </Form.Item>
+          <InputNumber style={{ width: '100%'   }} placeholder="USD" />
+              </Form.Item>
+     
+           
+            <Form.Item label="fluctuation+-" name="fluctuation">
+          <InputNumber style={{ width: '100%' }} placeholder="%" />
+              </Form.Item>
+           
+            
         <h3>{buyin}</h3>
         <Space>
           <Form.Item label="proportion" name="buyInProportion">
-            <InputNumber style={{ width: '167%' }} placeholder="%" />
+            <InputNumber style={{ width: '100%' }} placeholder="%" />
           </Form.Item>
-          <Form.Item label="or" colon={false}>
+          <Form.Item label="OR" colon={false}>
           </Form.Item>
         </Space>
         <Form.Item label="quantity"  name="buyInQuantity">
@@ -316,20 +382,24 @@ const SpotGridStrategy = () => {
             <h3>When the price</h3>
             <Space>
               <Form.Item label={by} name="riseBy">
-                <InputNumber style={{ width: '167%' }} placeholder="%" />
+                <InputNumber style={{ width: '100%' }} placeholder="%" />
               </Form.Item>
-              <Form.Item label="or" colon={false}>
+              <Form.Item label="OR" colon={false}>
               </Form.Item>
             </Space>
             <Form.Item label={to} name="riseTo">
               <InputNumber style={{ width: '100%' }} placeholder="USD" />
             </Form.Item>
+            <Form.Item label="fluctuation+-" name="fluctuation">
+          <InputNumber style={{ width: '100%' }} placeholder="%" />
+              </Form.Item>
+           
             <h3>{buyin}</h3>
             <Space>
               <Form.Item label="proportion" name="sellOutProportion">
-                <InputNumber style={{ width: '167%' }} placeholder="%" />
+                <InputNumber style={{ width: '100%' }} placeholder="%" />
               </Form.Item>
-              <Form.Item label="or" colon={false}>
+              <Form.Item label="OR" colon={false}>
               </Form.Item>
             </Space>
             <Form.Item label="quantity"  name="sellOutQuantity">
@@ -350,7 +420,9 @@ const SpotGridStrategy = () => {
         
         <Space style={{ width: '100%', justifyContent: 'center' }} size={80}>
           <Button shape="round" onClick={save}>Save</Button>
-          <Button shape="round" onClick={() => { navigate('/SpotGridBot') }}>Create+</Button>
+          {/* <Button shape="round" onClick={() => { navigate('/SpotGridBot') }}>Create+</Button> */}
+          <Button shape="round" onClick={createStrategy}>Create+</Button>
+
         </Space>
       </Form>
 
