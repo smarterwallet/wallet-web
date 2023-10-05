@@ -354,15 +354,16 @@ const SpotGridStrategy = () => {
             
         <h3>{buyin}</h3>
         <Space>
-          <Form.Item label="proportion" name="buyInProportion">
-            <InputNumber style={{ width: '100%' }} placeholder="%" />
-          </Form.Item>
+         
+                <Form.Item label="quantity"  name="buyInQuantity">
+          <InputNumber style={{ width: '100%' }} placeholder="ETH" />
+        </Form.Item>
           <Form.Item label="OR" colon={false}>
           </Form.Item>
         </Space>
-        <Form.Item label="quantity"  name="buyInQuantity">
-          <InputNumber style={{ width: '100%' }} placeholder="ETH" />
-        </Form.Item>
+        <Form.Item label="proportion" name="buyInProportion">
+            <InputNumber style={{ width: '100%' }} placeholder="%" />
+              </Form.Item>
         <h3>Estimated result</h3>
         <Form.Item wrapperCol={{ span: 14 }}>
           <div className="sg-price-wrap">
@@ -396,15 +397,16 @@ const SpotGridStrategy = () => {
            
             <h3>{buyin}</h3>
             <Space>
-              <Form.Item label="proportion" name="sellOutProportion">
-                <InputNumber style={{ width: '100%' }} placeholder="%" />
-              </Form.Item>
+             
+              <Form.Item label="quantity"  name="sellOutQuantity">
+              <InputNumber style={{ width: '100%' }} placeholder="ETH" />
+            </Form.Item>
               <Form.Item label="OR" colon={false}>
               </Form.Item>
             </Space>
-            <Form.Item label="quantity"  name="sellOutQuantity">
-              <InputNumber style={{ width: '100%' }} placeholder="ETH" />
-            </Form.Item>
+            <Form.Item label="proportion" name="sellOutProportion">
+                <InputNumber style={{ width: '100%' }} placeholder="%" />
+              </Form.Item>
             <h3>Estimated result</h3>
             <Form.Item wrapperCol={{ span: 14 }}>
               <div className="sg-price-wrap">
