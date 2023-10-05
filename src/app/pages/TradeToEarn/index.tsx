@@ -17,7 +17,7 @@ const TradeToEarn = () => {
       <HeaderBar text={cfg.title} />
       <h2>Recommended strategy:</h2>
       <div className="content-box">
-        <div className="content-title-wrap" onClick={() => navigate('/spotGridStrategy')}>
+        <div className="content-title-wrap" onClick={() => navigate('/SpotGridBot')}>
           <h3>One-time decentralized automated trading bot</h3>
           <div className="icon-wrap">
             <RightOutlined rev={undefined} />

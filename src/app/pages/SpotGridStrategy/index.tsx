@@ -211,6 +211,16 @@ const SpotGridStrategy = () => {
         console.error("Error:", error);
       });
   }, [selectedCurrency]);
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    let key = "spot_grid_bot";
+    const str = localStorage.getItem(key);
+    let items = JSON.parse(str);
+    console.log(items);
+    setData(items);
+  },[])
+
     
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
@@ -225,13 +235,29 @@ const SpotGridStrategy = () => {
 
 
   const createStrategy = async () => {
+    let token_from = "";
+    let token_to = "";
+
+    if (selectedRadio === "1") {//buy
+      token_from = Config.TOKENS["USWT"].address;
+      token_to = Config.TOKENS["SWT"].address;
+
+    } else {//sell
+      token_from = Config.TOKENS["SWT"].address;
+      token_to = Config.TOKENS["USWT"].address;
+    }
+    let token_from_num = data.assetAmount; //just SWT
+    let token_to_num = data.assetAmount * ethPrice;
 
     let params = {
       "owner_address":   Global.account.contractWalletAddress,
-      "token_from": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
-      "token_from_num": "10000",
-      "token_to": "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d",
-      "token_to_num": "50000",
+      "token_from": token_from,
+      "token_from_num": token_from_num,
+      "token_to": token_to,
+      "token_to_num": token_to_num,
+      "token_to_num_fluctuation": form.getFieldValue("fluctuation"),
+      "start_condition_token_to_num": data.priceCondition,
+
       "user_operation": {
           "sender": "0xC020dD374e043a10Ea60F927F4819199AeDc4fE6",
           "nonce": "40",

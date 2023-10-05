@@ -1,12 +1,14 @@
-import React from 'react';
-import { Select, Form, InputNumber, Button, Space, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Select, Form, InputNumber, Button, Space, Modal,Input,message } from 'antd';
 import HeaderBar from '../../elements/HeaderBar';
 import { useNavigate } from 'react-router-dom';
 import '../SpotGrid/styles.scss';
+import { Global } from '../../../server/Global';
 
 
 const Index = () => {
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   interface Props {
     src1: string; text1:string; text2:string, text3:string;
@@ -22,6 +24,18 @@ const Index = () => {
       </div>
     );
   };
+  useEffect(() => {
+    const getPrice = async () => {
+      const price = await Global.account.getGasPrice();
+      console.log(price);
+      if (price) {
+        form.setFieldsValue({ priceCondition: price.toString() });
+
+      }
+    }
+    getPrice();
+  }, []);
+
 
   const run = () => {
     Modal.success({
@@ -37,47 +51,82 @@ const Index = () => {
     })
   }
 
+  const [form] = Form.useForm(); // 创建表单实例
+
+  const saveAndNext = async () => {
+    form.submit();
+
+  }
+  const onFinish = async (values: any) => {
+
+    const assetValue = form.getFieldValue('asset');
+    console.log(assetValue); // 输出asset字段的值
+
+  
+
+
+    console.log("Form values:", values);
+    let key = "spot_grid_bot";
+    if (values.assetAmount  == undefined || values.assetAmount < 0.001) {
+     
+      console.log("Invalid asset amount:", values.assetAmount);
+      return;
+
+    }
+    localStorage.setItem(key, JSON.stringify(values));
+    
+    navigate('/spotGridStrategy');
+
+
+  }
+
+
+
   return (
     <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid Bot'/>
-      <Form>
+      <Form
+        initialValues={{ asset: 'SWT' ,gasAsset:"USWT"}}
+        onFinish={onFinish}
+        form={form}> 
         <div className="bot-page-head">Trading asset</div>
         <Space>
-          <Form.Item>
-            <Select defaultValue="Type" className="ww-selector" style={{ width: '130%' }}>
-              <Select.Option value="Type">Type</Select.Option>
+          <Form.Item name="asset"   rules={[{ required: true }]} >
+            <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
+              <Select.Option value="SWT">SWT</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item>
+
+          <Form.Item name="assetAmount"  rules={[{ required: true }]} >
             <InputNumber style={{ width: '130%' }} placeholder="Amount"/>
           </Form.Item>
         </Space>
         <div className="bot-page-head">Starting condition</div>
         <Space>
-          <Form.Item>
+          <Form.Item  rules={[{ required: true }]} >
             <Select defaultValue="Price" className="ww-selector" style={{ width: '130%' }}>
               <Select.Option value="Price">Price</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item>
-            <InputNumber style={{ width: '130%' }} placeholder="Amount"/>
+          <Form.Item  name="priceCondition">
+            <Input style={{ width: '130%' }} placeholder="Price"/>
           </Form.Item>
         </Space>
         <Space align="baseline" size={0}>
           <div className="bot-page-head">Fluctuation  +-</div>
-          <Form.Item>
-            <InputNumber style={{ width: '150%' }} placeholder="USD"/>
+          <Form.Item name="fluctuation"  rules={[{ required: true }]} >
+            <InputNumber style={{ width: '150%' }} placeholder="%"/>
           </Form.Item>
         </Space>
         <div className="bot-page-head">Gas asset</div>
         <Space>
-          <Form.Item>
-            <Select defaultValue="Type" className="ww-selector" style={{ width: '130%' }}>
-              <Select.Option value="Type">Type</Select.Option>
+          <Form.Item  name="gasAsset"  rules={[{ required: true }]} >
+            <Select defaultValue="USWT" className="ww-selector" style={{ width: '130%' }}>
+              <Select.Option value="USWT">USWT</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item>
-            <InputNumber style={{ width: '130%' }} placeholder="Amount"/>
+          <Form.Item >
+            <Input style={{ width: '130%' }} placeholder="USWT" defaultValue="USWT"/>
           </Form.Item>
         </Space>
         <div className="bot-page-head">Operation DApps</div>
@@ -103,7 +152,7 @@ const Index = () => {
         </Form.Item>
 
         <div className="ww-tc">
-          <Button shape="round" onClick={() => { navigate("/autotradebotok") }} style={{ width: '100%'}}>Run</Button>
+          <Button shape="round" onClick={saveAndNext} style={{ width: '100%'}}>Next</Button>
         </div>
       </Form>
     </div>
