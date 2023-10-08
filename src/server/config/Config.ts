@@ -25,6 +25,7 @@ export class Config {
     public static BUNDLER_API: string;
     public static RPC_API: string;
     public static BACKEND_API: string;
+    public static AUTO_TRADING_API: string;
     public static DECENTRALIZE_STORAGE_API: string;
     public static BLOCKCHAIN_SCAN: string;
     public static TOKENS: Assets;
@@ -64,6 +65,7 @@ export class Config {
         this.BUNDLER_API = configData.api.bundler_api;
         this.RPC_API = configData.api.rpc_api;
         this.BACKEND_API = configData.api.backend_api;
+        this.AUTO_TRADING_API = configData.api.auto_trading_api;
         this.BLOCKCHAIN_SCAN = configData.api.blockchain_scan;
         this.TOKENS = configData.token;
     }

@@ -19,8 +19,8 @@ import { Config } from '../server/config/Config';
 import SignupAccountTypePage from './pages/signin/SignupAccountTypePage';
 import AutomaticTrading from './pages/AutomaticTrading';
 import GridStrategies from './pages/GridStrategies';
-import SpotGridStrategy from './pages/SpotGridStrategy';
-import SpotGridBot from './pages/SpotGridBot';
+import SimpleTradingStrategy from './pages/SimpleTradingStrategy';
+import SimpleTradingBot from './pages/SimpleTradingBot';
 import Settings from './pages/Settings';
 import SinglePartyAccountPage from './pages/signin/single/SinglePartyAccountPage';
 import MultiPartyQuantityChoosePage from './pages/signin/multi/MultiPartyQuantityChoosePage';
@@ -124,8 +124,8 @@ class App extends React.Component<{}, AppState> {
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
-            <Route path="/spotGridStrategy" element={<SpotGridStrategy />} />
-            <Route path="/spotGridBot" element={<SpotGridBot />} />
+            <Route path="/spotGridStrategy" element={<SimpleTradingStrategy />} />
+            <Route path="/spotGridBot" element={<SimpleTradingBot />} />
             <Route path="/autotradebotok"  element={<AutotradebotOK />} />
             <Route path="/tradeToEarn/:risk"  element={<TradeToEarn />} />
             <Route path="*" element={<NotFoundPage />} />

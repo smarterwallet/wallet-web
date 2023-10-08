@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import HeaderBar from '../../elements/HeaderBar';
 import { Select, Radio, Form, InputNumber, Button, Space, message } from 'antd';
 import { Navigate, useNavigate } from 'react-router-dom';
-import '../SpotGrid/styles.scss';
+import '../SimpleTrading/styles.scss';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
 import { BigNumber, ethers } from 'ethers';
-import { JSONBigInt } from '../../../server/js/common_utils';
 import { TxUtils } from '../../../server/utils/TxUtils';
 import { HttpUtils } from '../../../server/utils/HttpUtils';
 
 
-const SpotGridStrategy = () => {
+const SimpleTradingStrategy = () => {
   const [to, setTo] = useState("falls to");
   const [by, setBy] = useState("falls by");
   const [buyin, setBuyin] = useState("Buy in")
@@ -19,48 +18,11 @@ const SpotGridStrategy = () => {
   const [lossresult, setLossresult] = useState("2%~4%");
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
-  
-
-  const onFinish = (values: any) => {
-    console.log("Form values:", values);
-    console.log(selectedRadio)
-
-    let key = "";
-    if (selectedRadio === "1") {
-      console.log("buy")
-       key = "buyStrategyKey";
-      localStorage.setItem(key, JSON.stringify(values));
-      messageApi.success({
-        key: "success",
-        content: 'Save Buy Strategy success',
-        duration: 2,
-      });
-      
-      
-    } else if (selectedRadio === "2") {
-       key = "sellStrategyKey";
-       localStorage.setItem(key, JSON.stringify(values));
-
-       messageApi.success({
-        key: "success",
-        content: 'Save Sell Strategy success',
-        duration: 2,
-      });
-    }
-    let str = localStorage.getItem(key);
-    console.log(str);
-    // let choice = parseInt(selectedRadio, 10);
-    // if (selectedRadio == "1") {//buy
-      
-    // } else if (selectedRadio == "2") {//sell
-      
-    // }
-
-  };
-  
-
-
-
+  const [ethPrice, setEthPrice] = useState<number | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('SWT');
+  const [selectedRadio, setSelectedRadio] = useState<string>("1");
+  const [form] = Form.useForm(); // 创建表单实例
+  const [botParams, setBotParams] = useState(null);
 
   const onTosell = () => {
     setTo("rises to");
@@ -78,16 +40,17 @@ const SpotGridStrategy = () => {
     setLossresult("2%~4%");
   }
 
-
   const save = async () => {
     form.submit();
-
-
   }
- 
 
-  const saveBak = async () => {
-    form.submit();
+  const getTokenToAmount = () => {
+    return botParams["assetAmount"];
+  }
+
+  const createStrategy = async () => {
+    const fallsBy = form.getFieldValue('fallsBy');
+    console.log("fallsBy:", fallsBy);
 
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
@@ -96,7 +59,7 @@ const SpotGridStrategy = () => {
       duration: 0
     });
     const price = await Global.account.getGasPrice();
-    // aprove USWT
+    // approve USWT
     const approveERC20TokenA = await Global.account.sendTxApproveERC20Token(
       Config.TOKENS["USWT"].address, autoTradingContractAddress,
       BigNumber.from(10000), Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
@@ -176,11 +139,6 @@ const SpotGridStrategy = () => {
       duration: 0
     });
 
-    let params = {
-      address: strategyId,
-      signTx: signTx,
-      
-    }
     // TODO save to backend
     messageApi.success({
       key: "success",
@@ -188,22 +146,16 @@ const SpotGridStrategy = () => {
       duration: 2,
     });
 
-    
-    
   }
 
-  const [ethPrice, setEthPrice] = useState<number | null>(null);
 
-
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('SWT');
-
-  let priceUrl = "https://smarter-api-at.web3-idea.xyz/api/v1/price/current/simple/0x4B63443E5eeecE233AADEC1359254c5C601fB7f4/0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d"
+  let priceUrl = Config.AUTO_TRADING_API + "/api/v1/price/current/simple/0x4B63443E5eeecE233AADEC1359254c5C601fB7f4/0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d"
   useEffect(() => {
     fetch(priceUrl)
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        let ethValue = ethers.utils.formatEther(data.result+"");
+        let ethValue = ethers.utils.formatEther(data.result + "");
         const price = parseFloat(parseFloat(ethValue).toFixed(4))
         setEthPrice(price);
       })
@@ -211,101 +163,24 @@ const SpotGridStrategy = () => {
         console.error("Error:", error);
       });
   }, [selectedCurrency]);
-  const [data, setData] = useState(null);
 
   useEffect(() => {
     let key = "spot_grid_bot";
     const str = localStorage.getItem(key);
     let items = JSON.parse(str);
     console.log(items);
-    setData(items);
+    setBotParams(items);
   },[])
 
-    
+
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
   };
 
-  const [selectedRadio, setSelectedRadio] = useState<string>("1");
-  const [form] = Form.useForm(); // 创建表单实例
 
   const handleRadioChange = (e: any) => {
     setSelectedRadio(e.target.value);
   };
-
-
-  const createStrategy = async () => {
-    let token_from = "";
-    let token_to = "";
-
-    if (selectedRadio === "1") {//buy
-      token_from = Config.TOKENS["USWT"].address;
-      token_to = Config.TOKENS["SWT"].address;
-
-    } else {//sell
-      token_from = Config.TOKENS["SWT"].address;
-      token_to = Config.TOKENS["USWT"].address;
-    }
-    let token_from_num = data.assetAmount; //just SWT
-    let token_to_num = data.assetAmount * ethPrice;
-
-    let params = {
-      "owner_address":   Global.account.contractWalletAddress,
-      "token_from": token_from,
-      "token_from_num": token_from_num,
-      "token_to": token_to,
-      "token_to_num": token_to_num,
-      "token_to_num_fluctuation": form.getFieldValue("fluctuation"),
-      "start_condition_token_to_num": data.priceCondition,
-
-      "user_operation": {
-          "sender": "0xC020dD374e043a10Ea60F927F4819199AeDc4fE6",
-          "nonce": "40",
-          "initCode": "0x",
-          "callData": "0xb61d27f60000000000000000000000003afe80976e9d75ff7e104c187f15f75e77ad114f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c45f9fd69500000000000000000000000000000000000000000000000000000000000000040000000000000000000000004b63443e5eeece233aadec1359254c5c601fb7f4000000000000000000000000f981ac497a0fe7ad2dd670185c6e7d511bf36d6d00000000000000000000000000000000000000000000000000000000000027100000000000000000000000000000000000000000000000000000000000000bb8000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000",
-          "callGasLimit": "210000",
-          "verificationGasLimit": "210000",
-          "preVerificationGas": "210000",
-          "maxFeePerGas": "2861229855",
-          "maxPriorityFeePerGas": "2861229855",
-          "paymasterAndData": "0x4b63443e5eeece233aadec1359254c5c601fb7f400000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000041049a948df7e8c9909c1beb819f97aaac38c09c85a586fe0d2c0bd698c1bbbb222dc99429b74c2a432b1264888051716956f5224b96d59a79106f722986406fa11c00000000000000000000000000000000000000000000000000000000000000",
-          "signature": "signTx"
-      }
-    }
-
-   
-    console.log(params);
-
-    let api = "https://smarter-api-at.web3-idea.xyz/api/v1/strategy/simple";
-
-    console.log(params);
-    let ret = await HttpUtils.post(api, params);
-    console.log(ret);
-    
-    let key = "";
-    if (selectedRadio === "1") {
-      console.log("buy")
-       key = "buyStrategyKey";
-       messageApi.success({
-        key: "success",
-        content: 'Create Buy Strategy Success',
-        duration: 2,
-      });
-      
-      
-    } else if (selectedRadio === "2") {
-      key = "sellStrategyKey";
-      messageApi.success({
-        key: "success",
-        content: 'Create Sell Strategy Success',
-        duration: 2,
-      });
-    }
-    
-    
-  }
- 
-  
 
   if (!Global.account.isLoggedIn) {
     message.error("Please sign in first");
@@ -318,9 +193,7 @@ const SpotGridStrategy = () => {
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 16 }}
-        onFinish={onFinish}
         form={form}
-
       >
         <Form.Item wrapperCol={{ span: 20 }}>
           <div className="sg-price-wrap">
@@ -330,14 +203,12 @@ const SpotGridStrategy = () => {
               style={{ width: 120 }}
               options={[
                 { value: 'SWT', label: 'SWT' },
-                // { value: 'matic-network', label: 'Matic' },
               ]}
               onChange={handleCurrencyChange}
 
             />
             <div className="sg-price">
-            ${ethPrice}
-          
+              {ethPrice} USWT
             </div>
             <div className="sg-price-changes"></div>
           </div>
@@ -348,7 +219,6 @@ const SpotGridStrategy = () => {
             optionType="button"
             buttonStyle="solid"
             onChange={handleRadioChange}
-
           >
             <Radio.Button value="1" onClick={onTobuy}>Buy at low</Radio.Button>
             <Radio.Button value="2" onClick={onTosell}>Sell at high</Radio.Button>
@@ -356,53 +226,48 @@ const SpotGridStrategy = () => {
         </Form.Item>
 
         {selectedRadio === "1" && (
-        <div id="buy">
-        <h3>When the price</h3>
-        <Space size={5}>
-          <Form.Item label={by} name="fallsBy">
+          <div id="buy">
+            <h3>When the price</h3>
+            <Space size={5}>
+              <Form.Item label={by} name="fallsBy">
                 <InputNumber style={{ width: '100%' }} placeholder="%"
-              
                 />
-          </Form.Item>
-          <Form.Item label="OR" colon={false}>
-          </Form.Item>
-        </Space>
-       
-        <Form.Item label={to} name="fallsTo">
-          <InputNumber style={{ width: '100%'   }} placeholder="USD" />
               </Form.Item>
-     
-           
+              <Form.Item label="OR" colon={false}>
+              </Form.Item>
+            </Space>
+
+            <Form.Item label={to} name="fallsTo">
+              <InputNumber style={{ width: '100%' }} placeholder="USD" />
+            </Form.Item>
             <Form.Item label="fluctuation+-" name="fluctuation">
-          <InputNumber style={{ width: '100%' }} placeholder="%" />
+              <InputNumber style={{ width: '100%' }} placeholder="%" />
+            </Form.Item>
+
+
+            <h3>{buyin}</h3>
+            <Space>
+              <Form.Item label="quantity" name="buyInQuantity">
+                <InputNumber style={{ width: '100%' }} placeholder="ETH" />
               </Form.Item>
-           
-            
-        <h3>{buyin}</h3>
-        <Space>
-         
-                <Form.Item label="quantity"  name="buyInQuantity">
-          <InputNumber style={{ width: '100%' }} placeholder="ETH" />
-        </Form.Item>
-          <Form.Item label="OR" colon={false}>
-          </Form.Item>
-        </Space>
-        <Form.Item label="proportion" name="buyInProportion">
-            <InputNumber style={{ width: '100%' }} placeholder="%" />
+              <Form.Item label="OR" colon={false}>
               </Form.Item>
-        <h3>Estimated result</h3>
-        <Form.Item wrapperCol={{ span: 14 }}>
-          <div className="sg-price-wrap">
-            <div className="sg-yield-label">Yield:</div>
-            <div className="sg-yield">{yieldresult}</div>
-            <div className="sg-yield-label">Loss:</div>
-            <div className="sg-yield">{lossresult}</div>
+            </Space>
+            <Form.Item label="proportion" name="buyInProportion">
+              <InputNumber style={{ width: '100%' }} placeholder="%" />
+            </Form.Item>
+            <h3>Estimated result</h3>
+            <Form.Item wrapperCol={{ span: 14 }}>
+              <div className="sg-price-wrap">
+                <div className="sg-yield-label">Yield:</div>
+                <div className="sg-yield">{yieldresult}</div>
+                <div className="sg-yield-label">Loss:</div>
+                <div className="sg-yield">{lossresult}</div>
+              </div>
+            </Form.Item>
           </div>
-          </Form.Item>
-          
-        </div>
         )}
-        
+
         {selectedRadio === "2" && (
 
           <div id="sell">
@@ -418,21 +283,20 @@ const SpotGridStrategy = () => {
               <InputNumber style={{ width: '100%' }} placeholder="USD" />
             </Form.Item>
             <Form.Item label="fluctuation+-" name="fluctuation">
-          <InputNumber style={{ width: '100%' }} placeholder="%" />
-              </Form.Item>
-           
+              <InputNumber style={{ width: '100%' }} placeholder="%" />
+            </Form.Item>
+
             <h3>{buyin}</h3>
             <Space>
-             
-              <Form.Item label="quantity"  name="sellOutQuantity">
-              <InputNumber style={{ width: '100%' }} placeholder="ETH" />
-            </Form.Item>
+              <Form.Item label="quantity" name="sellOutQuantity">
+                <InputNumber style={{ width: '100%' }} placeholder="ETH" />
+              </Form.Item>
               <Form.Item label="OR" colon={false}>
               </Form.Item>
             </Space>
             <Form.Item label="proportion" name="sellOutProportion">
-                <InputNumber style={{ width: '100%' }} placeholder="%" />
-              </Form.Item>
+              <InputNumber style={{ width: '100%' }} placeholder="%" />
+            </Form.Item>
             <h3>Estimated result</h3>
             <Form.Item wrapperCol={{ span: 14 }}>
               <div className="sg-price-wrap">
@@ -442,26 +306,17 @@ const SpotGridStrategy = () => {
                 <div className="sg-yield">{lossresult}</div>
               </div>
             </Form.Item>
-          
           </div>
         )}
-        
+
         <Space style={{ width: '100%', justifyContent: 'center' }} size={80}>
           <Button shape="round" onClick={save}>Save</Button>
-          {/* <Button shape="round" onClick={() => { navigate('/SpotGridBot') }}>Create+</Button> */}
           <Button shape="round" onClick={createStrategy}>Create+</Button>
-
         </Space>
       </Form>
 
-
-   
     </div>
   );
 };
 
-export default SpotGridStrategy;
-
-function save() {
-  throw new Error('Function not implemented.');
-}
+export default SimpleTradingStrategy;
