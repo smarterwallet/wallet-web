@@ -5,10 +5,16 @@ export class TxUtils {
     let receipt = await ethersProvider.getTransactionReceipt(txHash);
 
     while (!receipt) {
+
       await ethersProvider.waitForTransaction(txHash);
       receipt = await ethersProvider.getTransactionReceipt(txHash);
     }
   }
+}
+
+export const sleep = async (ms: number) => {
+  // Add a delay here
+  await new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export const ab2str = (buffer: ArrayBuffer) => {

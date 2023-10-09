@@ -6,7 +6,7 @@ import '../SimpleTrading/styles.scss';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
 import { BigNumber, ethers } from 'ethers';
-import { TxUtils } from '../../../server/utils/TxUtils';
+import { TxUtils, sleep } from '../../../server/utils/TxUtils';
 import { HttpUtils } from '../../../server/utils/HttpUtils';
 
 
@@ -23,6 +23,8 @@ const SimpleTradingStrategy = () => {
   const [selectedRadio, setSelectedRadio] = useState<string>("1");
   const [form] = Form.useForm(); // 创建表单实例
   const [botParams, setBotParams] = useState(null);
+  // const maxUint256 = ethers.BigNumber.from(2).pow(256).sub(1);
+  const maxUint256 = BigNumber.from(10000000);
 
   const onTosell = () => {
     setTo("rises to");
@@ -44,29 +46,98 @@ const SimpleTradingStrategy = () => {
     form.submit();
   }
 
+  const getSimpleTradingBotConfig = () => {
+    let key = "spot_grid_bot";
+    const str = localStorage.getItem(key);
+    return JSON.parse(str);
+  }
+
+  /**
+   * swap from token
+   */
+  const getTokenFrom = () => {
+    // for buy, swap from USWT to SWT
+    if (selectedRadio === "1") {
+      return Config.TOKENS["USWT"];
+    }
+    return Config.TOKENS["SWT"];
+  }
+
+  /**
+   * swap from token amount
+   */
+  const getTokenFromAmount = () => {
+    // for buy, swap from amount = fallsToPrice * BuyInQuantity
+    if (selectedRadio === "1") {
+      const fallsToPrice = form.getFieldValue("fallsTo").toString();
+      const buyInQuantity = Number(form.getFieldValue("buyInQuantity"));
+      let decimalFactor = ethers.BigNumber.from("10").pow(fallsToPrice.split('.')[1].length);
+      let decimalAsInteger = ethers.BigNumber.from(fallsToPrice.replace('.', ''));
+      let result = decimalAsInteger.mul(buyInQuantity).div(decimalFactor);
+      return BigNumber.from(result.toBigInt().toString());
+    }
+    // for sell, swap from amount = tradingAssetAmount
+    return BigNumber.from(getSimpleTradingBotConfig().assetAmount);
+  }
+
+  /**
+   * swap to token
+   */
+  const getTokenTo = () => {
+    // for buy, swap from USWT to SWT
+    if (selectedRadio === "1") {
+      return Config.TOKENS["SWT"];
+    }
+    return Config.TOKENS["USWT"];
+  }
+
+  /**
+   * swap to token amount
+   */
   const getTokenToAmount = () => {
-    return botParams["assetAmount"];
+    // for buy, swap to amount = BuyInQuantity
+    if (selectedRadio === "1") {
+      return BigNumber.from(form.getFieldValue("buyInQuantity"));
+    }
+    // for sell, swap to amount = sellOutQuantity
+    return BigNumber.from(form.getFieldValue("sellOutQuantity"));
+  }
+
+  const getTokenToNumDIffThreshold = () => {
+    if (selectedRadio === "1") {
+      return BigNumber.from(form.getFieldValue("buy-fluctuation"));
+    }
+    return BigNumber.from(form.getFieldValue("sell-fluctuation"));
   }
 
   const createStrategy = async () => {
-    const fallsBy = form.getFieldValue('fallsBy');
-    console.log("fallsBy:", fallsBy);
-
+    const tokenFrom = getTokenFrom();
+    const tokenTo = getTokenTo();
+    const tokenFromAmount = getTokenFromAmount();
+    const tokenToAmount = getTokenToAmount();
+    const tokenToNumDIffThreshold = getTokenToNumDIffThreshold();
+    console.log("tokenFrom:", tokenFrom);
+    console.log("tokenTo:", tokenTo);
+    console.log("tokenFromAmount:", tokenFromAmount);
+    console.log("tokenToAmount:", tokenToAmount);
+    console.log("tokenToNumDIffThreshold:", tokenToNumDIffThreshold);
+    
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Approve tokenA...',
       duration: 0
     });
-    const price = await Global.account.getGasPrice();
-    // approve USWT
+    let gasPrice = await Global.account.getGasPrice();
+    // approve tokenFrom
     const approveERC20TokenA = await Global.account.sendTxApproveERC20Token(
-      Config.TOKENS["USWT"].address, autoTradingContractAddress,
-      BigNumber.from(10000), Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
+      tokenFrom.address, autoTradingContractAddress,
+      maxUint256, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
     console.log("approveERC20TokenA:", approveERC20TokenA);
     let approveTokenAHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
     while (approveTokenAHash.body.result === undefined) {
       approveTokenAHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
+      await sleep(5000)
     }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -80,14 +151,15 @@ const SimpleTradingStrategy = () => {
       content: 'Approve tokenB...',
       duration: 0
     });
-    // aprove SWT
+    // approve tokenTo
     const approveERC20TokenB = await Global.account.sendTxApproveERC20Token(
-      Config.TOKENS["SWT"].address, autoTradingContractAddress,
-      BigNumber.from(10000), Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
+      tokenTo.address, autoTradingContractAddress,
+      maxUint256, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
     console.log("approveERC20TokenB:", approveERC20TokenB);
     let approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
     while (approveTokenBHash.body.result === undefined) {
       approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
+      await sleep(5000)
     }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -105,12 +177,13 @@ const SimpleTradingStrategy = () => {
     // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
     const addStrategy = await Global.account.sendTxAddStrategy(
       autoTradingContractAddress,
-      [Config.TOKENS["SWT"].address, Config.TOKENS["USWT"].address, 10000, 3000, 100],
-      Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
+      [tokenFrom.address, tokenTo.address, tokenFromAmount, tokenToAmount, tokenToNumDIffThreshold],
+      Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
     console.log("addStrategy:", addStrategy);
     let addStrategyHash = await Global.account.getUserOperationReceipt(addStrategy["body"]["result"]);
     while (addStrategyHash.body.result === undefined) {
       addStrategyHash = await Global.account.getUserOperationReceipt(addStrategy["body"]["result"]);
+      await sleep(5000)
     }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -130,8 +203,8 @@ const SimpleTradingStrategy = () => {
     // function execSwap(uint256 strategyId, address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
     const signTx = await Global.account.signTxTradingStrategy(
       autoTradingContractAddress,
-      [strategyId, Config.TOKENS["SWT"].address, Config.TOKENS["USWT"].address, 10000, 3000, 100],
-      Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, price);
+      [strategyId, tokenFrom.address, tokenTo.address, tokenFromAmount, tokenToAmount, tokenToNumDIffThreshold],
+      Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
     console.log("signTx:", [signTx, Config.ADDRESS_ENTRYPOINT]);
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -139,7 +212,7 @@ const SimpleTradingStrategy = () => {
       duration: 0
     });
 
-    // TODO save to backend
+    // save to backend
     messageApi.success({
       key: "success",
       content: 'Save Strategy success',
@@ -170,7 +243,7 @@ const SimpleTradingStrategy = () => {
     let items = JSON.parse(str);
     console.log(items);
     setBotParams(items);
-  },[])
+  }, [])
 
 
   const handleCurrencyChange = (value: string) => {
@@ -240,7 +313,7 @@ const SimpleTradingStrategy = () => {
             <Form.Item label={to} name="fallsTo">
               <InputNumber style={{ width: '100%' }} placeholder="USD" />
             </Form.Item>
-            <Form.Item label="fluctuation+-" name="fluctuation">
+            <Form.Item label="fluctuation+-" name="buy-fluctuation">
               <InputNumber style={{ width: '100%' }} placeholder="%" />
             </Form.Item>
 
@@ -282,7 +355,7 @@ const SimpleTradingStrategy = () => {
             <Form.Item label={to} name="riseTo">
               <InputNumber style={{ width: '100%' }} placeholder="USD" />
             </Form.Item>
-            <Form.Item label="fluctuation+-" name="fluctuation">
+            <Form.Item label="fluctuation+-" name="sell-fluctuation">
               <InputNumber style={{ width: '100%' }} placeholder="%" />
             </Form.Item>
 
