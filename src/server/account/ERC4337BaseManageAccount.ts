@@ -456,10 +456,10 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    * APP: auto trading
    */
   // function execSwap(uint256 strategyId, address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
-  async signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string> {
+  async signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation> {
     let callData = this.otherContractCall(contractAddress, autoTrandingAbi, "execSwap", params);
     const op = await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
-    return JSONBigInt.stringify(op);
+    return op;
   }
 
   // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)

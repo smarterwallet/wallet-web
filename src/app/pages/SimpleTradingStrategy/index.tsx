@@ -8,6 +8,7 @@ import { Config } from '../../../server/config/Config';
 import { BigNumber, ethers } from 'ethers';
 import { TxUtils, sleep } from '../../../server/utils/TxUtils';
 import { HttpUtils } from '../../../server/utils/HttpUtils';
+import { JSONBigInt } from '../../../server/js/common_utils';
 
 
 const SimpleTradingStrategy = () => {
@@ -23,8 +24,7 @@ const SimpleTradingStrategy = () => {
   const [selectedRadio, setSelectedRadio] = useState<string>("1");
   const [form] = Form.useForm(); // 创建表单实例
   const [botParams, setBotParams] = useState(null);
-  // const maxUint256 = ethers.BigNumber.from(2).pow(256).sub(1);
-  const maxUint256 = BigNumber.from(10000000);
+  const maxUint256 = ethers.BigNumber.from(2).pow(256).sub(1);
 
   const onTosell = () => {
     setTo("rises to");
@@ -71,8 +71,15 @@ const SimpleTradingStrategy = () => {
     if (selectedRadio === "1") {
       const fallsToPrice = form.getFieldValue("fallsTo").toString();
       const buyInQuantity = Number(form.getFieldValue("buyInQuantity"));
-      let decimalFactor = ethers.BigNumber.from("10").pow(fallsToPrice.split('.')[1].length);
-      let decimalAsInteger = ethers.BigNumber.from(fallsToPrice.replace('.', ''));
+      let decimalFactor;
+      let decimalAsInteger;
+      if (fallsToPrice.includes(".")) {
+        decimalFactor = ethers.BigNumber.from("10").pow(fallsToPrice.split('.')[1].length);
+        decimalAsInteger = ethers.BigNumber.from(fallsToPrice.replace('.', ''));
+      } else {
+        decimalFactor = 1;
+        decimalAsInteger = ethers.BigNumber.from(fallsToPrice);
+      }
       let result = decimalAsInteger.mul(buyInQuantity).div(decimalFactor);
       return BigNumber.from(result.toBigInt().toString());
     }
@@ -116,12 +123,13 @@ const SimpleTradingStrategy = () => {
     const tokenFromAmount = getTokenFromAmount();
     const tokenToAmount = getTokenToAmount();
     const tokenToNumDIffThreshold = getTokenToNumDIffThreshold();
+    const priceCondition = BigNumber.from(getSimpleTradingBotConfig().priceCondition);
     console.log("tokenFrom:", tokenFrom);
     console.log("tokenTo:", tokenTo);
     console.log("tokenFromAmount:", tokenFromAmount);
     console.log("tokenToAmount:", tokenToAmount);
     console.log("tokenToNumDIffThreshold:", tokenToNumDIffThreshold);
-    
+
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -211,16 +219,31 @@ const SimpleTradingStrategy = () => {
       content: 'Save Strategy...',
       duration: 0
     });
-
-    // save to backend
-    messageApi.success({
-      key: "success",
-      content: 'Save Strategy success',
-      duration: 2,
-    });
-
+    const stargeParams = {
+      "owner_address": Global.account.contractWalletAddress,
+      "token_from": tokenFrom.address,
+      "token_from_num": tokenFromAmount.toString(),
+      "token_to": tokenTo.address,
+      "token_to_num": tokenToAmount.toString(),
+      "token_to_num_fluctuation": tokenToNumDIffThreshold.toString(),
+      "start_condition_token_to_num": priceCondition.toString(),
+      "user_operation": signTx,
+    }
+    const saveStarge = await HttpUtils.post(Config.AUTO_TRADING_API + "/api/v1/strategy/simple", stargeParams);
+    if (saveStarge.body["code"] != 200) {
+      messageApi.error({
+        key: Global.messageTypeKeyLoading,
+        content: "Save starage to bundler error. Please retry. Error details: " + saveStarge.body["message"],
+        duration: 0,
+      });
+    } else {
+      messageApi.success({
+        key: Global.messageTypeKeyLoading,
+        content: 'Save Strategy success',
+        duration: 0,
+      });
+    }
   }
-
 
   let priceUrl = Config.AUTO_TRADING_API + "/api/v1/price/current/simple/0x4B63443E5eeecE233AADEC1359254c5C601fB7f4/0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d"
   useEffect(() => {

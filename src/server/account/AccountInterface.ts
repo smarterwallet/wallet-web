@@ -108,7 +108,7 @@ export interface AccountInterface {
   /**
    * auto trading
    */
-  signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<string>;
+  signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation>;
 
   sendTxAddStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
