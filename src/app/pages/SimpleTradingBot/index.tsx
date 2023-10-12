@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Select, Form, InputNumber, Button, Space, Modal, Input, message } from 'antd';
 import HeaderBar from '../../elements/HeaderBar';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../SimpleTrading/styles.scss';
 import { Global } from '../../../server/Global';
 
 
 const SimpleTradingBot = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  //
+  console.log(location.state);
   const [messageApi, contextHolder] = message.useMessage();
 
   interface Props {

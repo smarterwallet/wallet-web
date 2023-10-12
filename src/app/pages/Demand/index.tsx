@@ -6,18 +6,17 @@ import demandsCategory from './demandsCfg';
 import SwitchDemandApp from '../../component/SwitchDemandApp';
 import { HttpUtils } from '../../../server/utils/HttpUtils';
 import { Input } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const Demand = () => {
 
   const [activeExtra, setActiveExtra] = useState('');
+  const navigate = useNavigate();
 
   const inputDemand = (e: any) => {
     if(e.keyCode == 13 ||e.keyCode == 9){
       e.preventDefault();//禁止键盘默认事件
-      HttpUtils.post('https://smarter-api-da.web3-idea.xyz/v1/demand', {
-        "category": "trade2Earn",
-        "demand": e.target.value
-      })
+      navigate(`/tradeToEarn/${e.target.value}`)
     }
   }
 
