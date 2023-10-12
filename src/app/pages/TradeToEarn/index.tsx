@@ -60,7 +60,7 @@ const TradeToEarn = () => {
                   if (opt.type === 'swap') {
                     return (
                       <React.Fragment key={optIndex}>
-                        <p><strong>{optIndex + 1}.Swap {opt?.param?.from} for {opt?.param?.to} with</strong> gas about ${opt.param.gas_fee}</p>
+                        <p><strong>{optIndex + 1}.Swap {opt?.param?.from} for {opt?.param?.to} with</strong> gas about {opt.param.gas_fee}{opt.param.gas_unit}</p>
                         <div className="icon-wrap">{IconArrowDown}</div>
                       </React.Fragment>
                     )
