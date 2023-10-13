@@ -23,16 +23,18 @@ const TradeToEarn = () => {
     }).then((res) => {
       const data = res.body;
       requestData.current = data;
-      if (!cfg) {
-        cfg.title = `${data.min_return}~${data.max_return} Return`
-      }
       setLoading(false);
     })
   }, [])
 
+  {/* @ts-ignore*/}
+  const estimatedReturn = `${requestData.current?.min_return*100}%~${requestData.current?.max_return*100}%`
+  const title = cfg?.title ?? (loading ? 'Loading...' : `${estimatedReturn} Return`);
+
+
   return (
     <div className="ww-page-container page-trade-to-earn">
-      <HeaderBar text={cfg?.title} />
+      <HeaderBar text={title} />
       <Skeleton loading={loading}>
         <h2>Recommended strategy:</h2>
         <div className="content-box">
