@@ -49,7 +49,7 @@ const TradeToEarn = () => {
           <dl className="line">
             <dt>Estimated return: </dt>
             {/* @ts-ignore*/}
-            <dd>{`${requestData.current?.min_return}~${requestData.current?.max_return}`}</dd>
+            <dd>{`${requestData.current?.min_return*100}%~${requestData.current?.max_return*100}%`}</dd>
           </dl>
           <dl>
             <dt>Sequence of operations:</dt>
@@ -60,7 +60,7 @@ const TradeToEarn = () => {
                   if (opt.type === 'swap') {
                     return (
                       <React.Fragment key={optIndex}>
-                        <p><strong>{optIndex + 1}.Swap {opt?.param?.from} for {opt?.param?.to} with</strong> gas about {opt.param.gas_fee}{opt.param.gas_unit}</p>
+                        <p><strong>{optIndex + 1}.Swap {opt?.param?.from} for {opt?.param?.to} with</strong> gas about {opt.param.gas_fee}{opt.param.fee_uint}</p>
                         <div className="icon-wrap">{IconArrowDown}</div>
                       </React.Fragment>
                     )
@@ -70,7 +70,7 @@ const TradeToEarn = () => {
                     return opt.param.conditions.map((condition: any, cIndex: number) => {
                       return (
                         <React.Fragment key={optIndex + cIndex + 1}>
-                          <p><strong>{optIndex + cIndex + 1}.Sell {condition.tokenName} </strong>when the <strong> price rises {condition.percentage}</strong> each time</p>
+                          <p><strong>{optIndex + cIndex + 1}.Sell {condition.tokenName} </strong>when the <strong> price rises {condition.percentage*100}%</strong> each time</p>
                           <div className="icon-wrap">{IconArrowDown}</div>
                         </React.Fragment>
                       )
@@ -81,7 +81,7 @@ const TradeToEarn = () => {
                     return opt.param.conditions.map((condition: any, cIndex: number) => {
                       return (
                         <React.Fragment key={optIndex + cIndex + 1}>
-                          <p><strong>{optIndex + cIndex + 1}.Buy {condition.tokenName} </strong>when the <strong> price falls {condition.percentage}</strong> each time</p>
+                          <p><strong>{optIndex + cIndex + 1}.Buy {condition.tokenName} </strong>when the <strong> price falls {condition.percentage*100}%</strong> each time</p>
                           <div className="icon-wrap">{IconArrowDown}</div>
                         </React.Fragment>
                       )
