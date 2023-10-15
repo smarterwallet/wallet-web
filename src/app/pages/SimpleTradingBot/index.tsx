@@ -39,21 +39,6 @@ const SimpleTradingBot = () => {
     getPrice();
   }, []);
 
-
-  const run = () => {
-    Modal.success({
-      closable: true,
-      title: 'Run successfully!',
-      content: 'AA bundlers will run your trading bot to execute your trading strategy, and submit corresponding transactions to trade for you under your authorization',
-      footer: (
-        <Space style={{ width: '100%', justifyContent: 'end', marginTop: 20 }}>
-          <Button>View</Button>
-          <Button>Done</Button>
-        </Space>
-      )
-    })
-  }
-
   const [form] = Form.useForm(); // 创建表单实例
 
   const saveAndNext = async () => {
@@ -84,7 +69,7 @@ const SimpleTradingBot = () => {
         <Space>
           <Form.Item name="asset" rules={[{ required: true }]} >
             <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
-              <Select.Option value="SWT">SWT</Select.Option>
+              <Select.Option className="select-option-text" value="SWT">SWT</Select.Option>
             </Select>
           </Form.Item>
 
