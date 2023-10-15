@@ -102,15 +102,18 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       }
     })
 
-    // sort all result
-    txListFrom.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
-    txListTo.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
-    let mergedArray = txListFrom.concat(txListTo);
-    mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
-
     txListFrom = txListFrom.filter((item: any) => item != null);
     txListTo = txListTo.filter((item: any) => item != null);
-    mergedArray = mergedArray.filter((item: any) => item != null);
+    let mergedArray = txListFrom.concat(txListTo);
+    mergedArray = mergedArray.filter((item: any) => {
+      if (typeof item === 'object' && item !== null) {
+        return Object.keys(item).length > 0;
+      }
+      return true;
+    });
+
+    // sort all result
+    mergedArray.sort((a: any, b: any) => b.timeStamp - a.timeStamp);
 
     // console.log({txListTo, txListFrom, mergedArray});
     return { txListTo, txListFrom, mergedArray }
@@ -150,15 +153,22 @@ class AssetPage extends React.Component<{}, AssetPageState> {
       };
     });
 
+    txListFrom = txListFrom.filter((item: any) => item != null)
+    txListTo = txListTo.filter((item: any) => item != null)
+    let mergedArray = txListFrom.concat(txListTo);
+    mergedArray = mergedArray.filter((item: any) => {
+      if (typeof item === 'object' && item !== null) {
+        return Object.keys(item).length > 0;
+      }
+      return true;
+    });
+
     // sort all result
     txListFrom.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
     txListTo.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
-    let mergedArray = txListFrom.concat(txListTo);
     mergedArray.sort((a: any, b: any) => parseInt(b.timeStamp, 16) - parseInt(a.timeStamp, 16));
 
-    txListFrom = txListFrom.filter((item: any) => item != null)
-    txListTo = txListTo.filter((item: any) => item != null)
-    mergedArray = mergedArray.filter((item: any) => item != null)
+    // console.log({ txListTo, txListFrom, mergedArray });
     return { txListTo, txListFrom, mergedArray }
   }
 

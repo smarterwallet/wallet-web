@@ -161,7 +161,7 @@ class HomePage extends React.Component<{}, HomePageState> {
             defaultValue={Config.CURRENT_CHAIN_NAME}
             className="home-page-header-select"
             onChange={async event => {
-              this.setState({ alert: 'Switch to ' + event.target.value });
+              this.setState({ alert: 'Switch to ' + event.target.value + '...'});
               await this.flushConfigAndAsset(event.target.value);
               this.setState({ alert: '' });
             }}
