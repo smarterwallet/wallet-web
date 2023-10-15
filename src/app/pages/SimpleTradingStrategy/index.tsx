@@ -279,7 +279,7 @@ const SimpleTradingStrategy = () => {
   };
 
   if (!Global.account.isLoggedIn) {
-    message.error("Please sign in first");
+    message.error("Please login first");
     return <Navigate to="/" replace />;
   }
 
@@ -323,7 +323,7 @@ const SimpleTradingStrategy = () => {
 
         {selectedRadio === "1" && (
           <div id="buy">
-            <h3>When the price</h3>
+            <h1>When the price</h1>
             <Space size={5}>
               <Form.Item label={by} name="fallsBy">
                 <InputNumber style={{ width: '100%' }} placeholder="%"
