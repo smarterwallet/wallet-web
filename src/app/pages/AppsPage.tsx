@@ -17,7 +17,7 @@ const AppsPage = () => {
   }
 
   if (!Global.account.isLoggedIn) {
-    message.error("Please sign in first");
+    message.error("Please login first");
     return <Navigate to="/" replace />;
   }
 

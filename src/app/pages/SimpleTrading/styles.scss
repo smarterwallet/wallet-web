@@ -7,7 +7,7 @@
     justify-content: space-between;
 
     .sg-price {
-        font-size: 22px;
+        font-size: 30px;
         font-weight: bold;
         color: #053346;
     }
@@ -19,7 +19,7 @@
     }
 
     .sg-yield-label {
-        font-size: 17px;
+        font-size: 30px;
         font-weight: bold;
         color: #053346;
     }
@@ -43,6 +43,7 @@
     }
 
     .ant-form-item-label {
+        margin-left: 20px;
         min-width: 100px;
     }
 

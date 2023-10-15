@@ -175,7 +175,7 @@ export default () => {
               <Button
                 htmlType="submit"
                 style={{ width: '100%' }}
-              >Sign in</Button>
+              >Login</Button>
             </Form>)
           },
           {
@@ -218,7 +218,7 @@ export default () => {
               <Button
                 htmlType="submit"
                 style={{ width: '100%' }}
-              >Sign in</Button>
+              >Login</Button>
             </Form>)
           },
         ]}

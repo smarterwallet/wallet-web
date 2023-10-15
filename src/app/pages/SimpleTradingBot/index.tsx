@@ -4,6 +4,8 @@ import HeaderBar from '../../elements/HeaderBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../SimpleTrading/styles.scss';
 import { Global } from '../../../server/Global';
+import { ethers } from 'ethers';
+import { Config } from '../../../server/config/Config';
 
 
 const SimpleTradingBot = () => {
@@ -27,16 +29,19 @@ const SimpleTradingBot = () => {
       </div>
     );
   };
+  let priceUrl = Config.AUTO_TRADING_API + "/api/v1/price/current/simple/0x4B63443E5eeecE233AADEC1359254c5C601fB7f4/0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d"
   useEffect(() => {
-    const getPrice = async () => {
-      const price = await Global.account.getGasPrice();
-      console.log(price);
-      if (price) {
+    fetch(priceUrl)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        let ethValue = ethers.utils.formatEther(data.result + "");
+        const price = parseFloat(parseFloat(ethValue).toFixed(4))
         form.setFieldsValue({ priceCondition: price.toString() });
-
-      }
-    }
-    getPrice();
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
   }, []);
 
   const [form] = Form.useForm(); // 创建表单实例
@@ -65,7 +70,7 @@ const SimpleTradingBot = () => {
         initialValues={{ asset: 'SWT', gasAsset: "USWT" }}
         onFinish={onFinish}
         form={form}>
-        <div className="bot-page-head">Trading asset</div>
+        <div className="bot-page-head ">Trading asset</div>
         <Space>
           <Form.Item name="asset" rules={[{ required: true }]} >
             <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
@@ -74,7 +79,7 @@ const SimpleTradingBot = () => {
           </Form.Item>
 
           <Form.Item name="assetAmount" rules={[{ required: true }]} >
-            <InputNumber style={{ width: '130%' }} placeholder="Amount" />
+            <InputNumber className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="Amount" />
           </Form.Item>
         </Space>
         <div className="bot-page-head">Starting condition</div>
@@ -85,13 +90,13 @@ const SimpleTradingBot = () => {
             </Select>
           </Form.Item>
           <Form.Item name="priceCondition">
-            <Input style={{ width: '130%' }} placeholder="Price" />
+            <Input className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="USDT" />
           </Form.Item>
         </Space>
         <Space align="baseline" size={0}>
-          <div className="bot-page-head">Fluctuation  +-</div>
+          <div className="bot-page-head">Fluctuation</div>
           <Form.Item name="fluctuation" rules={[{ required: true }]} >
-            <InputNumber style={{ width: '150%' }} placeholder="%" />
+            <InputNumber className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="%" />
           </Form.Item>
         </Space>
         <div className="bot-page-head">Gas asset</div>
@@ -99,7 +104,6 @@ const SimpleTradingBot = () => {
           <Form.Item name="gasAsset" rules={[{ required: true }]} >
             <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
               <Select.Option value="SWT">SWT</Select.Option>
-              <Select.Option value="USWT">USWT</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item >
