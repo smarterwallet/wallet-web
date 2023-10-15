@@ -60,7 +60,7 @@ const SimpleTradingBot = () => {
       return;
     }
     localStorage.setItem(key, JSON.stringify(values));
-    navigate('/spotGridStrategy');
+    navigate('/simpleStrategy');
   }
 
   return (

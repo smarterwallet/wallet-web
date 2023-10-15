@@ -32,7 +32,7 @@ export default () => {
               <div className="ww-content-text">
                 Create trading bots based on these strategies to run them.
               </div>
-              <MenuLink to="/spotGridStrategy">Spot Grid</MenuLink>
+              <MenuLink to="/simpleStrategy">Spot Grid</MenuLink>
             </>)
           },
         ]}

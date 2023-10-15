@@ -188,7 +188,7 @@ export default () => {
               <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center', gap: 20 }} className="btn-wrapper">
                 {
                   isMPC ?
-                    <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
+                    <Button onClick={upgrade} >Update  <SyncOutlined rev={undefined} /></Button>
                     :
                     <Button onClick={() => {
                       navigate('/signupAtMultiParty')

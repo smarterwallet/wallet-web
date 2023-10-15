@@ -124,7 +124,7 @@ class App extends React.Component<{}, AppState> {
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
             <Route path="/gridStrategies" element={<GridStrategies />} />
-            <Route path="/spotGridStrategy" element={<SimpleTradingStrategy />} />
+            <Route path="/simpleStrategy" element={<SimpleTradingStrategy />} />
             <Route path="/spotGridBot" element={<SimpleTradingBot />} />
             <Route path="/autotradebotok"  element={<AutotradebotOK />} />
             <Route path="/tradeToEarn/:risk"  element={<TradeToEarn />} />
