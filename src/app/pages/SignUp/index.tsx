@@ -92,13 +92,7 @@ const SignUp = () => {
           </Form.Item>
           <Form.Item
             name="repeatPassword"
-            label={(<div style={{
-              lineHeight: 1.2
-            }}
-            >
-              <div>Repeat</div>
-              <div>Password</div>
-            </div>)}
+            label="Repeat"
           >
             <Input.Password
               iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}

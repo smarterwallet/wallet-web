@@ -60,13 +60,19 @@
                 .ant-form-item-label {
                     flex: initial;
                     padding-bottom: 0;
+                    width: 240px;
+                    text-align: left;
 
                     label {
-                        font-size: 17px;
+                        font-size: 42px;
                         font-weight: 700;
                         color: $primary;
                         line-height: $btnHeight;
                         height: $btnHeight;
+
+                        &::after {
+                            display: none;
+                        }
                     }
                 }
             }
@@ -74,11 +80,11 @@
     }
 
     .ant-btn {
-        font-size: 20px;
+        font-size: 44px;
         font-weight: 700;
         height: $btnHeight;
         color: $primary;
-        border-radius: 10px;
+        border-radius: 36px;
 
         &.ww-mini-btn {
             font-size: 18px;
@@ -86,7 +92,9 @@
     }
 
     .ant-input-affix-wrapper {
-        padding: 0 11px;
+        padding: 0 20px;
+        font-size: 30px;
+        border-radius: 26px;
     }
 
 

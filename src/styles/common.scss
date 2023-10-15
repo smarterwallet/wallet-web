@@ -69,9 +69,14 @@
 }
 
 .ww-alpha-container {
-    padding: 20px;
-    margin: 0 -20px;
+    padding: #{$pagePadding / 2} $pagePadding $pagePadding;
+    margin: 0 #{-$pagePadding};
     background: #D9D9D9B2;
+
+    h2 {
+        font-size: 50px;
+        margin-bottom: 20px;
+    }
 }
 
 ul, ol, li {

@@ -25,9 +25,9 @@ body {
 input {
   font-size: inherit;
   font-family: inherit;
-  height: 50px;
-  min-height: 50px;
-  border-radius: 6px;
+  height: 80px;
+  min-height: 80px;
+  border-radius: 26px;
   border: 1px solid gray;
   padding: 0 10px;
 }
@@ -111,7 +111,7 @@ a {
   height: 100vh;
   max-width: 750px;
   margin: auto;
-    background: url("../assets/inner_bg.png") no-repeat center 100%;
+    background: url("../assets/inner_bg.png") no-repeat center / 100% 100%;
 }
 
 .app-page {
