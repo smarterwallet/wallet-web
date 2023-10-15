@@ -24,11 +24,11 @@
 
         .ant-collapse-header {
             padding: 12px $pagePadding;
-            padding-inline-start: 20px;
+            padding-inline-start: $pagePadding;
             align-items: center;
 
             .ant-collapse-arrow {
-                font-size: 20px;
+                font-size: 40px;
             }
         }
 
@@ -40,9 +40,9 @@
     }
 
     .ant-collapse-header-text {
-        font-size: 24px;
+        font-size: 48px;
         font-weight: 700;
-        line-height: 30px;
+        line-height: 60px;
         color: $titleColor;
     }
 
@@ -55,6 +55,11 @@
 
                 .ant-form-item-control {
                     flex: 1;
+
+                    .ant-input {
+                        font-size: 28px;
+                        border-radius: 26px;
+                    }
                 }
 
                 .ant-form-item-label {
@@ -87,7 +92,9 @@
         border-radius: 36px;
 
         &.ww-mini-btn {
-            font-size: 18px;
+            font-size: 36px;
+            height: 80px;
+            border-radius: 26px;
         }
     }
 
@@ -99,6 +106,7 @@
 
 
     .ww-msg {
+        font-size: 40px;
         border: 0;
         background: none;
         min-height: 56px;
@@ -109,9 +117,9 @@
         }
 
         .ant-alert-message {
-            font-size: 24px;
+            font-size: 48px;
             font-weight: 700;
-            line-height: 30px;
+            line-height: 60px;
             color: $primary;
         }
     }

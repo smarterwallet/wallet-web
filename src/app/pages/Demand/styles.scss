@@ -10,8 +10,8 @@
 
     h2 {
         margin: 0;
-        font-size: 24px;
-        line-height: 36px;
+        font-size: 48px;
+        line-height: 1.5;
         font-weight: bold;
     }
 
@@ -32,29 +32,30 @@
                 display: flex;
                 align-items: center;
                 min-width: 50%;
-                padding: 16px 0;
+                padding: 32px 0;
             }
 
             h3 {
-                max-width: 100px;
+                font-size: 32px;
+                max-width: 200px;
                 margin: 0;
             }
 
             .demand-extra {
                 position: absolute;
-                padding: 10px 40px;
+                padding: 20px 40px;
                 left: 0;
                 right: 0;
-                font-size: 18px;
-                line-height: 38px;
+                font-size: 36px;
+                line-height: 1.5;
                 background: #d9d9d9;
 
                 &:before {
                     content: '';
                     position: absolute;
-                    top: -18px;
+                    top: -38px;
                     left: 100px;
-                    border: 10px solid;
+                    border: 20px solid;
                     border-color: transparent transparent #d9d9d9 transparent;
                 }
 
@@ -90,11 +91,11 @@
 
     .icon-wrap {
         padding: 0 20px;
-        font-size: 40px;
+        font-size: 80px;
 
         .icon {
-            width: 40px;
-            height: 40px;
+            width: 80px;
+            height: 80px;
 
             path {
                 fill: #666;
@@ -103,30 +104,32 @@
     }
 
     .other-demand {
-        display: flex;
-        align-items: center;
+        //display: flex;
+        //align-items: center;
         //padding: 0 0px ($navHeight + 20px);
-        padding-bottom: $navHeight + 20px;
-        height: 50px;
+        //padding-bottom: 240px;
+        height: 320px;
 
         .txt {
             flex: 1;
             padding: 0 20px;
-            font-size: 18px;
+            font-size: 36px;
             line-height: 50px;
             //width: 256px;
             background: #ECE9E9CC;
             box-shadow: 5px 5px 20px 0 #00000040;
-            border-radius: 24px;
+            border-radius: 44px;
         }
 
         input {
             display: block;
+            font-size: 36px;
             width: 100%;
             border: 0;
             background: transparent;
             // rewrite antd style
             box-shadow: none;
+            height: 110px;
 
             &:focus {
                 outline: none;

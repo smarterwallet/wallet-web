@@ -11,7 +11,7 @@ const SignupSuccessfully = () => {
       <HeaderBar text="Sign up successfully" />
       <Result
         status="success"
-        title={<h2>Rign up successfully</h2>}
+        title={<h2>Sign up successfully</h2>}
         subTitle={(
           <div className="subtitle">
             <strong> 2 of 3 login keys are required to login:</strong> <br/>

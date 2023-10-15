@@ -19,7 +19,14 @@
 }
 
 body {
+    font-size: 24px;
   background: var(--body-color);
+}
+
+h2 {
+    font-size: 50px;
+    /*line-height: 1.5;*/
+    margin-bottom: 20px;
 }
 
 input {
