@@ -18,14 +18,14 @@
 
 .navbar-button-text {
   margin-top: 2px;
-  font-size: 14px;
+  font-size: 28px;
   font-weight: 600;
 }
 
 .navbar-link,
 .navbar-link-active {
-  width: 100px;
-  height: 60px;
+  width: 200px;
+  height: 168px;
   padding: 10px 0;
     color: rgba($primary, .65);
   text-decoration: none;
@@ -41,11 +41,11 @@
 }
 
 .navbar-icon-wrap {
-    font-size: 40px;
+    font-size: 80px;
 
     svg {
-        width: 40px;
-        height: 40px;
+        width: 80px;
+        height: 80px;
     }
 
     svg, path {

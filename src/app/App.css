@@ -12,15 +12,14 @@
   --link-color: rgb(98, 98, 216);
 }
 
-html {
-  font-family: Inter;
-  font-size: 110%;
-  line-height: 25px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
   background: var(--body-color);
-  margin: 0px;
 }
 
 input {
@@ -110,7 +109,7 @@ a {
 .app-container {
     position: relative;
   height: 100vh;
-  max-width: 500px;
+  max-width: 750px;
   margin: auto;
     background: url("../assets/inner_bg.png") no-repeat center 100%;
 }
@@ -124,8 +123,8 @@ a {
 .app-navbar {
     position: fixed;
     left: 50%;
-    width: 500px;
-    margin-left: -250px;
+    width: 750px;
+    margin-left: -375px;
     bottom: 0;
     /*transform: translate3d(-50%, 0, 0);*/
 }
