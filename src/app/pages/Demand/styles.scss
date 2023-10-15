@@ -1,6 +1,7 @@
 @import "../../../styles/theme";
 
 .page-demand {
+    position: relative;
     display: flex;
     flex-direction: column;
 
@@ -104,11 +105,14 @@
     }
 
     .other-demand {
+        position: absolute;
+        bottom: 180px;
+        left: $pagePadding;
+        right: $pagePadding;
         //display: flex;
         //align-items: center;
         //padding: 0 0px ($navHeight + 20px);
         //padding-bottom: 240px;
-        height: 320px;
 
         .txt {
             flex: 1;
