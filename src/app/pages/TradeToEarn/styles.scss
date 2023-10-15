@@ -1,17 +1,22 @@
 .page-trade-to-earn {
+    .header-bar-text {
+        font-size: 54px;
+    }
+
     h2 {
         margin-top: 0;
     }
     .content-box {
         margin-bottom: 20px;
         padding: 20px;
-        font-size: 16px;
+        font-size: 30px;
         border-radius: 20px;
         box-shadow: 5px 5px 20px 0 #00000040;
         background: #ECE9E9CC;
 
         dl {
-            margin: 6px;
+            margin: 12px;
+
             &.line {
                 display: flex;
 
@@ -26,7 +31,7 @@
         }
 
         dd {
-            margin: 10px 0 0;
+            margin: 20px 0 0;
 
             &.sequence-opt-wrap {
                 .icon-wrap:last-child{
@@ -36,13 +41,13 @@
 
             .icon-wrap {
                 text-align: center;
-                font-size: 20px;
-                padding: 10px;
+                font-size: 40px;
+                padding: 20px;
                 color: #666;
 
                 svg {
-                    width: 20px;
-                    height: 20px;
+                    width: 40px;
+                    height: 40px;
                 }
 
                 svg, path {
@@ -59,12 +64,12 @@
         h3 {
             margin: 0;
             flex: 1;
-            font-size: 22px;
+            font-size: 40px;
         }
 
         .icon-wrap {
-            font-size: 20px;
-            padding: 10px;
+            font-size: 36px;
+            padding: 20px;
             color: #666;
         }
     }

@@ -185,7 +185,7 @@ export default () => {
                 <Col span={1}><Checkbox /></Col>
               </Row> */}
 
-              <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
+              <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center', gap: 20 }} className="btn-wrapper">
                 {
                   isMPC ?
                     <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
