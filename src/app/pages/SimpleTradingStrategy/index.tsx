@@ -123,7 +123,7 @@ const SimpleTradingStrategy = () => {
     const tokenFromAmount = getTokenFromAmount();
     const tokenToAmount = getTokenToAmount();
     const tokenToNumDIffThreshold = getTokenToNumDIffThreshold();
-    const priceCondition = BigNumber.from(getSimpleTradingBotConfig().priceCondition);
+    const priceCondition = BigNumber.from(getSimpleTradingBotConfig().priceCondition*1e18+"");
     console.log("tokenFrom:", tokenFrom);
     console.log("tokenTo:", tokenTo);
     console.log("tokenFromAmount:", tokenFromAmount);
@@ -133,7 +133,7 @@ const SimpleTradingStrategy = () => {
     const autoTradingContractAddress = Config.ADDRESS_AUTO_TRADING;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
-      content: 'Approve tokenA...',
+      content: 'Approve tokenFrom...',
       duration: 0
     });
     let gasPrice = await Global.account.getGasPrice();
@@ -141,7 +141,7 @@ const SimpleTradingStrategy = () => {
     const approveERC20TokenA = await Global.account.sendTxApproveERC20Token(
       tokenFrom.address, autoTradingContractAddress,
       maxUint256, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
-    console.log("approveERC20TokenA:", approveERC20TokenA);
+    console.log("approveERC20TokenFrom:", approveERC20TokenA);
     let approveTokenAHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
     while (approveTokenAHash.body.result === undefined) {
       approveTokenAHash = await Global.account.getUserOperationByHash(approveERC20TokenA["body"]["result"]);
@@ -149,39 +149,39 @@ const SimpleTradingStrategy = () => {
     }
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
-      content: 'Check approve tokenA transaction...',
+      content: 'Check approve tokenFrom transaction...',
       duration: 0
     });
     // check transaction status
     await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, approveTokenAHash["body"]["result"]["transactionHash"]);
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
-      content: 'Approve tokenB...',
+      content: 'Approve tokenTo...',
       duration: 0
     });
     // approve tokenTo
-    const approveERC20TokenB = await Global.account.sendTxApproveERC20Token(
-      tokenTo.address, autoTradingContractAddress,
-      maxUint256, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
-    console.log("approveERC20TokenB:", approveERC20TokenB);
-    let approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
-    while (approveTokenBHash.body.result === undefined) {
-      approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
-      await sleep(5000)
-    }
-    messageApi.loading({
-      key: Global.messageTypeKeyLoading,
-      content: 'Check approve tokenB transaction...',
-      duration: 0
-    });
+    // const approveERC20TokenB = await Global.account.sendTxApproveERC20Token(
+    //   tokenTo.address, autoTradingContractAddress,
+    //   maxUint256, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, gasPrice);
+    // console.log("approveERC20TokenTo:", approveERC20TokenB);
+    // let approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
+    // while (approveTokenBHash.body.result === undefined) {
+    //   approveTokenBHash = await Global.account.getUserOperationByHash(approveERC20TokenB["body"]["result"]);
+    //   await sleep(5000)
+    // }
+    // messageApi.loading({
+    //   key: Global.messageTypeKeyLoading,
+    //   content: 'Check approve tokenTo transaction...',
+    //   duration: 0
+    // });
     // check transaction status
-    await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, approveTokenBHash["body"]["result"]["transactionHash"]);
+    // await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, approveTokenBHash["body"]["result"]["transactionHash"]);
+    // add tx
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Add strategy...',
       duration: 0
     });
-    // add tx
     // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
     const addStrategy = await Global.account.sendTxAddStrategy(
       autoTradingContractAddress,
