@@ -287,8 +287,8 @@ const SimpleTradingStrategy = () => {
     <div className="ww-page-container spot-grid-page">
       <HeaderBar text='Spot Grid Strategy' />
       <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 16 }}
+        // labelCol={{ span: 8 }}
+        // wrapperCol={{ span: 16 }}
         form={form}
       >
         <Form.Item wrapperCol={{ span: 20 }}>
@@ -296,7 +296,7 @@ const SimpleTradingStrategy = () => {
             {contextHolder}
             <Select
               defaultValue={'SWT'}
-              style={{ width: 120 }}
+              style={{ width: 180, height: 60 }}
               options={[
                 { value: 'SWT', label: 'SWT' },
               ]}
@@ -323,14 +323,13 @@ const SimpleTradingStrategy = () => {
 
         {selectedRadio === "1" && (
           <div id="buy">
-            <h1>When the price</h1>
-            <Space size={5}>
+            <h3>When the price</h3>
+            <Space size={8}>
               <Form.Item label={by} name="fallsBy">
                 <InputNumber style={{ width: '100%' }} placeholder="%"
                 />
               </Form.Item>
-              <Form.Item label="OR" colon={false}>
-              </Form.Item>
+              <div className="text-suffix">OR</div>
             </Space>
 
             <Form.Item label={to} name="fallsTo">
@@ -346,8 +345,7 @@ const SimpleTradingStrategy = () => {
               <Form.Item label="quantity" name="buyInQuantity">
                 <InputNumber style={{ width: '100%' }} placeholder="ETH" />
               </Form.Item>
-              <Form.Item label="OR" colon={false}>
-              </Form.Item>
+              <div className="text-suffix">OR</div>
             </Space>
             <Form.Item label="proportion" name="buyInProportion">
               <InputNumber style={{ width: '100%' }} placeholder="%" />
@@ -372,8 +370,7 @@ const SimpleTradingStrategy = () => {
               <Form.Item label={by} name="riseBy">
                 <InputNumber style={{ width: '100%' }} placeholder="%" />
               </Form.Item>
-              <Form.Item label="OR" colon={false}>
-              </Form.Item>
+              <div className="text-suffix">OR</div>
             </Space>
             <Form.Item label={to} name="riseTo">
               <InputNumber style={{ width: '100%' }} placeholder="USD" />
@@ -387,8 +384,7 @@ const SimpleTradingStrategy = () => {
               <Form.Item label="quantity" name="sellOutQuantity">
                 <InputNumber style={{ width: '100%' }} placeholder="ETH" />
               </Form.Item>
-              <Form.Item label="OR" colon={false}>
-              </Form.Item>
+              <div className="text-suffix">OR</div>
             </Space>
             <Form.Item label="proportion" name="sellOutProportion">
               <InputNumber style={{ width: '100%' }} placeholder="%" />

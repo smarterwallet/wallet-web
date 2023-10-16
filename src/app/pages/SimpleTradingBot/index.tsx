@@ -121,7 +121,7 @@ const SimpleTradingBot = () => {
           <Iconandtext src1={"/icon/defi.png"} text1={"Swap via"} text2={"Uniswap"} text3={"(Polygon)"} />
         </div>
         <div className="bot-page-head">Estimated result</div>
-        <Form.Item wrapperCol={{ span: 14 }}>
+        <Form.Item wrapperCol={{ span: 16 }}>
           <div className="sg-price-wrap">
             <div className="sg-yield-label">Estimated Yield:</div>
             <div className="sg-yield">$400~$200</div>

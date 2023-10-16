@@ -13,7 +13,7 @@
     }
 
     .sg-price-changes {
-        font-size: 22px;
+        font-size: 30px;
         font-weight: bold;
         color: #1E772C;
     }
@@ -25,7 +25,7 @@
     }
 
     .sg-yield {
-        font-size: 17px;
+        font-size: 30px;
         color: #053346;
     }
 }
@@ -38,7 +38,7 @@
     min-height: 500vh;
 
     h3 {
-        font-size: 20px;
+        font-size: 36px;
         color: $primary;
     }
 
@@ -50,6 +50,23 @@
     .ant-row {
         padding: 0 20px;
     }
+
+    &.ww-page-container {
+        padding-bottom: 180px;
+    }
+
+    &.ww-page-container .ant-form .ant-form-item .ant-row .ant-form-item-label {
+        width: 280px;
+    }
+
+    .text-suffix {
+        font-size: 42px;
+        font-weight: 700;
+        color: #0A3D53;
+        line-height: 90px;
+        height: 112px;
+        padding-right: 20px;
+    }
 }
 
 .bot-page-app-icon {
@@ -60,15 +77,15 @@
   }
 
 .bot-page-app-name {
-    font-size: 13px;
+    font-size: 28px;
     font-weight: 600;
-    line-height: 19px;
+    line-height: 36px;
   }
 
 .bot-page-app-name-bold {
-    font-size: 12px;
+    font-size: 24px;
     font-weight: bold;
-    line-height: 19px;    
+    line-height: 30px;
   }
 
 .bot-page-app-row {

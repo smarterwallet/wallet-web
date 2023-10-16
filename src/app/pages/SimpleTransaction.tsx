@@ -97,15 +97,14 @@ const SimpleTransactionPage = (props: any) => {
       spinning={sending}
       size="large"
       tip={"Sending " + selectedAsset}
-      className="transaction-spin"
+      className="transaction-spin "
       style={{
         height: '100%'
       }}
     >
-      <div className="login-page">
+      <div className="login-page ww-page-container">
         {contextHolder}
         <HeaderBar text='Send Transaction' />
-        <br />
         <div>Chain:</div>
         <select onChange={async event => await flushConfig(event.target.value)} defaultValue={Config.DEFAULT_NETWORK}>
           <option value="Polygon">Polygon</option>
@@ -152,10 +151,10 @@ const SimpleTransactionPage = (props: any) => {
           onChange={(e) => setGasPrice(e.currentTarget.value)}
         />
         <br /><br />
-        <button
+        <Button
           className='simple-transaction-page-button'
           onClick={() => onSend()}
-        >Send</button>
+        >Send</Button>
       </div>
     </Spin>
   )

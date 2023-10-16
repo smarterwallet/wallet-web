@@ -34,6 +34,7 @@
 
         .ant-collapse-content>.ant-collapse-content-box {
             padding: 16px $pagePadding 30px;
+            font-size: 28px;
         }
 
 
@@ -98,10 +99,31 @@
         }
     }
 
+    .ant-input-number {
+        border-radius: 24px;
+    }
+
     .ant-input-affix-wrapper {
         padding: 0 20px;
         font-size: 30px;
         border-radius: 26px;
+    }
+
+    .ant-select-single .ant-select-selector {
+        font-size: 28px;
+        border-radius: 24px;
+    }
+
+    .ant-select-single .ant-select-selector .ant-select-selection-item {
+        line-height: 60px;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector  {
+        height: 60px;
+    }
+
+    .ant-input-number .ant-input-number-input {
+        font-size: 28px;
     }
 
 

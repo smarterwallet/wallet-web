@@ -77,8 +77,8 @@ button {
 select {
   font-size: inherit;
   font-family: inherit;
-  height: 40px;
-  border-radius: 6px;
+  height: 80px;
+  border-radius: 12px;
   padding: 0 10px;
 }
 
