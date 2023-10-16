@@ -74,35 +74,35 @@ const SimpleTradingBot = () => {
         <Space>
           <Form.Item name="asset" rules={[{ required: true }]} >
             <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
-              <Select.Option className="select-option-text" value="SWT">SWT</Select.Option>
+              <Select.Option className="input-number select-option-text" value="SWT">SWT</Select.Option>
             </Select>
           </Form.Item>
 
           <Form.Item name="assetAmount" rules={[{ required: true }]} >
-            <InputNumber className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="Amount" />
+            <InputNumber className="input-number ant-input css-dev-only-do-not-override-1tudys6" placeholder="Amount" />
           </Form.Item>
         </Space>
         <div className="bot-page-head">Starting condition</div>
         <Space>
           <Form.Item rules={[{ required: true }]} >
-            <Select defaultValue="Price" className="ww-selector" style={{ width: '130%' }}>
+            <Select defaultValue="Price" className="ww-selector input-number">
               <Select.Option value="Price">Price</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="priceCondition">
-            <Input className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="USDT" />
+            <InputNumber className="input-number ant-input css-dev-only-do-not-override-1tudys6" placeholder="USDT" />
           </Form.Item>
         </Space>
         <Space align="baseline" size={0}>
           <div className="bot-page-head">Fluctuation</div>
-          <Form.Item name="fluctuation" rules={[{ required: true }]} >
+          <Form.Item name="fluctuation" rules={[{ required: true }]} style={{ width: '100%' }}>
             <InputNumber className="ant-input css-dev-only-do-not-override-1tudys6" placeholder="%" />
           </Form.Item>
         </Space>
         <div className="bot-page-head">Gas asset</div>
         <Space>
           <Form.Item name="gasAsset" rules={[{ required: true }]} >
-            <Select defaultValue="SWT" className="ww-selector" style={{ width: '130%' }}>
+            <Select defaultValue="SWT" className="ww-selector input-number">
               <Select.Option value="SWT">SWT</Select.Option>
             </Select>
           </Form.Item>

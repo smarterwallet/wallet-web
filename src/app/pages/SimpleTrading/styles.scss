@@ -1,5 +1,9 @@
 @import "../../../styles/theme";
 
+.input-number {
+    min-width: 130%
+}
+
 .sg-price-wrap {
     display: flex;
     flex-direction: row;
@@ -32,9 +36,11 @@
 
 .spot-grid-page {
     padding-bottom: 30px;
+
     .radio-button {
         text-align: center;
     }
+
     min-height: 500vh;
 
     h3 {
@@ -74,32 +80,32 @@
     height: 52px;
     margin: 0 auto;
     float: inline-start;
-  }
+}
 
 .bot-page-app-name {
     font-size: 28px;
     font-weight: 600;
     line-height: 36px;
-  }
+}
 
 .bot-page-app-name-bold {
     font-size: 24px;
     font-weight: bold;
     line-height: 30px;
-  }
+}
 
 .bot-page-app-row {
     text-align: center;
     padding: 4px;
     color: black;
     text-decoration: none;
-  }
+}
 
 .bot-page-app-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     column-gap: 0px;
-  }
+}
 
 .bot-page-head {
     font-size: 50px;

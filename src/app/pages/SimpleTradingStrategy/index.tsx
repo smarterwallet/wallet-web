@@ -343,7 +343,7 @@ const SimpleTradingStrategy = () => {
             <h3>{buyin}</h3>
             <Space>
               <Form.Item label="quantity" name="buyInQuantity">
-                <InputNumber style={{ width: '100%' }} placeholder="ETH" />
+                <InputNumber style={{ width: '100%' }} placeholder="SWT" />
               </Form.Item>
               <div className="text-suffix">OR</div>
             </Space>
@@ -402,7 +402,7 @@ const SimpleTradingStrategy = () => {
         )}
 
         <Space style={{ width: '100%', justifyContent: 'center' }} size={80}>
-          <Button shape="round" onClick={save}>Save</Button>
+          <Button shape="round"  onClick={save}>Save</Button>
           <Button shape="round" onClick={createStrategy}>Create+</Button>
         </Space>
       </Form>
