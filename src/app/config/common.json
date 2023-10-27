@@ -1,10 +1,10 @@
 {
   "mpc": {
     "wasm": {
-      "url": "https://decentralized-storage-01.web3-idea.xyz/mpc/wasm/v0_2/mpc.wasm"
+      "url": "https://decentralized-storage-01.web3idea.xyz/package/mpc/wasm/v0_2/mpc.wasm"
     }
   },
   "storage": {
-    "decentralize_storage_api": "https://smarter-api-storage.web3-idea.xyz"
+    "decentralize_storage_api": "https://smarter-api-storage.web3idea.xyz"
   }
 }

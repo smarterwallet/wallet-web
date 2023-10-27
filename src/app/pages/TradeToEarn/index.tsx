@@ -17,7 +17,7 @@ const TradeToEarn = () => {
   const cfg = riskCfg[risk as RiskType];
 
   useEffect(() => {
-    HttpUtils.post('https://smarter-api-da.web3-idea.xyz/v1/demand', {
+    HttpUtils.post('https://smarter-api-da.web3idea.xyz/v1/demand', {
       "category": "trade2Earn",
       "demand": risk
     }).then((res) => {
