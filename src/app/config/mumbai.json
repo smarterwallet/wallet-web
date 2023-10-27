@@ -6,9 +6,9 @@
   },
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
-    "backend_api": "https://smarter-api-mumbai.web3-idea.xyz/be/api/v1",
-    "rpc_api": "https://mumbai-rpc.web3-idea.xyz",
-    "bundler_api": "https://smarter-api-mumbai.web3-idea.xyz/bundler/",
+    "backend_api": "https://smarter-api-mumbai.web3idea.xyz/be/api/v1",
+    "rpc_api": "https://mumbai-rpc.web3idea.xyz",
+    "bundler_api": "https://smarter-api-mumbai.web3idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "erc20_tx_from_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
