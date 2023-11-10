@@ -1,0 +1,43 @@
+.inputEmail {
+  width: 50%;
+}
+
+.emailItem {
+  display: flex;
+  height: 80px;
+  .ant-select-selector {
+    height: 80px;
+  }
+}
+
+
+.codeItem {
+  display: flex;
+}
+
+.at {
+  height: 80px;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+.providerTabs {
+  display: flex;
+  height: 80px;
+  align-items: center;
+  img {
+    width: 65px;
+    height: 65px;
+    margin-left: 10px;
+  }
+  div {
+    margin-left: 10px;
+  }
+}
+.ant-select-selector {  
+  height: 80px !important;  
+}
