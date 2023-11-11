@@ -23,7 +23,9 @@ const SignupMultiForm = () => {
   const register = async (values: any) => {
     const email = form.getFieldValue('email');
     const code = form.getFieldValue('code');
-
+    const password = form.getFieldValue('password');
+    // console.log(`password is ${password}`);
+    Global.tempLocalPassword = password;
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Register on Smarter AA Wallet...',
@@ -125,7 +127,7 @@ const SignupMultiForm = () => {
       duration: 0,
     })
 
-    const resultOfSendEmail = await HttpUtils.post(Config.BUNDLER_API + '/sw/user/email-code', {
+    const resultOfSendEmail = await HttpUtils.post(Config.BACKEND_API + '/sw/user/email-code', {
       'email': email,
     })
     if (resultOfSendEmail.body.code !== 200) {
