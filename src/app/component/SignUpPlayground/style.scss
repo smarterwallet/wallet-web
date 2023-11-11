@@ -1,0 +1,59 @@
+.userIcon {
+  height: 80px;
+  width: 80px;
+}
+
+.tabs {
+  display: flex;
+  img {
+    margin-right: 10px;
+  }
+  div {
+    padding-top: 7px;
+  }
+}
+
+.multi-party-account {  
+  p {  
+    text-align: left; // 让 p 里面的字居中  
+    word-wrap: break-word; // 如果超出范围了就换行  
+    margin-left: 70px;
+    margin-right: 70px;
+    height: 95px;
+  }  
+    
+  .multi-party-content {
+    height: 155px;
+    div {  
+      display: flex; // 使用 flex 布局，让文字和图标在一行内显示  
+      justify-content: space-between; // 让文字在左边，图标在右边  
+      align-items: center; // 垂直居中对齐  
+      margin-top: 10px;
+      margin-bottom: 10px;
+      h3 {  
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: 70px;
+        margin-right: 70px;
+      }  
+    
+      // 假设你使用的是 Ant Design 的 Icon 组件  
+      .checkIcon {  
+        height: 54px;
+        width: 54px;
+        margin-left: auto; // 让图标在右边  
+      }  
+    } 
+  }
+    
+}  
+  
+.multi-party-description {
+  margin-top: 30px;
+  text-align: left; // 让 p 里面的字居中  
+  word-wrap: break-word; // 如果超出范围了就换行  
+  margin-left: 70px;
+  margin-right: 70px;
+  height: 95px;
+  font-size: xx-large;
+}

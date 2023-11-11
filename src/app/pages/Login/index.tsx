@@ -1,6 +1,6 @@
 import HeaderBar from "../../elements/HeaderBar";
 import React, { useEffect, useState } from "react";
-import { Button, Collapse, Form, Input, Space, message } from 'antd';
+import { Button, Collapse, Form, Input, Space, message, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Global } from '../../../server/Global';
 import './styles.scss';
@@ -11,6 +11,7 @@ import { Config } from "../../../server/config/Config";
 import { JSONBigInt } from "../../../server/js/common_utils";
 import CountDownButton from '../../component/CountDownButton';
 import { AccountInterface } from "../../../server/account/AccountInterface";
+import ProviderTab from "../SignupMultiParty/ProviderTab";
 
 export default () => {
 
@@ -18,6 +19,7 @@ export default () => {
   const [form] = Form.useForm();
   const [activeKey, setActiveKey] = useState('1');
   const [messageApi, contextHolder] = message.useMessage();
+  const [provider, setProvider] = useState<string>('Spark');
 
   const getLocalMPCKey = (mpcAccount: AccountInterface, mpcPassword: any) => {
     try {
@@ -153,7 +155,7 @@ export default () => {
 
   return (
     <div className="ww-page-container">
-      <HeaderBar text='Sign in' />
+      <HeaderBar text='Login in' />
       {contextHolder}
       <Collapse
         defaultActiveKey="1"
@@ -186,13 +188,32 @@ export default () => {
                 label="Password"
                 name="mpcPassword"
               >
-                <Input.Password />
+                <Input.Password style={{ width: '403px'}} />
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
               >
-                <Input />
+                <Input style={{ width: '403px'}}/>
+              </Form.Item>
+              <Form.Item
+                label="Provider"
+                name="provider"
+              >
+                <Select
+                  defaultValue='Spark'
+                  onChange={(value) => setProvider(value)}
+                  value={provider}            
+                  style={{ width: '403px', height: '80px'}}
+                  options={[
+                    { value: 'Spark', label: (<ProviderTab text='Spark' iconPath='/icon/spark.png' />) },
+                    { value: 'MailMaster', label: (<ProviderTab text='MailMaster' iconPath='/icon/mailmaster.png' />)},
+                    { value: 'Airmail', label: (<ProviderTab text='Airmail' iconPath='/icon/airmail.png' />)},
+                    { value: 'Others', label: (<ProviderTab text='Others...' />) },
+                ]}
+                >
+          
+                </Select>
               </Form.Item>
               <Form.Item
                 label="Code"
@@ -212,7 +233,7 @@ export default () => {
                       return true;
                     }}
                     storageKey='login-email-send-code'
-                  >Send Code</CountDownButton>
+                  >Send</CountDownButton>
                 </Space>
               </Form.Item>
               <Button
