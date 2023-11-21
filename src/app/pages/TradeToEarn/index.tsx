@@ -21,6 +21,7 @@ const TradeToEarn = () => {
       "category": "trade2Earn",
       "demand": risk
     }).then((res) => {
+      console.log(res);
       const data = res.body;
       requestData.current = data;
       setLoading(false);

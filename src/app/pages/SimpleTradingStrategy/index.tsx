@@ -123,7 +123,7 @@ const SimpleTradingStrategy = () => {
     const tokenFromAmount = getTokenFromAmount();
     const tokenToAmount = getTokenToAmount();
     const tokenToNumDIffThreshold = getTokenToNumDIffThreshold();
-    const priceCondition = BigNumber.from(getSimpleTradingBotConfig().priceCondition*1e18+"");
+    const priceCondition = BigNumber.from(getSimpleTradingBotConfig().priceCondition * 1e18 + "");
     console.log("tokenFrom:", tokenFrom);
     console.log("tokenTo:", tokenTo);
     console.log("tokenFromAmount:", tokenFromAmount);
@@ -201,6 +201,8 @@ const SimpleTradingStrategy = () => {
     // check transaction status
     await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, addStrategyHash["body"]["result"]["receipt"]["transactionHash"]);
     const strategyId = parseInt(addStrategyHash["body"]["result"]["receipt"]["logs"][0]["topics"][2], 16);
+    console.log('addStrategyHash', addStrategyHash);
+
     console.log("strategyId:", strategyId);
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -226,7 +228,7 @@ const SimpleTradingStrategy = () => {
       "token_to": tokenTo.address,
       "token_to_num": tokenToAmount.toString(),
       "token_to_num_fluctuation": tokenToNumDIffThreshold.toString(),
-      "start_condition_token_to_num": priceCondition.toString(),
+      "start_condition_price": priceCondition.toString(),
       "user_operation": signTx,
     }
     const saveStarge = await HttpUtils.post(Config.AUTO_TRADING_API + "/api/v1/strategy/simple", stargeParams);
@@ -239,7 +241,7 @@ const SimpleTradingStrategy = () => {
     } else {
       messageApi.success({
         key: Global.messageTypeKeyLoading,
-        content: 'Save Strategy success',
+        content: 'Create Strategy success',
         duration: 0,
       });
     }
@@ -261,6 +263,11 @@ const SimpleTradingStrategy = () => {
   }, [selectedCurrency]);
 
   useEffect(() => {
+    //刷新页面表单内容恢复为用户点击save时的表单状态
+    const savedConfig = localStorage.getItem('Config detail');
+    if (savedConfig) {
+      form.setFieldsValue(JSON.parse(savedConfig));
+    }
     let key = "spot_grid_bot";
     const str = localStorage.getItem(key);
     let items = JSON.parse(str);
@@ -268,6 +275,14 @@ const SimpleTradingStrategy = () => {
     setBotParams(items);
   }, [])
 
+  const saveConfig = (values: any) => {
+    localStorage.setItem('Config detail', JSON.stringify(values))
+    message.success({
+      key: Global.messageTypeKeyLoading,
+      content: 'Save Strategy success',
+      duration: 1,
+    })
+  }
 
   const handleCurrencyChange = (value: string) => {
     setSelectedCurrency(value);
@@ -290,6 +305,7 @@ const SimpleTradingStrategy = () => {
         // labelCol={{ span: 8 }}
         // wrapperCol={{ span: 16 }}
         form={form}
+        onFinish={saveConfig}
       >
         <Form.Item wrapperCol={{ span: 20 }}>
           <div className="sg-price-wrap">
@@ -402,7 +418,7 @@ const SimpleTradingStrategy = () => {
         )}
 
         <Space style={{ width: '100%', justifyContent: 'center' }} size={80}>
-          <Button shape="round"  onClick={save}>Save</Button>
+          <Button shape="round" onClick={save}>Save</Button>
           <Button shape="round" onClick={createStrategy}>Create+</Button>
         </Space>
       </Form>

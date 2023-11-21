@@ -38,6 +38,8 @@ import TradeToEarn from './pages/TradeToEarn';
 import LoadingPageComponent from '../../src/app/pages/LoadingPage';
 import SignUpPlayground from './component/SignUpPlayground';
 import SignupMultiParty from './pages/SignupMultiParty';
+import StrategyCreateSuccess from './pages/StrategyCreateSuccess';
+import MyStrategys from './pages/MyStrategys';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -178,7 +180,7 @@ const AppComponent = () => {
           <Route path="/asset/:id" element={<AssetPage />} />
           <Route path="/signup" element={<SignUpPlayground />} />
           <Route path="/signup/multiSignup" element={<SignupMultiParty />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings" element={<Settings/>} />
           <Route path="/multiPartyAccount" element={<MultiPartyAccount />} />
           <Route path="/signupAtMultiParty" element={<SignupAtMultiParty />} />
           <Route path="/signupSuccessfully" element={<SignupSuccessfully />} />
@@ -196,13 +198,14 @@ const AppComponent = () => {
           <Route path="/editTradeBot" element={<EditTradeBotPage />} />
           <Route path="/runBot" element={<RunBotPage />} />
           <Route path="/simpleTransaction" element={<SimpleTransactionPage />} />
-          <Route path="/automaticTrading" element={<AutomaticTrading />} />
+          <Route path="/automaticTrading" element={<MyStrategys />} />
           <Route path="/gridStrategies" element={<GridStrategies />} />
           <Route path="/gridStrategies" element={<GridStrategies />} />
           <Route path="/simpleStrategy" element={<SimpleTradingStrategy />} />
           <Route path="/spotGridBot" element={<SimpleTradingBot />} />
           <Route path="/autotradebotok"  element={<AutotradebotOK />} />
           <Route path="/tradeToEarn/:risk"  element={<TradeToEarn />} />
+          <Route path="/strategyCreateSuccess"  element={<StrategyCreateSuccess />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
