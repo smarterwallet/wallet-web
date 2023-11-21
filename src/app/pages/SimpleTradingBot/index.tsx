@@ -42,6 +42,11 @@ const SimpleTradingBot = () => {
       .catch(error => {
         console.error("Error:", error);
       });
+      //刷新页面表单内容恢复为用户上次设置的网格机器人状态
+    const grid_bot = localStorage.getItem('spot_grid_bot');
+    if (grid_bot) {
+      form.setFieldsValue(JSON.parse(grid_bot));
+    }
   }, []);
 
   const [form] = Form.useForm(); // 创建表单实例

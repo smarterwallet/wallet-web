@@ -112,3 +112,48 @@
     font-weight: bold;
     color: #053346;
 }
+
+.bot-create-success {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .text{
+        p {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        font-size: 2rem;
+        text-align: left;
+        padding: 0 20px;
+    }
+}
+
+.my-strategys-page{
+    .header{
+        display: flex;
+        align-items: center;
+    }
+
+    .list{
+        display: flex;
+        align-items: center;
+    }
+
+    .p{
+        font-size: 3rem;
+        margin-left: 40px;
+    }
+
+    .onGoing{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .onGoingText{
+        font-size: 2rem;
+    }
+}
