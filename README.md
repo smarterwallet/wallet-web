@@ -1,4 +1,4 @@
-# Smarter Wallet Web Font End
+# Smarter Wallet Web Front End
 
 ## Dependence
 
