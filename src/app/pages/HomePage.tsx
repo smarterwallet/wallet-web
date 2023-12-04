@@ -7,6 +7,7 @@ import { Asset, Config } from '../../server/config/Config';
 import QuestionModal from '../modals/QuestionModal';
 import AlertModal from '../modals/AlertModal';
 import { message } from 'antd';
+import { ethers } from 'ethers';
 
 const polygonConfig = require('../config/polygon.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
@@ -50,7 +51,6 @@ class HomePage extends React.Component<{}, HomePageState> {
 
     this.setState({ asset: newAsset });
     this.flushAsset();
-    console.log(Global.account);
   }
 
   async flushAsset() {
