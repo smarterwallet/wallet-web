@@ -41,6 +41,7 @@ import SignupMultiParty from './pages/SignupMultiParty';
 import StrategyCreateSuccess from './pages/StrategyCreateSuccess';
 import MyStrategys from './pages/MyStrategys';
 import Cross from './pages/Cross';
+import Contacts from './pages/Contacts';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -179,6 +180,7 @@ const AppComponent = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/demand" element={<Demand />} />
           <Route path="/cross" element={<Cross />} />
+          <Route path="/contacts" element={<Contacts />} />
           <Route path="/asset/:id" element={<AssetPage />} />
           <Route path="/signup" element={<SignUpPlayground />} />
           <Route path="/signup/multiSignup" element={<SignupMultiParty />} />

@@ -49,7 +49,9 @@ const Result: React.FC<Props> = ({ title, transactionDetail, extra, needFooter =
                 <p>You</p>
               </div>
               <div className="flex flex-1 items-center justify-center text-3xl font-medium text-redhot-500">
-                <p>- {amount}</p>
+                <p className="text-4xl" style={{ color: 'rgba(157, 29, 29, 1)' }}>
+                  - {amount}
+                </p>
               </div>
               <div className="flex flex-1 items-center justify-center text-circle-green">
                 <p>${token}</p>
@@ -60,7 +62,9 @@ const Result: React.FC<Props> = ({ title, transactionDetail, extra, needFooter =
                 <p>Receipt</p>
               </div>
               <div className="flex flex-1 items-center justify-center text-3xl font-medium text-apple-400">
-                <p>+ {amount}</p>
+                <p className="text-4xl" style={{ color: 'rgba(93, 157, 29, 1)' }}>
+                  + {amount}
+                </p>
               </div>
               <div className="flex flex-1 items-center justify-center text-circle-green">
                 <p>${token}</p>

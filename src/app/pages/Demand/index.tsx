@@ -47,6 +47,9 @@ const Demand = () => {
                       <div
                         className="demand-item-box"
                         onClick={() => {
+                          if (demand.name === 'Transfer to Others') {
+                            return navigate('/contacts');
+                          }
                           setActiveExtra(activeExtra === demand.name ? '' : demand.name);
                         }}
                       >
