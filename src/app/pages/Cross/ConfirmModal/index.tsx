@@ -13,7 +13,7 @@ type Props = {
     amount?: number | string; // 数量
     source?: string; // 发起交易的链
     target?: string; // 接收交易的链
-    token?: string; // 代币余额
+    token?: string; // 代币种类
     address?: string; // 发起交易的地址
     fees?: string | number; // 预估交易费
   };
