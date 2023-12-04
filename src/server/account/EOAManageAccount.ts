@@ -1,16 +1,15 @@
-import { ethers } from "ethers";
-import { AccountInterface } from "./AccountInterface";
-import { ERC4337BaseManageAccount } from "./ERC4337BaseManageAccount";
-import { Config } from "../config/Config";
-import { CryptologyUtils } from "../utils/CryptologyUtils";
+import { ethers } from 'ethers';
+import { AccountInterface } from './AccountInterface';
+import { ERC4337BaseManageAccount } from './ERC4337BaseManageAccount';
+import { Config } from '../config/Config';
+import { CryptologyUtils } from '../utils/CryptologyUtils';
 
-const { arrayify } = require("@ethersproject/bytes");
+const { arrayify } = require('@ethersproject/bytes');
 
 /**
  * Account Manage
  */
 export class EOAManageAccount extends ERC4337BaseManageAccount implements AccountInterface {
-
   /**
    * EOA address key for sign and manage wallet
    */
@@ -18,7 +17,7 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
 
   constructor() {
     super();
-    console.log("EOAManageAccount init");
+    console.log('EOAManageAccount init');
   }
 
   get eoaKey(): string {
@@ -35,13 +34,13 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
     this.eoaKey = eoaKey;
     this.contractWalletAddressSalt = 0;
     this.ethersProvider = new ethers.providers.JsonRpcProvider(Config.RPC_API);
-    if (eoaKey != null && eoaKey !== "") {
-      console.log("eoaKey not null");
+    if (eoaKey != null && eoaKey !== '') {
+      console.log('eoaKey not null');
       this.ethersWallet = new ethers.Wallet(eoaKey, this.ethersProvider);
       this.contractWalletAddress = await this.calcContractWalletAddress();
       await this.deployContractWalletIfNotExist(this.ethersWallet.address);
     } else {
-      console.log("eoakey is null")
+      console.log('eoakey is null');
       this.ethersWallet = null;
       this.contractWalletAddress = null;
     }
@@ -67,7 +66,10 @@ export class EOAManageAccount extends ERC4337BaseManageAccount implements Accoun
   }
 
   existLocalStorageKey(): boolean {
-    return localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY) != null && localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY).length != 0;
+    return (
+      localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY) !== null &&
+      localStorage.getItem(Config.LOCAL_STORAGE_EOA_KEY).length !== 0
+    );
   }
 
   getKeyFromLocalStorage(password: string): string {

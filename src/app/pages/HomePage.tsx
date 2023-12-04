@@ -3,9 +3,9 @@ import './HomePage.css';
 import { Navigate, NavLink } from 'react-router-dom';
 import { Global } from '../../server/Global';
 import { BsFiles } from 'react-icons/bs';
-import { Asset, Config } from "../../server/config/Config";
-import QuestionModal from "../modals/QuestionModal";
-import AlertModal from "../modals/AlertModal";
+import { Asset, Config } from '../../server/config/Config';
+import QuestionModal from '../modals/QuestionModal';
+import AlertModal from '../modals/AlertModal';
 import { message } from 'antd';
 
 const polygonConfig = require('../config/polygon.json');
@@ -25,7 +25,6 @@ interface HomePageState {
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
-
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -44,28 +43,31 @@ class HomePage extends React.Component<{}, HomePageState> {
     for (let key in Config.TOKENS) {
       newAsset[key] = {
         asset: Config.TOKENS[key],
-        amount: "loading",
-        sort: Config.TOKENS[key].sort
+        amount: 'loading',
+        sort: Config.TOKENS[key].sort,
       };
     }
 
     this.setState({ asset: newAsset });
     this.flushAsset();
+    console.log(Global.account);
   }
 
   async flushAsset() {
-    if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== "") {
+    if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       let promises = [];
       for (let key in Config.TOKENS) {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
-          promises.push(Global.account.getBalanceOf(Config.TOKENS[key]).then(balance => {
-            return {
-              key: key,
-              asset: Config.TOKENS[key],
-              amount: balance,
-              sort: Config.TOKENS[key].sort
-            };
-          }));
+          promises.push(
+            Global.account.getBalanceOf(Config.TOKENS[key]).then((balance) => {
+              return {
+                key: key,
+                asset: Config.TOKENS[key],
+                amount: balance,
+                sort: Config.TOKENS[key].sort,
+              };
+            }),
+          );
         }
       }
 
@@ -79,7 +81,6 @@ class HomePage extends React.Component<{}, HomePageState> {
     }
   }
 
-
   onQuestionYes() {
     // Global.account.isLoggedIn = false;
     this.forceUpdate();
@@ -92,12 +93,13 @@ class HomePage extends React.Component<{}, HomePageState> {
   renderAsset(key: string, icon: string, name: string, amount: string, usd: number) {
     return (
       <div key={key}>
-        <NavLink className='home-page-asset-row' to={'/asset/' + name}>
+        <NavLink className="home-page-asset-row" to={'/asset/' + name}>
           <img className="home-page-asset-icon" src={icon} />
           <div className="home-page-asset-name">{name}</div>
           <div>
-            <div
-              className="home-page-asset-amount">{Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}</div>
+            <div className="home-page-asset-amount">
+              {Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}
+            </div>
             <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
           </div>
         </NavLink>
@@ -110,27 +112,26 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async copyUrl() {
-    message.success('Public address copied to clipboard')
+    message.success('Public address copied to clipboard');
     await navigator.clipboard.writeText(Global.account.contractWalletAddress);
   }
 
   async flushConfigAndAsset(chainName: string) {
-    console.log("start to flush. Chain name: " + chainName);
+    console.log('start to flush. Chain name: ' + chainName);
 
     Config.CURRENT_CHAIN_NAME = chainName;
     switch (chainName.toLowerCase()) {
-      case "polygon":
+      case 'polygon':
         await Config.init(JSON.stringify(polygonConfig));
         await Global.init();
         await this.flushAsset();
         break;
-      case "mumbai":
+      case 'mumbai':
         await Config.init(JSON.stringify(polygonMumbaiConfig));
         await Global.init();
         await this.flushAsset();
         break;
     }
-
   }
 
   render() {
@@ -154,14 +155,14 @@ class HomePage extends React.Component<{}, HomePageState> {
             <div className="home-page-header-username">{username}</div>
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => this.copyUrl()}>
               <div className="home-page-header-address">{address}</div>
-              <BsFiles color='gray' />
+              <BsFiles color="gray" />
             </div>
           </div>
           <select
             defaultValue={Config.CURRENT_CHAIN_NAME}
             className="home-page-header-select"
-            onChange={async event => {
-              this.setState({ alert: 'Switch to ' + event.target.value + '...'});
+            onChange={async (event) => {
+              this.setState({ alert: 'Switch to ' + event.target.value + '...' });
               await this.flushConfigAndAsset(event.target.value);
               this.setState({ alert: '' });
             }}
@@ -172,16 +173,17 @@ class HomePage extends React.Component<{}, HomePageState> {
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()} />
         </div>
 
-        <div className='home-page-balance-container'>
+        <div className="home-page-balance-container">
           <div className="home-page-balance-title">Account Balance</div>
           <div className="home-page-balance">$ 0.00</div>
         </div>
 
         <div>
-          {Object.entries(this.state.asset).sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
-            .map(([key, assetInfo], index) => (
-              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0)
-            ))}
+          {Object.entries(this.state.asset)
+            .sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
+            .map(([key, assetInfo], index) =>
+              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0),
+            )}
         </div>
 
         <br />
