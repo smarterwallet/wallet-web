@@ -7,7 +7,7 @@ type Data = {
   value?: string;
 }
 
-interface IProps {
+export interface IProps {
   data: Data[]
 }
 
