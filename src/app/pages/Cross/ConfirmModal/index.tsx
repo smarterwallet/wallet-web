@@ -41,12 +41,12 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
           </div>
           <div className="w-48 text-center">
             <div>
-              <img src={chainlinkIcon} alt="chainklink" className="h-16 w-16 my-0 mx-auto" />
+              <img src={chainlinkIcon} alt="chainklink" className="h-24 w-24 my-0 mx-auto mb-2" />
             </div>
             <div>CCIP</div>
           </div>
         </div>
-        <img src={downArrow} alt="down arrow" className="h-16 my-4 mx-auto" />
+        <img src={downArrow} alt="down arrow" className="h-[4.5rem] my-4 mx-auto" />
         <div className="flex justify-between items-center text-3xl">
           <div className="w-[32rem]">
             2. <span className="font-semibold">Send</span> {amount} {token} and {truncateString(receiver)} will get{' '}
@@ -54,7 +54,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
           </div>
           <div className="w-48 text-center">
             <div>
-              <img src={transferIcon} alt="transfer" className="h-16 w-16 my-0 mx-auto" />
+              <img src={transferIcon} alt="transfer" className="h-24 w-24 my-0 mx-auto mb-2" />
             </div>
             <div>Transfer</div>
           </div>
@@ -77,7 +77,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
           }}
           className=" mx-auto w-11/12 rounded-lg"
         >
-          <div className="rounded-t-lg p-8 h-[52rem]" style={{ backgroundColor: '#e7ece6' }}>
+          <div className="rounded-t-lg p-8 h-[56rem]" style={{ backgroundColor: '#e7ece6' }}>
             {extra}
             <div className="text-5xl font-medium  pl-4 mb-4">{title}</div>
             <div>{renderInstruction()}</div>
