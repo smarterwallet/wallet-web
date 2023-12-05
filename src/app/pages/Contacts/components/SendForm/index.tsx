@@ -1,42 +1,53 @@
-import { Form, Input, Picker, Button } from 'antd-mobile';
+import { Form, Input, Picker, Button, Card } from 'antd-mobile';
 import { useState } from 'react';
+import { TransactionDetail } from '../../index';
+import './styles.scss';
 
-const SendForm = () => {
-  const [amount, useAmount] = useState();
+type Props = TransactionDetail & {
+  onChange: (key: keyof TransactionDetail, value: any) => void;
+};
 
+const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, token, onChange}) => {
   // picker mockdata
-  const [visible, setVisible] = useState(false); 
-  const [token, setToken] = useState<(string | null)[]>(['']); // 會被props傳進來 這裏做交互測試
-  // data
-  const tokenColumns = [[{ label: 'USDC', value: 'usdc' }],[{label: 'usdc',value: 'usdc'}]];
+  const [visible, setVisible] = useState(false);
+    // data
+  const tokenColumns = [[{ label: 'USDC', value: 'usdc' }]];
 
   return (
-    <div>
-      <Form>
-        <Form.Header>Token:</Form.Header>
-        <Form.Item>
-          <Button className="w-full border-none" onClick={() => setVisible(true)}>
-           { token[0] === 'usdc' ? token[0].toUpperCase() : 'Token'}
+    <div className="grid grid-flow-row box-border">
+      <div className="flex h-6 max-h-24 mb-10 " style={{ height: '5.5rem' }}>
+        <div className="flex items-center justify-center text-2xl font-bold w-56" style={{ color: '#053346' }}>
+          <span>Token:</span>
+        </div>
+        <div className="flex  justify-center">
+          <Button className="border-none rounded-3xl w-96" block onClick={() => setVisible(true)}>
+            { token != '' ? token[0].toUpperCase() : 'Choose token'}
           </Button>
-          <Picker
-            columns={tokenColumns}
-            visible={visible}
-            onClose={() => {
-              setVisible(false);
-            }}
-            value={token}
-            onConfirm={v => {
-              //@ts-ignore
-              setToken(v)
-            }}
-          />
-        </Form.Item>
-
-        <Form.Header>Amount:</Form.Header>
-        <Form.Item>
-          <Input />
-        </Form.Item>
-      </Form>
+          <Picker 
+          columns={tokenColumns}
+          visible={visible}
+          onClose={() => {
+            setVisible(false)
+          }}
+          // @ts-ignore
+          value={token}
+          onConfirm={(v) => {
+            onChange('token',v);
+          }}
+          ></Picker>
+        </div>
+      </div>
+      <div className="flex  h-6 " style={{ height: '5.5rem' }}>
+        <div className="flex items-center justify-center text-2xl font-bold w-56" style={{ color: '#053346' }}>
+          <span className="col-span-1">Amount:</span>
+        </div>
+        <div className="bg-white rounded-3xl" style={{ width: '13rem' }}>
+          <Input placeholder="" className="pl-4" max={100} value={amount} onChange={v => onChange('amount',v)}></Input>
+        </div>
+        <div className="flex items-center justify-start text-2xl font" style={{ color: 'rgba(5, 51, 70, 0.8)' }}>
+          <span className="col-span-1 pl-4">Max: 100</span>
+        </div>
+      </div>
     </div>
   );
 };
