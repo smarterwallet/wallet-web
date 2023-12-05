@@ -41,13 +41,13 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
           </h1>
         </div>
         <div className="bg-white rounded-3xl px-5 shadow-xl">
-          <Input
+          <Button
             onClick={() => setVisible(true)}
-            value={target ? target.toUpperCase() : target}
-            placeholder=""
-            style={{ '--text-align': 'center', caretColor: 'transparent' }}
-            className="text-4xl"
-          />
+            style={{ height: '80px', }}
+            className="text-4xl border-none"
+            block
+            size='large'
+          >{target ? target.toUpperCase() : ''}</Button>
           <Picker
             columns={blockchainColumns}
             visible={visible}

@@ -1,4 +1,4 @@
-import { Tabs, Form, Input, Button, Card } from 'antd-mobile';
+import { Tabs, Form, Input, Button, Card, Result} from 'antd-mobile';
 import React from 'react';
 import BackBtn from '../../component/BackBtn';
 import { useState } from 'react';
@@ -46,7 +46,9 @@ const Contacts: React.FC<Props> = () => {
       // error check
       const errorMessage = SendErrorCheck(transactionDetail);
       if (errorMessage !== null) {
+        console.log(errorMessage)
       }
+      console.log(transactionDetail);
     } catch (e) {
       console.log(e);
     }
@@ -105,8 +107,9 @@ const Contacts: React.FC<Props> = () => {
           </div>
         </div>
         {/* Send Btn*/}
-        <div className="flex-auto h-1/5">{tradingMode ? <SendBtn /> : null}</div>
+        <div className="flex-auto h-1/5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
       </main>
+
     </div>
   );
 };

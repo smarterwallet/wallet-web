@@ -21,7 +21,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
         </div>
         <div className="flex  justify-center">
           <Button className="border-none rounded-3xl w-96 text-4xl" block onClick={() => setVisible(true)}>
-            {token != '' ? token[0].toUpperCase() : ''}
+            {token != '' ? token.toUpperCase() : token}
           </Button>
           <Picker
             columns={tokenColumns}
@@ -32,7 +32,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
             // @ts-ignore
             value={token}
             onConfirm={(v) => {
-              onChange('token', v);
+              onChange('token', v[0]);
             }}
           ></Picker>
         </div>
@@ -47,7 +47,9 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
             className="pl-4 text-4xl"
             style={{ '--text-align': 'center', '--font-size': '2rem' }}
             max={100}
+            min={0}
             value={amount}
+            type='number'
             onChange={(v) => onChange('amount', v)}
           ></Input>
         </div>
