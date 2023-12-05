@@ -11,7 +11,7 @@ type Props = TransactionDetail & {
 type contactType = {
   name: string;
   receiver: string;
-  target?: 'Mumbai' | 'Fuji';
+  target: string;
 };
 
 type TargetTypes = contactType['target'];
@@ -30,6 +30,8 @@ const ReceiptForm: React.FC<Props> = ({
   // 用於添加聯繫人 與父頁面隔離
   //   const [address] = useState();
   const [name, setName] = useState('');
+  const [newReciver, setNewReciver] = useState('');
+  const [BlockChainValue, setBlockChainValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 會被props傳進來 這裏做交互測試
   const blockchainColumns = [
@@ -46,8 +48,8 @@ const ReceiptForm: React.FC<Props> = ({
       setTradingMode(true);
       // clear input info
       setName('');
-      onChange('address', '');
-      onChange('receiver', '');
+      setBlockChainValue('');
+      setNewReciver('');
     } catch (e) {
       console.log(e);
       setNewContant(false);
@@ -60,29 +62,29 @@ const ReceiptForm: React.FC<Props> = ({
       if (name === '' || name === null || name === undefined) {
         throw new Error("name can't not be empty");
       }
-      if (receiver === '' || receiver === null || name === undefined) {
-        throw new Error("receiver can't not be empty");
+      if (newReciver === '' || newReciver === null || newReciver === undefined) {
+        throw new Error("newReciver can't not be empty");
       }
-      if (receiver.lastIndexOf('0x') != 0) {
+      if (newReciver.lastIndexOf('0x') != 0) {
         throw new Error('This is no a ETH WALLET address syntax');
       }
-      if (receiver.length < 42) {
+      if (newReciver.length < 42) {
         throw new Error('The length of address is not a ETH WALLET address');
       }
-      if (target !== 'Fuji'.toLowerCase() && target !== 'Mumbai'.toLowerCase()) {
-        console.log(target);
+      if (BlockChainValue !== 'Fuji'.toLowerCase() && BlockChainValue !== 'Mumbai'.toLowerCase()) {
+        console.log(BlockChainValue);
         throw new Error('only support Fuji and Mumbai blockchain');
       }
       // save new contact in localStorage
-      const newContact: contactType = { name: name, receiver: receiver, target: target };
+      const newContact: contactType = { name: name, receiver: newReciver, target: BlockChainValue };
       const storedContacts: string | null = localStorage.getItem('contacts');
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
-      // clear state
+      // reset state 
       setNewContant(false);
       setName('');
-      onChange('receiver', '');
-      onChange('target', '');
+      setBlockChainValue('')
+      setNewReciver('')
       setTradingMode(true);
     } catch (e) {
       console.log(e);
@@ -97,7 +99,7 @@ const ReceiptForm: React.FC<Props> = ({
           <h1 className="font-bold text-4xl">Name:</h1>
         </div>
         <div className="bg-white rounded-3xl px-5 shadow-xl">
-          <Input value={name} onChange={(v) => setName(v)}></Input>
+          <Input style={{'--font-size': '2rem'}}value={name} onChange={(v) => setName(v)}></Input>
         </div>
       </div>
       {!newContact ? (
@@ -121,7 +123,7 @@ const ReceiptForm: React.FC<Props> = ({
               <h1 className="font-bold text-4xl">Address:</h1>
             </div>
             <div className="bg-white rounded-3xl px-5 shadow-xl">
-              <Input value={receiver} onChange={(v) => onChange('receiver', v)}></Input>
+              <Input value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
             </div>
           </div>
           <div className=" grow flex flex-col  justify-center">
@@ -133,7 +135,7 @@ const ReceiptForm: React.FC<Props> = ({
                 onClick={() => {
                   setVisible(true);
                 }}
-                value={target ? target.toUpperCase() : target}
+                value={BlockChainValue ? BlockChainValue.toUpperCase() : BlockChainValue}
                 style={{ '--text-align': 'center', caretColor: 'transparent' }}
               />
               <Picker
@@ -145,8 +147,9 @@ const ReceiptForm: React.FC<Props> = ({
                 }}
                 onConfirm={(v) => {
                   //@ts-ignore
-                  setBlockChain();
-                  onChange('target', v[0]);
+                  setBlockChain(v[0]);
+                  //@ts-ignore
+                  setBlockChainValue(v[0]);                 
                 }}
               ></Picker>
             </div>

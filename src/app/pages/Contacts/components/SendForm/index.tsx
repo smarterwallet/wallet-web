@@ -42,7 +42,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
           <span className="col-span-1">Amount:</span>
         </div>
         <div className="bg-white rounded-3xl" style={{ width: '13rem' }}>
-          <Input placeholder="" className="pl-4" max={100} value={amount} onChange={v => onChange('amount',v)}></Input>
+          <Input placeholder="" className="pl-4" style={{'--text-align': "center","--font-size": "2rem"}} max={100} value={amount} onChange={v => onChange('amount',v)}></Input>
         </div>
         <div className="flex items-center justify-start text-2xl font" style={{ color: 'rgba(5, 51, 70, 0.8)' }}>
           <span className="col-span-1 pl-4">Max: 100</span>
