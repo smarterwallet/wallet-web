@@ -19,7 +19,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
           <h1 className="font-bold text-4xl">Address:</h1>
         </div>
         <div className="bg-white rounded-3xl px-5 shadow-xl">
-          <Input></Input>
+          <Input style={{ "--font-size": "2rem"}}value={receiver} onChange={v => onChange('receiver',v)}></Input>
         </div>
       </div>
       <div className=" grow flex flex-col px-16 justify-center">
@@ -29,7 +29,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
         <div className="bg-white rounded-3xl px-5 shadow-xl">
           <Input
             onClick={() => setVisible(true)}
-            value={receiver.toUpperCase()}
+            value={target ? target.toUpperCase() : target}
             placeholder="Choose network"
             style={{ '--text-align': 'center' , caretColor: "transparent"}}
             className='text-4xl'
@@ -42,7 +42,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
               setVisible(false);
             }}
             onConfirm={(v) => {
-              onChange('receiver',v[0])
+              onChange('target',v[0])
             }}
           ></Picker>
         </div>
