@@ -1,6 +1,5 @@
 import { Button, Card, Form, Input, Picker } from 'antd-mobile';
 import { useState } from 'react';
-import AddressForm from '../AddressForm';
 import { TransactionDetail } from '../..';
 import './styles.scss';
 
@@ -28,12 +27,13 @@ const ReceiptForm: React.FC<Props> = ({
 }) => {
   const [newContact, setNewContant] = useState(false);
   // 用於添加聯繫人 與父頁面隔離
-  //   const [address] = useState();
   const [name, setName] = useState('');
   const [newReciver, setNewReciver] = useState('');
   const [BlockChainValue, setBlockChainValue] = useState('');
+  // 添加信息框显示
   const [visible, setVisible] = useState(false);
-  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 會被props傳進來 這裏做交互測試
+  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 目前被写死
+
   const blockchainColumns = [
     [
       { label: 'Mumbai', value: 'mumbai' },
@@ -80,11 +80,11 @@ const ReceiptForm: React.FC<Props> = ({
       const storedContacts: string | null = localStorage.getItem('contacts');
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
-      // reset state 
+      // reset state
       setNewContant(false);
       setName('');
-      setBlockChainValue('')
-      setNewReciver('')
+      setBlockChainValue('');
+      setNewReciver('');
       setTradingMode(true);
     } catch (e) {
       console.log(e);
@@ -92,18 +92,30 @@ const ReceiptForm: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-transparent h-[35rem] flex flex-col">
+    <div className="bg-transparent h-[30rem] flex flex-col">
       {/* address */}
       <div className="grow flex flex-col px-16 justify-center">
         <div className="mb-2">
-          <h1 className="font-bold text-4xl">Name:</h1>
+          <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
+            Name:
+          </h1>
         </div>
         <div className="bg-white rounded-3xl px-5 shadow-xl">
-          <Input style={{'--font-size': '2rem'}}value={name} onChange={(v) => setName(v)}></Input>
+          <Input
+            className="text-4xl"
+            style={{ '--font-size': '2rem' }}
+            value={name}
+            onChange={(v) => setName(v)}
+          ></Input>
         </div>
       </div>
       {!newContact ? (
         <div className=" grow flex flex-col px-16 justify-center">
+          <div className="mb-2">
+            <h1 className="font-bold text-4xl opacity-0" style={{ color: '#0A3D53' }}>
+              ----opacity----
+            </h1>
+          </div>
           <div className="bg-white rounded-3xl px-5 shadow-xl">
             <Input
               onClick={() => {
@@ -111,7 +123,14 @@ const ReceiptForm: React.FC<Props> = ({
                 setTradingMode(false);
               }}
               placeholder="Add Contact +"
-              style={{ '--text-align': 'center', caretColor: 'transparent' }}
+              style={{
+                '--text-align': 'center',
+                caretColor: 'transparent',
+                fontSize: '1.5rem',
+                lineHeight: '2rem',
+                '--font-size': '2rem',
+                fontWeight: 'bold',
+              }}
             />
           </div>
         </div>
@@ -120,15 +139,19 @@ const ReceiptForm: React.FC<Props> = ({
           {/* address */}
           <div className="grow flex flex-col  justify-center">
             <div className="mb-2">
-              <h1 className="font-bold text-4xl">Address:</h1>
+              <h1 className="font-bold text-4xl" style={{ color: '#053346' }}>
+                Address:
+              </h1>
             </div>
             <div className="bg-white rounded-3xl px-5 shadow-xl">
-              <Input value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
+              <Input className="text-4xl" value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
             </div>
           </div>
           <div className=" grow flex flex-col  justify-center">
             <div className="mb-2">
-              <h1 className="font-bold text-4xl">Blockchain:</h1>
+              <h1 className="font-bold text-4xl" style={{ color: '#053346' }}>
+                Blockchain:
+              </h1>
             </div>
             <div className="bg-white rounded-3xl px-5 shadow-xl">
               <Input
@@ -149,7 +172,7 @@ const ReceiptForm: React.FC<Props> = ({
                   //@ts-ignore
                   setBlockChain(v[0]);
                   //@ts-ignore
-                  setBlockChainValue(v[0]);                 
+                  setBlockChainValue(v[0]);
                 }}
               ></Picker>
             </div>
@@ -168,6 +191,7 @@ const ReceiptForm: React.FC<Props> = ({
                 onClick={() => {
                   hanldAddClick();
                 }}
+                style={{ color: '#053346' }}
               >
                 Add +
               </Button>
