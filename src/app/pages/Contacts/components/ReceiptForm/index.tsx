@@ -91,6 +91,27 @@ const ReceiptForm: React.FC<Props> = ({
     }
   };
 
+  const bindContact = (name : string) => {
+    const storedContacts : contactType[] = JSON.parse(localStorage.getItem('contacts'))
+    let matchedContact : contactType ;
+    if(storedContacts != null && storedContacts.length){
+      storedContacts.forEach((contact) => {
+        // 潜在bug 若name值相同，会覆盖旧的mathedContact
+          if(contact.name === name) {
+            matchedContact = contact;
+          }
+      })
+    }
+    if(matchedContact !== undefined) {
+      onChange('receiver',matchedContact.receiver);
+      onChange('target',matchedContact.target)
+    } else {
+      // 抹掉
+        onChange('receiver','');
+        onChange('target','');
+    }
+  }
+
   return (
     <div className="bg-transparent h-[30rem] flex flex-col">
       {/* address */}
@@ -105,7 +126,14 @@ const ReceiptForm: React.FC<Props> = ({
             className="text-4xl"
             style={{ '--font-size': '2rem' }}
             value={name}
-            onChange={(v) => setName(v)}
+            onChange={(v) => {
+              if(!newContact){
+                bindContact(v)
+                setName(v)
+              } else {
+                setName(v)
+              }
+            }}
           ></Input>
         </div>
       </div>
@@ -113,7 +141,7 @@ const ReceiptForm: React.FC<Props> = ({
         <div className=" grow flex flex-col px-16 justify-center">
           <div className="mb-2">
             <h1 className="font-bold text-4xl opacity-0" style={{ color: '#0A3D53' }}>
-              ----opacity----
+              ----opacity---- just for the height
             </h1>
           </div>
           <div className="bg-white rounded-3xl px-5 shadow-xl">
@@ -154,13 +182,15 @@ const ReceiptForm: React.FC<Props> = ({
               </h1>
             </div>
             <div className="bg-white rounded-3xl px-5 shadow-xl">
-              <Input
+              <Button
                 onClick={() => {
                   setVisible(true);
                 }}
-                value={BlockChainValue ? BlockChainValue.toUpperCase() : BlockChainValue}
-                style={{ '--text-align': 'center', caretColor: 'transparent' }}
-              />
+                block
+                size='large'
+                className='text-4xl border-none'
+                style={{ height: '80px' }}
+              >{BlockChainValue ? BlockChainValue.toUpperCase() : BlockChainValue}</Button>
               <Picker
                 columns={blockchainColumns}
                 visible={visible}

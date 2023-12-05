@@ -1,12 +1,14 @@
 import { Card, Button } from 'antd-mobile';
 import './styles.scss';
 
-const SendBtn = () => {
-  const mockSend = () => {};
+type Props = { handleTransfer : () => void}
+
+const SendBtn:React.FC<Props> = ({handleTransfer }) => {
+  
 
   return (
     <Card className="bg-transparent px-5">
-      <Button block size="large" className="rounded-2xl h-20 font-bold shadow-2xl" onClick={() => mockSend()}>
+      <Button block size="large" className="rounded-2xl h-20 font-bold shadow-2xl" onClick={() => handleTransfer()}>
         {' '}
         <div className="flex items-center justify-center">
           <div>Send</div>
