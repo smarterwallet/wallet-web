@@ -31,6 +31,8 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
   } = transactionDetail;
   const [step, setStep] = useState(0);
 
+  const handleConfirm = () => {};
+
   const renderInstruction = () => {
     return (
       <>
@@ -152,11 +154,18 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
               <div
                 style={{ borderRight: '1px solid rgba(168, 165, 169, 0.5)' }}
                 className="flex-1 py-2"
-                onClick={() => {}}
+                onClick={() => {
+                  window.history.back();
+                }}
               >
                 Change
               </div>
-              <div className="flex-1" onClick={() => {}}>
+              <div
+                className="flex-1"
+                onClick={() => {
+                  handleConfirm();
+                }}
+              >
                 Confirm
               </div>
             </div>
