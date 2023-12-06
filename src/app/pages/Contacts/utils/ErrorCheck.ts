@@ -1,6 +1,6 @@
 import {TransactionDetail} from '../index';
 
-export const SendErrorCheck = (transactionDetail : TransactionDetail) => {
+export const SendErrorCheck = (transactionDetail : TransactionDetail, balance : string) => {
     if (transactionDetail.address === '' || transactionDetail.address === null || transactionDetail.address === undefined) {
         return "Sender can't not be empty"
       }
@@ -10,8 +10,11 @@ export const SendErrorCheck = (transactionDetail : TransactionDetail) => {
       if (transactionDetail.address.length < 42) {
         return "The length of Sender's address is not a ETH WALLET address"
       }
-      if (parseFloat(transactionDetail.amount) <  0) {
+      if (parseFloat(transactionDetail.amount as string) <  0) {
         return "The amount can't be neviage"
+      }
+      if (parseFloat(transactionDetail.amount as string) >  parseFloat(balance)) {
+        return "Your Wallet Balance is not enough"
       }
       if (transactionDetail.receiver === '' || transactionDetail.receiver === null || transactionDetail.receiver === undefined) {
         return "receiver can't not be empty"

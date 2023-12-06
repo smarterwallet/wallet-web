@@ -48,7 +48,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
             style={{ '--text-align': 'center', '--font-size': '2rem' }}
             max={100}
             min={0}
-            value={amount}
+            value={amount as string}
             type='number'
             onChange={(v) => onChange('amount', v)}
           ></Input>
