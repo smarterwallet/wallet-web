@@ -1,0 +1,37 @@
+{
+  "address": {
+    "address_simple_account_factory": "0xc3E0A55109c032328F67202c020f7Da2Fddd8B8a",
+    "address_token_paymaster": "0x188cEaFf80D32373C52837e162A52c82484D3A6b",
+    "address_entrypoint": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
+    "address_auto_trading": "0x0987e55f3d11847ef4099dabfb38c6acbd8acfc5"
+  },
+  "api": {
+    "blockchain_scan": "https://testnet.snowtrace.io/tx/",
+    "backend_api": "https://smarter-api-fuji.web3idea.xyz/be/api/v1",
+    "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
+    "rpc_api": "https://api.avax-test.network/ext/C/rpc",
+    "bundler_api": "https://smarter-api-fuji.web3idea.xyz/bundler/",
+    "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
+    "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
+    "erc20_tx_from_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
+    "erc20_tx_to_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic2=0x000000000000000000000000%s"
+  },
+  "token": {
+    "AVAX": {
+      "sort": 0,
+      "name": "AVAX",
+      "address": null,
+      "decimals": 18,
+      "type": 1,
+      "icon": "/icon/matic.png"
+    },
+    "USDC": {
+      "sort": 2,
+      "name": "USDC",
+      "address": "0x5425890298aed601595a70AB815c96711a31Bc65",
+      "decimals": 6,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    }
+  }
+}

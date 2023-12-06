@@ -7,8 +7,10 @@ import { Asset, Config } from '../../server/config/Config';
 import QuestionModal from '../modals/QuestionModal';
 import AlertModal from '../modals/AlertModal';
 import { message } from 'antd';
+import { ethers } from 'ethers';
 
 const polygonConfig = require('../config/polygon.json');
+const fujiConfig = require('../config/fuji.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
 
 interface AssetInfo {
@@ -50,7 +52,6 @@ class HomePage extends React.Component<{}, HomePageState> {
 
     this.setState({ asset: newAsset });
     this.flushAsset();
-    console.log(Global.account);
   }
 
   async flushAsset() {
@@ -131,6 +132,10 @@ class HomePage extends React.Component<{}, HomePageState> {
         await Global.init();
         await this.flushAsset();
         break;
+      case 'avax fuji':
+        await Config.init(JSON.stringify(fujiConfig));
+        await Global.init();
+        await this.flushAsset();
     }
   }
 
@@ -162,6 +167,7 @@ class HomePage extends React.Component<{}, HomePageState> {
             defaultValue={Config.CURRENT_CHAIN_NAME}
             className="home-page-header-select"
             onChange={async (event) => {
+              localStorage.setItem('pk', Global.account.ethersWallet.privateKey);
               this.setState({ alert: 'Switch to ' + event.target.value + '...' });
               await this.flushConfigAndAsset(event.target.value);
               this.setState({ alert: '' });
@@ -169,6 +175,7 @@ class HomePage extends React.Component<{}, HomePageState> {
           >
             <option value="Polygon">Polygon</option>
             <option value="Mumbai">Mumbai</option>
+            <option value="Avax Fuji">Avax Fuji</option>
           </select>
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()} />
         </div>
@@ -181,9 +188,11 @@ class HomePage extends React.Component<{}, HomePageState> {
         <div>
           {Object.entries(this.state.asset)
             .sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
-            .map(([key, assetInfo], index) =>
-              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0),
-            )}
+            .map(([key, assetInfo], index) => {
+              console.log(index, assetInfo);
+
+              return this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0);
+            })}
         </div>
 
         <br />
