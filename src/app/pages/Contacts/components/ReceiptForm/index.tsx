@@ -1,5 +1,5 @@
 import { Button, Card, Form, Input, Picker } from 'antd-mobile';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TransactionDetail } from '../..';
 import './styles.scss';
 
@@ -25,7 +25,7 @@ const ReceiptForm: React.FC<Props> = ({
   onChange,
   setTradingMode,
 }) => {
-  const [newContact, setNewContant] = useState(false);
+  const [isAddingNewContact, setAddNewContact] = useState(false);
   // 用於添加聯繫人 與父頁面隔離
   const [name, setName] = useState('');
   const [newReciver, setNewReciver] = useState('');
@@ -33,6 +33,10 @@ const ReceiptForm: React.FC<Props> = ({
   // 添加信息框显示
   const [visible, setVisible] = useState(false);
   const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 目前被写死
+  // 存储loaclstorage数据
+  const [storedContacts, setStoredContacts] = useState<contactType[] | null>([]);
+  // 存储对应联系人的信息
+  const [contact, setContact] = useState<contactType>();
 
   const blockchainColumns = [
     [
@@ -41,10 +45,49 @@ const ReceiptForm: React.FC<Props> = ({
     ],
   ];
 
+  useEffect(() => {
+    try {
+      const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
+      setStoredContacts(storedCon);
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (!isAddingNewContact) {
+        const matchingContact = storedContacts.filter((contact) => {
+          return contact.name.toLowerCase() == name.toLowerCase();
+        });
+        // 资料输入
+        if (matchingContact != null && matchingContact.length) {
+          const mcontact = matchingContact[0];
+          if (mcontact !== undefined) {
+            onChange('receiver', mcontact.receiver);
+            onChange('target', mcontact.target);
+          }
+        } else {
+          // 抹掉
+          onChange('receiver', '');
+          onChange('target', '');
+        }
+      } else {
+        // 在新增联系人模式下抹掉所有显示数据
+        if (receiver != '') {
+          onChange('receiver', '');
+          onChange('target', '');
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [name, isAddingNewContact]);
+
   const hanldCancelClick = () => {
     try {
       // setNewContant => false
-      setNewContant(false);
+      setAddNewContact(false);
       setTradingMode(true);
       // clear input info
       setName('');
@@ -52,7 +95,7 @@ const ReceiptForm: React.FC<Props> = ({
       setNewReciver('');
     } catch (e) {
       console.log(e);
-      setNewContant(false);
+      setAddNewContact(false);
     }
   };
 
@@ -81,7 +124,7 @@ const ReceiptForm: React.FC<Props> = ({
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
       // reset state
-      setNewContant(false);
+      setAddNewContact(false);
       setName('');
       setBlockChainValue('');
       setNewReciver('');
@@ -90,27 +133,6 @@ const ReceiptForm: React.FC<Props> = ({
       console.log(e);
     }
   };
-
-  const bindContact = (name : string) => {
-    const storedContacts : contactType[] = JSON.parse(localStorage.getItem('contacts'))
-    let matchedContact : contactType ;
-    if(storedContacts != null && storedContacts.length){
-      storedContacts.forEach((contact) => {
-        // 潜在bug 若name值相同，会覆盖旧的mathedContact
-          if(contact.name === name) {
-            matchedContact = contact;
-          }
-      })
-    }
-    if(matchedContact !== undefined) {
-      onChange('receiver',matchedContact.receiver);
-      onChange('target',matchedContact.target)
-    } else {
-      // 抹掉
-        onChange('receiver','');
-        onChange('target','');
-    }
-  }
 
   return (
     <div className="bg-transparent h-[30rem] flex flex-col">
@@ -127,17 +149,12 @@ const ReceiptForm: React.FC<Props> = ({
             style={{ '--font-size': '2rem' }}
             value={name}
             onChange={(v) => {
-              if(!newContact){
-                bindContact(v)
-                setName(v)
-              } else {
-                setName(v)
-              }
+              setName(v);
             }}
           ></Input>
         </div>
       </div>
-      {!newContact ? (
+      {!isAddingNewContact ? (
         <div className=" grow flex flex-col px-16 justify-center">
           <div className="mb-2">
             <h1 className="font-bold text-4xl opacity-0" style={{ color: '#0A3D53' }}>
@@ -147,7 +164,7 @@ const ReceiptForm: React.FC<Props> = ({
           <div className="bg-white rounded-3xl px-5 shadow-xl">
             <Input
               onClick={() => {
-                setNewContant(true);
+                setAddNewContact(true);
                 setTradingMode(false);
               }}
               placeholder="Add Contact +"
@@ -187,10 +204,12 @@ const ReceiptForm: React.FC<Props> = ({
                   setVisible(true);
                 }}
                 block
-                size='large'
-                className='text-4xl border-none'
+                size="large"
+                className="text-4xl border-none"
                 style={{ height: '80px' }}
-              >{BlockChainValue ? BlockChainValue.toUpperCase() : BlockChainValue}</Button>
+              >
+                {BlockChainValue ? BlockChainValue.toUpperCase() : BlockChainValue}
+              </Button>
               <Picker
                 columns={blockchainColumns}
                 visible={visible}
