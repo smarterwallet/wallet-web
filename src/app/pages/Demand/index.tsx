@@ -17,7 +17,7 @@ const Demand = () => {
   const inputDemand = (e: any) => {
     if (e.keyCode == 13 || e.keyCode == 9) {
       e.preventDefault(); //禁止键盘默认事件
-      navigate(`/tradeToEarn/${e.target.value}`);
+      navigate(`/demandchat`);
     }
   };
 
