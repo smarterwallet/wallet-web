@@ -25,7 +25,7 @@ const StrategyCreateSuccess = () => {
       </div>
         <Space style={{ width: '100%', justifyContent: 'center' ,marginTop:'20px'}} size={80}>
           <Button shape="round" onClick={Done}>Done</Button>
-          <Button shape="round" onClick={View}>View <RightOutlined /></Button>
+          <Button shape="round" onClick={View}>View <RightOutlined rev="" /></Button>
         </Space>
     </div>
   )
