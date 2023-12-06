@@ -21,7 +21,7 @@
       "sort": 0,
       "name": "AVAX",
       "address": null,
-      "decimals": 9,
+      "decimals": 18,
       "type": 1,
       "icon": "/icon/matic.png"
     },
