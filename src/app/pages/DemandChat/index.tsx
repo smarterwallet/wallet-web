@@ -62,7 +62,7 @@ const DemandChat = () => {
     console.log("test.....")
     if (ops.type === "chain-internal-transfer") {
       const gasFee = await Global.account.getGasPrice()
-      Global.account.sendTxTransferERC20Token("0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97", ops.amount, ops.receiver, ops.target_chain, mumbai.address.address_entrypoint, gasFee)
+      Global.account.sendTxTransferERC20Token("0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97", ops.amount, ops.receiver, mumbai.address.address_token_paymaster, mumbai.address.address_entrypoint, gasFee)
     }
   }
 
