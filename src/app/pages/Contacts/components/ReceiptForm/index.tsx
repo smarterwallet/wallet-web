@@ -2,12 +2,14 @@ import { Button, Card, Form, Input, Picker } from 'antd-mobile';
 import { useState, useEffect } from 'react';
 import { TransactionDetail } from '../..';
 import './styles.scss';
+import { message } from 'antd';
+import { ErrorCheck } from '../../utils/RErrorCheck';
 
 type Props = TransactionDetail & {
   onChange: (key: keyof TransactionDetail, value: any) => void;
 } & { setTradingMode: (result: boolean) => void };
 
-type contactType = {
+export type contactType = {
   name: string;
   receiver: string;
   target: string;
@@ -37,6 +39,8 @@ const ReceiptForm: React.FC<Props> = ({
   const [storedContacts, setStoredContacts] = useState<contactType[] | null>([]);
   // 存储对应联系人的信息
   const [contact, setContact] = useState<contactType>();
+  // 消息框
+  const [messageApi, contextHolder] = message.useMessage();
 
   const blockchainColumns = [
     [
@@ -44,6 +48,20 @@ const ReceiptForm: React.FC<Props> = ({
       { label: 'Fuji', value: 'fuji' },
     ],
   ];
+
+  const errorMessageBox = (errorMessage: string) => {
+    message.open({
+      type:'error',
+      content:errorMessage
+    })
+  }
+
+  const successMessageBox = (successMessage: string) => {
+    message.open({
+      type:'success',
+      content:successMessage
+    })
+  }
 
   useEffect(() => {
     try {
@@ -101,28 +119,19 @@ const ReceiptForm: React.FC<Props> = ({
 
   const hanldAddClick = () => {
     try {
+      const newContact: contactType = { name: name, receiver: newReciver, target: BlockChainValue };
       // error check
-      if (name === '' || name === null || name === undefined) {
-        throw new Error("name can't not be empty");
-      }
-      if (newReciver === '' || newReciver === null || newReciver === undefined) {
-        throw new Error("newReciver can't not be empty");
-      }
-      if (newReciver.lastIndexOf('0x') != 0) {
-        throw new Error('This is no a ETH WALLET address syntax');
-      }
-      if (newReciver.length < 42) {
-        throw new Error('The length of address is not a ETH WALLET address');
-      }
-      if (BlockChainValue !== 'Fuji'.toLowerCase() && BlockChainValue !== 'Mumbai'.toLowerCase()) {
-        console.log(BlockChainValue);
-        throw new Error('only support Fuji and Mumbai blockchain');
+      const result = ErrorCheck(newContact);
+      if(result != null){
+        errorMessageBox(result);
+        throw new Error(result);
       }
       // save new contact in localStorage
-      const newContact: contactType = { name: name, receiver: newReciver, target: BlockChainValue };
+
       const storedContacts: string | null = localStorage.getItem('contacts');
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
+      successMessageBox("The new Contact is saved.")
       // reset state
       setAddNewContact(false);
       setName('');
@@ -136,7 +145,8 @@ const ReceiptForm: React.FC<Props> = ({
 
   return (
     <div className="bg-transparent h-[30rem] flex flex-col">
-      {/* address */}
+      {contextHolder}
+      {/*  */}
       <div className="grow flex flex-col px-16 justify-center">
         <div className="mb-2">
           <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
