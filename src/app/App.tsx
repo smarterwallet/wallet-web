@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';  
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { Global } from '../server/Global';
 import HomePage from './pages/HomePage';
@@ -41,6 +41,8 @@ import SignupMultiParty from './pages/SignupMultiParty';
 import StrategyCreateSuccess from './pages/StrategyCreateSuccess';
 import MyStrategys from './pages/MyStrategys';
 import DemandChat from './pages/DemandChat';
+import Cross from './pages/Cross';
+import Contacts from './pages/Contacts';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -57,19 +59,19 @@ const AppComponent = () => {
           console.log('global variable init success');
         });
       });
-    }  
-    window.addEventListener('beforeunload', function () {  
-      // Global.network.disconnect();  
-    });  
-    return () => {  
-      window.removeEventListener('beforeunload', function () {  
-        // Global.network.disconnect();  
-      });  
+    }
+    window.addEventListener('beforeunload', function () {
+      // Global.network.disconnect();
+    });
+    return () => {
+      window.removeEventListener('beforeunload', function () {
+        // Global.network.disconnect();
+      });
     };
   }, [maintenance]);
 
-  if (!initialized)  {
-    return <LoadingPageComponent maintenance={maintenance} setInitialized={setInitialized} />;  
+  if (!initialized) {
+    return <LoadingPageComponent maintenance={maintenance} setInitialized={setInitialized} />;
   }
 
   return (
@@ -81,10 +83,12 @@ const AppComponent = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/demand" element={<Demand />} />
           <Route path="/demandchat" element={<DemandChat />} />
+          <Route path="/cross" element={<Cross />} />
+          <Route path="/contacts" element={<Contacts />} />
           <Route path="/asset/:id" element={<AssetPage />} />
           <Route path="/signup" element={<SignUpPlayground />} />
           <Route path="/signup/multiSignup" element={<SignupMultiParty />} />
-          <Route path="/settings" element={<Settings/>} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/multiPartyAccount" element={<MultiPartyAccount />} />
           <Route path="/signupAtMultiParty" element={<SignupAtMultiParty />} />
           <Route path="/signupSuccessfully" element={<SignupSuccessfully />} />
@@ -107,16 +111,13 @@ const AppComponent = () => {
           <Route path="/gridStrategies" element={<GridStrategies />} />
           <Route path="/simpleStrategy" element={<SimpleTradingStrategy />} />
           <Route path="/spotGridBot" element={<SimpleTradingBot />} />
-          <Route path="/autotradebotok"  element={<AutotradebotOK />} />
-          <Route path="/tradeToEarn/:risk"  element={<TradeToEarn />} />
-          <Route path="/strategyCreateSuccess"  element={<StrategyCreateSuccess />} />
+          <Route path="/autotradebotok" element={<AutotradebotOK />} />
+          <Route path="/tradeToEarn/:risk" element={<TradeToEarn />} />
+          <Route path="/strategyCreateSuccess" element={<StrategyCreateSuccess />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
-    
-   
-  
-}
+};
 export default AppComponent;
