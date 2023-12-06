@@ -1,6 +1,6 @@
 import React from 'react';
 import { Global } from '../../../server/Global';
-import Result from './ConfirmModal';
+import ConfirmModal from './ConfirmModal';
 
 type Props = {};
 
@@ -9,7 +9,7 @@ const Cross = (props: Props) => {
 
   return (
     <>
-      <Result title="Sequence of operations:" transactionDetail={{}} needFooter />
+      <ConfirmModal title="Sequence of operations:" transactionDetail={{}} needFooter />
     </>
   );
 };

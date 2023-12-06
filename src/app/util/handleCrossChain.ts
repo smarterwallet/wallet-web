@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
-import destChainReceiverAbi from '../abis/DestChainReceiver.abi.json';
-import liquidityPoolAbi from '../abis/liquidityPool.abi.json';
-import sourceChainSenderAbi from '../abis/sourceChainSender.abi.json';
-import usdcAbi from '../abis/usdc.abi.json';
-import { Global } from '../server/Global';
+import destChainReceiverAbi from '../../abis/DestChainReceiver.abi.json';
+import liquidityPoolAbi from '../../abis/liquidityPool.abi.json';
+import sourceChainSenderAbi from '../../abis/sourceChainSender.abi.json';
+import usdcAbi from '../../abis/usdc.abi.json';
+import { Global } from '../../server/Global';
 
 // Polygon_Mumbai
 const MUMBAI_USDC = '0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97';
@@ -34,15 +34,19 @@ type TransactionDetail = {
   fees?: string | number; // 预估交易费
 };
 
-export const useCrossChain = async () => {
-  const signer = new ethers.Wallet(localStorage.getItem('smarter-wallet-eoa-key-v01'), Global.account.ethersProvider);
-  const sourceChainSender = new ethers.Contract(Fuji_SOURCE_CHAIN_SENDER, sourceChainSenderAbi, signer);
-  const usdc = new ethers.Contract(MUMBAI_USDC, usdcAbi);
-  const approveTx = await usdc.approve(sourceChainSender.address, FUND_AMOUNT);
+export const handleCrossChain = async () => {
+  const deployer = new ethers.Wallet(
+    'ff3a619d9054ec33cd3f6934a6d9435accd8dfbb68eee507fa042dfb3b807635',
+    Global.account.ethersProvider,
+  );
+  const signer = new ethers.Wallet(localStorage.getItem('pk'), Global.account.ethersProvider);
+  const sourceChainSender = new ethers.Contract(Fuji_SOURCE_CHAIN_SENDER, sourceChainSenderAbi, deployer);
+  const usdc = new ethers.Contract(Fuji_USDC, usdcAbi, signer);
+  const approveTx = await usdc.approve(sourceChainSender.address, FUND_AMOUNT, { gasLimit: 5000000 });
   await approveTx.wait(1);
   console.log('fund 1 USDC to SourceChainSender Contract...');
   const fundTx = await sourceChainSender.fund(FUND_AMOUNT, {
-    gasLimit: 1000000,
+    gasLimit: 5000000,
   });
   await fundTx.wait(1);
   console.log('transaction successfully...');
@@ -51,7 +55,9 @@ export const useCrossChain = async () => {
 
   // Call the sendMessage function to cross-chain 1 USDC to Mumbai
   console.log('Call sendMessage function...');
-  const crossChainTx = await sourceChainSender.sendMessage(destinationChainSelector, receiver, feeToken, to, amount);
+  const crossChainTx = await sourceChainSender.sendMessage(destinationChainSelector, receiver, feeToken, to, amount, {
+    gasLimit: 5000000,
+  });
   console.log(`Cross-chain transaction hash: ${crossChainTx.hash}`); // copy it to Chainlink CCIP Explorer page, check cross chain status.
   await crossChainTx.wait(1);
   console.log('Cross Chain 1 USDC from Avalanche Fuji to Polygon Mumbai is successfully!');
