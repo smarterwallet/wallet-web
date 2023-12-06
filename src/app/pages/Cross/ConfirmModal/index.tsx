@@ -4,6 +4,7 @@ import { truncateString } from '../../../util/util';
 import { transferIcon, chainlinkIcon, downArrow } from '../../../../assets';
 import { CheckCircleFilled } from '@ant-design/icons';
 import BackBtn from '../../../component/BackBtn';
+import { handleCrossChain } from '../../../util/handleCrossChain';
 
 type Props = {
   needFooter?: boolean;
@@ -31,7 +32,9 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
   } = transactionDetail;
   const [step, setStep] = useState(0);
 
-  const handleConfirm = () => {};
+  const handleConfirm = async () => {
+    const { approveTx, fundTx, crossChainTx } = await handleCrossChain();
+  };
 
   const renderInstruction = () => {
     return (

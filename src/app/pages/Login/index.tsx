@@ -62,6 +62,7 @@ export default () => {
         duration: 0,
       });
       Global.account.initAccount(eoaKey);
+
       Global.account.isLoggedIn = true;
       messageApi.success({
         key: Global.messageTypeKeyLoading,
