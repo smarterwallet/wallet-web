@@ -10,6 +10,7 @@ import SendBtn from './components/SendBtn';
 import { SendErrorCheck } from './utils/ErrorCheck';
 import { Global } from '../../../server/Global';
 import { message } from 'antd';
+import { Config } from '../../../server/config/Config';
 
 type Props = {};
 
@@ -79,9 +80,13 @@ const Contacts: React.FC<Props> = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const contractAddress = localStorage.getItem('pk').toString();
+        const contractAddress = localStorage.getItem('contractWalletAddress').toString();
+        console.log(contractAddress)
         const USDContact = '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97';
+        console.log(Config.TOKENS['USDC'].address)
+        console.log(Config.TOKENS['USDC'].address === USDContact);
         const _balance = await Global.account.getBalanceOfERC20(USDContact, contractAddress, 6);
+        console.log(_balance)
         handleTransactionDetail('address',contractAddress);
         handleInfoDetail('balance', _balance);
       } catch (e) {
@@ -90,10 +95,10 @@ const Contacts: React.FC<Props> = () => {
     };
     const fetchMumbaiInfo = async () => {
       try {
-        const address_token_paymaster = '0x4b63443e5eeece233aadec1359254c5c601fb7f4';
-        const address_entrypoint = '0x081d5b6e93b686cea78b87f5f96ec274cc6ffe41';
-        handleInfoDetail('token_paymaster', address_token_paymaster);
-        handleInfoDetail('entrypointer', address_entrypoint);
+        // const address_token_paymaster = '0x4b63443e5eeece233aadec1359254c5c601fb7f4';
+        // const address_entrypoint = '0x081d5b6e93b686cea78b87f5f96ec274cc6ffe41';
+        // handleInfoDetail('token_paymaster', address_token_paymaster);
+        // handleInfoDetail('entrypointer', address_entrypoint);
       } catch (e) {
         console.error('Error fetching Mumbai data:', e);
       }
@@ -119,11 +124,11 @@ const Contacts: React.FC<Props> = () => {
       const gas = await Global.account.getGasPrice();
       console.log(gas)
       const result = await Global.account.sendTxTransferERC20Token(
-        address,
+        Config.TOKENS['USDC'].address,
         amount.toString(),
         receiver,
-        token_paymaster,
-        entrypointer,
+        Config.ADDRESS_TOKEN_PAYMASTER,
+        Config.ADDRESS_ENTRYPOINT,
         gas,
       );
       console.log(result);
