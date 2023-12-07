@@ -604,7 +604,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     tokenPaymasterAddress: string,
     gasPrice: BigNumber,
     ethValue: string,
-    callContarctAbi: ContractInterface,
+    callContractAbi: ContractInterface,
     callContractAddress: string,
     callFunc: string,
     callParams?: ReadonlyArray<any>,
@@ -617,7 +617,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       ethers.constants.MaxUint256,
     ]);
     // 组装调用的合约数据
-    const callContract = new ethers.Contract(ethers.constants.AddressZero, callContarctAbi, this.ethersProvider);
+    const callContract = new ethers.Contract(ethers.constants.AddressZero, callContractAbi, this.ethersProvider);
     const callTxData = callContract.interface.encodeFunctionData(callFunc, callParams);
     // 组装钱包合约调用数据
     const smarterAccountContract = new ethers.Contract(
