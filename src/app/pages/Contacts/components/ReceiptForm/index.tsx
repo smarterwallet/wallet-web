@@ -15,8 +15,6 @@ export type contactType = {
   target: string;
 };
 
-type TargetTypes = contactType['target'];
-
 const ReceiptForm: React.FC<Props> = ({
   source,
   target,
@@ -49,19 +47,7 @@ const ReceiptForm: React.FC<Props> = ({
     ],
   ];
 
-  const errorMessageBox = (errorMessage: string) => {
-    message.open({
-      type:'error',
-      content:errorMessage
-    })
-  }
-
-  const successMessageBox = (successMessage: string) => {
-    message.open({
-      type:'success',
-      content:successMessage
-    })
-  }
+  
 
   useEffect(() => {
     try {
@@ -102,6 +88,20 @@ const ReceiptForm: React.FC<Props> = ({
     }
   }, [name, isAddingNewContact]);
 
+  const errorMessageBox = (errorMessage: string) => {
+    message.open({
+      type:'error',
+      content:errorMessage
+    })
+  }
+
+  const successMessageBox = (successMessage: string) => {
+    message.open({
+      type:'success',
+      content:successMessage
+    })
+  }
+
   const hanldCancelClick = () => {
     try {
       // setNewContant => false
@@ -127,11 +127,13 @@ const ReceiptForm: React.FC<Props> = ({
         throw new Error(result);
       }
       // save new contact in localStorage
-
       const storedContacts: string | null = localStorage.getItem('contacts');
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
       successMessageBox("The new Contact is saved.")
+      // reload
+      const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
+      setStoredContacts(storedCon)
       // reset state
       setAddNewContact(false);
       setName('');
@@ -158,6 +160,7 @@ const ReceiptForm: React.FC<Props> = ({
             className="text-4xl"
             style={{ '--font-size': '2rem' }}
             value={name}
+            clearable
             onChange={(v) => {
               setName(v);
             }}
@@ -199,7 +202,7 @@ const ReceiptForm: React.FC<Props> = ({
               </h1>
             </div>
             <div className="bg-white rounded-3xl px-5 shadow-xl">
-              <Input className="text-4xl" value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
+              <Input className="text-4xl" clearable value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
             </div>
           </div>
           <div className=" grow flex flex-col  justify-center">

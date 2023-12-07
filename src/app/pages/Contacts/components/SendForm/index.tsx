@@ -51,6 +51,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
             value={amount as string}
             type='number'
             onChange={(v) => onChange('amount', v)}
+            clearable
           ></Input>
         </div>
         <div className="flex items-center justify-start text-2xl font" style={{ color: 'rgba(5, 51, 70, 0.8)' }}>

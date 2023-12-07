@@ -31,6 +31,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
             style={{ '--font-size': '4rem' }}
             value={receiver}
             onChange={(v) => onChange('receiver', v)}
+            clearable
           ></Input>
         </div>
       </div>
