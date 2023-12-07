@@ -1,6 +1,6 @@
 import { Global } from '../Global';
 import { HttpUtils } from '../utils/HttpUtils';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ContractInterface, ethers } from 'ethers';
 import { divideAndMultiplyByTenPowerN, ETH } from '../../app/util/util';
 import { UserOperation } from '../../app/modals/UserOperation';
 import { Asset, Config } from '../config/Config';
@@ -579,7 +579,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
       tokenPaymasterAddress,
       gasPrice,
       '0',
-      smarterAccountV1Abi,
+      erc20Abi,
       contractAddress,
       'transfer',
       [toAddress, ETH(amount)],
@@ -604,24 +604,33 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     tokenPaymasterAddress: string,
     gasPrice: BigNumber,
     ethValue: string,
-    callContarctAbi: any,
+    callContarctAbi: ContractInterface,
     callContractAddress: string,
     callFunc: string,
-    callParams: any,
+    callParams?: ReadonlyArray<any>,
   ): Promise<UserOperation> {
-    const erc20Contract = new ethers.Contract(callContractAddress, erc20Abi, this.ethersProvider);
+    // ERC20 token 代付合约，需要先授权
+    const erc20Contract = new ethers.Contract(ethers.constants.AddressZero, erc20Abi, this.ethersProvider);
     const approveZeroCallData = erc20Contract.interface.encodeFunctionData('approve', [tokenPaymasterAddress, 0]);
     const approveMaxCallData = erc20Contract.interface.encodeFunctionData('approve', [
       tokenPaymasterAddress,
       ethers.constants.MaxUint256,
     ]);
-    const erc20TransferCallData = erc20Contract.interface.encodeFunctionData(callFunc, callParams);
-    const accountContract = new ethers.Contract('', callContarctAbi, this.ethersProvider);
-    const callData = accountContract.interface.encodeFunctionData('executeBatch(address[],uint256[],bytes[])', [
+    // 组装调用的合约数据
+    const callContract = new ethers.Contract(ethers.constants.AddressZero, callContarctAbi, this.ethersProvider);
+    const callTxData = callContract.interface.encodeFunctionData(callFunc, callParams);
+    // 组装钱包合约调用数据
+    const smarterAccountContract = new ethers.Contract(
+      ethers.constants.AddressZero,
+      smarterAccountV1Abi,
+      this.ethersProvider,
+    );
+    const callData = smarterAccountContract.interface.encodeFunctionData('executeBatch(address[],uint256[],bytes[])', [
       [Config.TOKENS['USDC'].address, Config.TOKENS['USDC'].address, callContractAddress],
       [0, 0, ETH(ethValue)],
-      [approveZeroCallData, approveMaxCallData, erc20TransferCallData],
+      [approveZeroCallData, approveMaxCallData, callTxData],
     ]);
+    // 构建UserOperation
     return await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
   }
 }
