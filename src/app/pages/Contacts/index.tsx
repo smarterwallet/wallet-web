@@ -32,20 +32,18 @@ const initialTransactionDetail = {
 
 type InitalData = {
   balance?: string;
-  token_paymaster?: string;
-  entrypointer?: string;
 };
 
 const initialAmountAndAddressData = {
   balance: '',
-  token_paymaster: '',
-  entrypointer: '',
 };
 
 const tabItems = [
   { key: 'add', title: 'Address' },
   { key: 'rec', title: 'Receipt' },
 ];
+
+const USDContact = '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97';
 
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
@@ -76,15 +74,11 @@ const Contacts: React.FC<Props> = () => {
     setInitialData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
-  // 获取Balance mumbai 以及 fuji(未支持)
+  // 获取Balance
   useEffect(() => {
     const fetchBalance = async () => {
       try {
         const contractAddress = localStorage.getItem('contractWalletAddress').toString();
-        console.log(contractAddress)
-        const USDContact = '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97';
-        console.log(Config.TOKENS['USDC'].address)
-        console.log(Config.TOKENS['USDC'].address === USDContact);
         const _balance = await Global.account.getBalanceOfERC20(USDContact, contractAddress, 6);
         console.log(_balance)
         handleTransactionDetail('address',contractAddress);
@@ -93,38 +87,32 @@ const Contacts: React.FC<Props> = () => {
         console.error('fetchBalance error is: ', e);
       }
     };
-    const fetchMumbaiInfo = async () => {
-      try {
-        // const address_token_paymaster = '0x4b63443e5eeece233aadec1359254c5c601fb7f4';
-        // const address_entrypoint = '0x081d5b6e93b686cea78b87f5f96ec274cc6ffe41';
-        // handleInfoDetail('token_paymaster', address_token_paymaster);
-        // handleInfoDetail('entrypointer', address_entrypoint);
-      } catch (e) {
-        console.error('Error fetching Mumbai data:', e);
-      }
-    };
     fetchBalance();
-    fetchMumbaiInfo();
   }, []);
 
     const handleTransfer = async () => {
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, receiver } = transactionDetail;
-      const { balance ,token_paymaster, entrypointer } = initialData;
+      const { balance } = initialData;
       console.log(address, amount, receiver);
-      console.log(balance, token_paymaster, entrypointer);
+      console.log(balance);
       // error check
       const errorMessage = SendErrorCheck(transactionDetail,balance);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
       }
-      
       const gas = await Global.account.getGasPrice();
-      console.log(gas)
+      // console.log(gas)
+      // console.log(USDContact,
+      //   amount.toString(),
+      //   receiver,
+      //   Config.ADDRESS_TOKEN_PAYMASTER,
+      //   Config.ADDRESS_ENTRYPOINT,
+      //   gas,)
       const result = await Global.account.sendTxTransferERC20Token(
-        Config.TOKENS['USDC'].address,
+        USDContact,
         amount.toString(),
         receiver,
         Config.ADDRESS_TOKEN_PAYMASTER,
@@ -132,7 +120,11 @@ const Contacts: React.FC<Props> = () => {
         gas,
       );
       console.log(result);
+      if(result.status === 200) {
+        successMessageBox('Send success');
+      }
     } catch (e) {
+      errorMessageBox(e as string)
       console.log(e);
     }
   };
