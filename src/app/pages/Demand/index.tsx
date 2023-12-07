@@ -50,6 +50,9 @@ const Demand = () => {
                           if (demand.name === 'Transfer to Others') {
                             return navigate('/contacts');
                           }
+                          if (demand.name === 'Authorize Others') {
+                            return navigate('/cross');
+                          }
                           setActiveExtra(activeExtra === demand.name ? '' : demand.name);
                         }}
                       >

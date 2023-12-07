@@ -246,6 +246,8 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   }
 
   async getGasPrice(): Promise<BigNumber> {
+    console.log(this);
+
     let gasPrice = await this.ethersWallet.getGasPrice();
     return gasPrice.mul(BigNumber.from(this._feeRate)).div(BigNumber.from(100));
   }
