@@ -4,20 +4,14 @@ import { truncateString } from '../../../util/util';
 import { transferIcon, chainlinkIcon, downArrow } from '../../../../assets';
 import { CheckCircleFilled } from '@ant-design/icons';
 import BackBtn from '../../../component/BackBtn';
+import { useCrossChain } from '../../../../hooks/useCrossChain';
+import { TransactionDetail } from '../../../types';
 // import { handleCrossChain } from '../../../util/handleCrossChain';
 
 type Props = {
   needFooter?: boolean;
   title: string;
-  transactionDetail: {
-    receiver?: string; // 接受人地址
-    amount?: number | string; // 数量
-    source?: string; // 发起交易的链
-    target?: string; // 接收交易的链
-    token?: string; // 代币种类
-    address?: string; // 发起交易的地址
-    fees?: string | number; // 预估交易费
-  };
+  transactionDetail: TransactionDetail;
   extra?: React.ReactNode;
 };
 
@@ -31,6 +25,13 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
     address = '0x00',
   } = transactionDetail;
   const [step, setStep] = useState(0);
+
+  const { loadingState, handleApprove, handleFund, handleSendMessage } = useCrossChain({
+    receiver,
+    target,
+    amount,
+    source,
+  });
 
   const handleConfirm = async () => {
     // const { approveTx } = await handleCrossChain();
