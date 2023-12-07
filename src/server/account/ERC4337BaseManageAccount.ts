@@ -15,6 +15,7 @@ const simpleAccountFactoryAbi = require('../../data/SimpleAccountFactory.json');
 const simpleAccountAbi = require('../../data/SimpleAccount.json');
 const erc20Abi = require('../../data/IERC20.json');
 const autoTrandingAbi = require('../../data/AutoTrading.json');
+const smarterAccountV1Abi = require('../../data/SmarterAccountV1.json');
 
 /**
  * Account Manage Base Class
@@ -286,8 +287,8 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
     let tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
-    if (parseFloat(tokenPaymasterAmount) < 1) {
-      throw new Error(`You must have one TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
+    if (parseFloat(tokenPaymasterAmount) < 0.1) {
+      throw new Error(`You must have TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
     }
     const initCode = "0x";
 
@@ -402,6 +403,8 @@ export class ERC4337BaseManageAccount implements AccountInterface {
         entryPointAddress
       ]
     };
+    console.log(params);
+    // return await HttpUtils.post(Config.BUNDLER_API, null);
     return await HttpUtils.post(Config.BUNDLER_API, params);
   }
 
@@ -469,5 +472,43 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     return await this.sendUserOperation(op, entryPointAddress);
   }
 
+  /**
+   * USDC token paymaster
+   */
+  // function addStrategy(address tokenFrom, address tokenTo, uint256 tokenFromNum, uint256 tokenToNum, uint256 tokenToNumDIffThreshold)
+  async sendTxTransferERC20TokenWithUSDCPay(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }> {
+    let op = await this.sendTxCallContract(entryPointAddress, tokenPaymasterAddress, gasPrice, "0", smarterAccountV1Abi, contractAddress, "transfer", [toAddress, ETH(amount)]);
+    return await this.sendUserOperation(op, entryPointAddress);
+  }
+
+  /**
+   * 发送交易，调用合约
+   * @param entryPointAddress 
+   * @param tokenPaymasterAddress 
+   * @param gasPrice 
+   * @param ethValue 交易发送ETH数量，单纯调合约时为0
+   * @param callContarctAbi 调用的合约ABI文件
+   * @param callContractAddress 调用的合约地址
+   * @param callFunc 调用的方法
+   * @param callParams 调用参数
+   * @returns 
+   */
+  async sendTxCallContract(entryPointAddress: string, tokenPaymasterAddress: string, gasPrice: BigNumber,
+    ethValue: string, callContarctAbi: any, callContractAddress: string, callFunc: string, callParams: any): Promise<UserOperation> {
+    const erc20Contract = new ethers.Contract(callContractAddress, erc20Abi, this.ethersProvider);
+    const approveZeroCallData = erc20Contract.interface.encodeFunctionData("approve",
+      [tokenPaymasterAddress, 0]);
+    const approveMaxCallData = erc20Contract.interface.encodeFunctionData("approve",
+      [tokenPaymasterAddress, ethers.constants.MaxUint256]);
+    const erc20TransferCallData = erc20Contract.interface.encodeFunctionData(callFunc, callParams);
+    const accountContract = new ethers.Contract("", callContarctAbi, this.ethersProvider);
+    const callData = accountContract.interface.encodeFunctionData('executeBatch(address[],uint256[],bytes[])',
+      [[Config.TOKENS["USDC"].address,
+      Config.TOKENS["USDC"].address,
+        callContractAddress],
+      [0, 0, ETH(ethValue)],
+      [approveZeroCallData, approveMaxCallData, erc20TransferCallData]]);
+    return await this.buildTx(callData, tokenPaymasterAddress, entryPointAddress, gasPrice);
+  }
 }
 

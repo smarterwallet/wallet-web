@@ -42,9 +42,9 @@ const SimpleTransactionPage = (props: any) => {
       if (selectedAsset === "Matic") {
         await Global.account.sendTxTransferMainToken(txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice);
       } else if (selectedAsset === "SWT") {
-        await Global.account.sendTxTransferERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+        await Global.account.sendTxTransferERC20TokenWithUSDCPay(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else if (selectedAsset === "USDC") {
-        await Global.account.sendTxTransferERC20Token(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
+        await Global.account.sendTxTransferERC20TokenWithUSDCPay(Config.TOKENS[selectedAsset].address, txValue, txTo, Config.ADDRESS_TOKEN_PAYMASTER, Config.ADDRESS_ENTRYPOINT, sendGasPrice)
       } else {
         message.error("unknown asset: " + selectedAsset)
         // messageApi.destroy(onSendKey)

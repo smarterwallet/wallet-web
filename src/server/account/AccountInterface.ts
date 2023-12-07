@@ -79,6 +79,8 @@ export interface AccountInterface {
 
   sendTxTransferERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
+  sendTxTransferERC20TokenWithUSDCPay(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+
   sendTxApproveERC20Token(contractAddress: string, toAddress: string, amount: BigNumber, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
 
   /**

@@ -1,50 +1,34 @@
 {
   "address": {
-    "address_simple_account_factory": "0x57811fb5ea260740244fc81f421a5Ca156c78060",
-    "address_token_paymaster": "0x0F1499cBB313492a164e93f2c5a35a35246d030E",
-    "address_entrypoint": "0xD79b0817A1Aeb55042d7b10bD25f99F17239333a",
+    "address_simple_account_factory": "0xc3E0A55109c032328F67202c020f7Da2Fddd8B8a",
+    "address_token_paymaster": "0x188cEaFf80D32373C52837e162A52c82484D3A6b",
+    "address_entrypoint": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
     "address_auto_trading": "0x0987e55f3d11847ef4099dabfb38c6acbd8acfc5"
   },
   "api": {
-    "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
-    "backend_api": "https://smarter-api-mumbai-v2.web3idea.xyz/be/api/v1",
+    "blockchain_scan": "https://testnet.snowtrace.io/tx/",
+    "backend_api": "https://smarter-api-fuji.web3idea.xyz/be/api/v1",
     "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
-    "rpc_api": "https://mumbai-rpc.web3idea.xyz",
-    "bundler_api": "https://smarter-api-mumbai.web3idea.xyz/bundler/",
+    "rpc_api": "https://api.avax-test.network/ext/C/rpc",
+    "bundler_api": "https://smarter-api-fuji.web3idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "matic_tx_list_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
     "erc20_tx_from_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
     "erc20_tx_to_list_api": "https://api-testnet.polygonscan.com/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic2=0x000000000000000000000000%s"
   },
   "token": {
-    "MATIC": {
+    "AVAX": {
       "sort": 0,
-      "name": "MATIC",
+      "name": "AVAX",
       "address": null,
-      "decimals": 18,
+      "decimals": 9,
       "type": 1,
       "icon": "/icon/matic.png"
     },
-    "SWT": {
-      "sort": 1,
-      "name": "SWT",
-      "address": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
-      "decimals": 18,
-      "type": 2,
-      "icon": "/icon/usdc.png"
-    },
-    "USWT": {
-      "sort": 2,
-      "name": "USWT",
-      "address": "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d",
-      "decimals": 18,
-      "type": 2,
-      "icon": "/icon/usdc.png"
-    },
     "USDC": {
-      "sort": 3,
+      "sort": 2,
       "name": "USDC",
-      "address": "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
+      "address": "0x5425890298aed601595a70AB815c96711a31Bc65",
       "decimals": 6,
       "type": 2,
       "icon": "/icon/usdc.png"

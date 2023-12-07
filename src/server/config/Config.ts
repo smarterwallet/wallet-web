@@ -34,7 +34,7 @@ export class Config {
     // 启动默认网络
     public static DEFAULT_NETWORK = "Mumbai";
     // public static DEFAULT_NETWORK = "Polygon";
-    public static TOKEN_PAYMASTER_TOKEN_NAME = "SWT";
+    public static TOKEN_PAYMASTER_TOKEN_NAME = "USDC";
     public static LOCAL_STORAGE_EOA_KEY = 'smarter-wallet-eoa-key-v01'
     public static LOCAL_STORAGE_MPC_KEY1 = 'smarter-wallet-mpc-key1-v01'
     public static LOCAL_STORAGE_MPC_KEY3_HASH = 'smarter-wallet-mpc-key3-hash-v01'
