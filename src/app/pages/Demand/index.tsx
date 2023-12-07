@@ -16,8 +16,8 @@ const Demand = () => {
 
   const inputDemand = (e: any) => {
     if (e.keyCode == 13 || e.keyCode == 9) {
-      e.preventDefault();//禁止键盘默认事件
-      navigate(`/demandchat`)
+      e.preventDefault(); //禁止键盘默认事件
+      navigate(`/demandchat`);
     }
   };
 
@@ -49,6 +49,9 @@ const Demand = () => {
                         onClick={() => {
                           if (demand.name === 'Transfer to Others') {
                             return navigate('/contacts');
+                          }
+                          if (demand.name === 'Authorize Others') {
+                            return navigate('/cross');
                           }
                           setActiveExtra(activeExtra === demand.name ? '' : demand.name);
                         }}

@@ -44,7 +44,7 @@
     "USDC": {
       "sort": 3,
       "name": "USDC",
-      "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+      "address": "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
       "decimals": 6,
       "type": 2,
       "icon": "/icon/usdc.png"
