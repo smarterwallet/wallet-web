@@ -15,6 +15,10 @@ import CountDownButton from '../../component/CountDownButton';
 import { AccountInterface } from '../../../server/account/AccountInterface';
 import ProviderTab from '../SignupMultiParty/ProviderTab';
 
+const fujiConfig = require('../../config/fuji.json');
+const polygonMumbaiConfig = require('../../config/mumbai.json');
+
+
 export default () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -69,6 +73,7 @@ export default () => {
         content: 'Jump to home page',
         duration: 2,
       });
+      // 切换存下地址
       navigate('/home');
     } else {
       message.error('Password incorrect');

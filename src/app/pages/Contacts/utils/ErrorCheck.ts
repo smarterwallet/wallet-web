@@ -1,6 +1,6 @@
-import {TransactionDetail} from '../index';
+import {BalanceData, TransactionDetail} from '../index';
 
-export const SendErrorCheck = (transactionDetail : TransactionDetail, balance : string) => {
+export const SendErrorCheck = (transactionDetail : TransactionDetail, { balance } : BalanceData) => {
     if (transactionDetail.address === '' || transactionDetail.address === null || transactionDetail.address === undefined) {
         return "Sender can't not be empty"
       }
@@ -13,7 +13,7 @@ export const SendErrorCheck = (transactionDetail : TransactionDetail, balance : 
       if (parseFloat(transactionDetail.amount as string) <  0) {
         return "The amount can't be neviage"
       }
-      if (parseFloat(transactionDetail.amount as string) >  parseFloat(balance)) {
+      if (parseFloat(transactionDetail.amount as string) >  (balance['fuji'] + balance['mumbai'])) {
         return "Your Wallet Balance is not enough"
       }
       if (transactionDetail.receiver === '' || transactionDetail.receiver === null || transactionDetail.receiver === undefined) {

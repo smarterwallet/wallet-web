@@ -41,6 +41,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
+    console.log(Global.account.contractWalletAddress)
     let newAsset = { ...this.state.asset };
     for (let key in Config.TOKENS) {
       newAsset[key] = {
@@ -49,11 +50,10 @@ class HomePage extends React.Component<{}, HomePageState> {
         sort: Config.TOKENS[key].sort,
       };
     }
-
     this.setState({ asset: newAsset });
     this.flushAsset();
   }
-
+  
   async flushAsset() {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       let promises = [];
@@ -65,7 +65,7 @@ class HomePage extends React.Component<{}, HomePageState> {
                 key: key,
                 asset: Config.TOKENS[key],
                 amount: balance,
-                sort: Config.TOKENS[key].sort,
+                sort: Config.TOKENS[key]?.sort,
               };
             }),
           );
@@ -79,6 +79,8 @@ class HomePage extends React.Component<{}, HomePageState> {
       }
 
       this.setState({ asset: newAsset });
+    } else {
+      console.log("first login can't read global.account.contractWalletAddress", )
     }
   }
 
@@ -124,17 +126,17 @@ class HomePage extends React.Component<{}, HomePageState> {
     switch (chainName.toLowerCase()) {
       case 'polygon':
         await Config.init(JSON.stringify(polygonConfig));
-        await Global.init();
-        await this.flushAsset();
+        await Global.init()
+        await this.flushAsset(); 
         break;
       case 'mumbai':
         await Config.init(JSON.stringify(polygonMumbaiConfig));
-        await Global.init();
+        await Global.init()
         await this.flushAsset();
         break;
       case 'avax fuji':
         await Config.init(JSON.stringify(fujiConfig));
-        await Global.init();
+        await Global.init()
         await this.flushAsset();
     }
   }
