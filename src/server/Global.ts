@@ -1,6 +1,6 @@
 import { EOAManageAccount } from './account/EOAManageAccount';
-import { AccountInterface } from "./account/AccountInterface";
-import { MPCManageAccount } from "./account/MPCManageAccount";
+import { AccountInterface } from './account/AccountInterface';
+import { MPCManageAccount } from './account/MPCManageAccount';
 import { Config } from './config/Config';
 
 export class Global {
@@ -21,7 +21,7 @@ export class Global {
 
   public static async changeAccountType(accountType: number) {
     // if change account type, need set pre object to null
-    if (accountType !== this._accountType && this.account != null) {
+    if (accountType !== this._accountType && this.account) {
       this.account = null;
     }
     this._accountType = accountType;
@@ -30,26 +30,29 @@ export class Global {
 
   public static async init() {
     let initData = null;
-    if (this.account != null) {
+
+    if (this.account) {
       initData = this.account.initData;
     }
     this.initialized = true;
     switch (this._accountType) {
       case 1:
       default:
-        console.log("init EOA account type");
-        this.account = new EOAManageAccount()
+        console.log('init EOA account type');
+        this.account = new EOAManageAccount();
         break;
       case 2:
-        console.log("init MPC account type");
-        this.account = new MPCManageAccount()
+        console.log('init MPC account type');
+        this.account = new MPCManageAccount();
         break;
     }
-    await this.account.initAccount(initData);
+    this.account.initAccount(initData);
   }
 
   public static isMPCAccount() {
-    return localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) != null && localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length != 0;
+    return (
+      localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1) !== null &&
+      localStorage.getItem(Config.LOCAL_STORAGE_MPC_KEY1).length !== 0
+    );
   }
-
 }

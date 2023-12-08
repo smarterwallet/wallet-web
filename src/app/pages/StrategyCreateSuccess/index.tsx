@@ -32,10 +32,14 @@ const StrategyCreateSuccess = () => {
         AA bundlers will run your trading bot to execute your trading strategy, and submit corresponding transactions to
         trade for you under your authorization
       </div>
-        <Space style={{ width: '100%', justifyContent: 'center' ,marginTop:'20px'}} size={80}>
-          <Button shape="round" onClick={Done}>Done</Button>
-          <Button shape="round" onClick={View}>View <RightOutlined rev="" /></Button>
-        </Space>
+      <Space style={{ width: '100%', justifyContent: 'center', marginTop: '20px' }} size={80}>
+        <Button shape="round" onClick={Done}>
+          Done
+        </Button>
+        <Button shape="round" onClick={View}>
+          View <RightOutlined rev={undefined} />
+        </Button>
+      </Space>
     </div>
   );
 };

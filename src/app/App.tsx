@@ -40,9 +40,9 @@ import SignUpPlayground from './component/SignUpPlayground';
 import SignupMultiParty from './pages/SignupMultiParty';
 import StrategyCreateSuccess from './pages/StrategyCreateSuccess';
 import MyStrategys from './pages/MyStrategys';
-import DemandChat from './pages/DemandChat';
 import Cross from './pages/Cross';
 import Contacts from './pages/Contacts';
+import DemandChat from './pages/DemandChat';
 
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
@@ -82,9 +82,9 @@ const AppComponent = () => {
           <Route path="/signin" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/demand" element={<Demand />} />
-          <Route path="/demandchat" element={<DemandChat />} />
           <Route path="/cross" element={<Cross />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/demandchat" element={<DemandChat />} />
           <Route path="/asset/:id" element={<AssetPage />} />
           <Route path="/signup" element={<SignUpPlayground />} />
           <Route path="/signup/multiSignup" element={<SignupMultiParty />} />
