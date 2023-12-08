@@ -83,11 +83,15 @@ export const useCrossChain = (transactionDetail: TransactionDetail) => {
       Config.ADDRESS_ENTRYPOINT,
       Config.ADDRESS_TOKEN_PAYMASTER,
       gasPrice,
-      '0',
-      sourceChainSenderAbi,
-      sourceContract,
-      'fund',
-      [amount],
+      [
+        {
+          ethValue: '0',
+          callContractAbi: sourceChainSenderAbi,
+          callContractAddress: sourceContract,
+          callFunc: 'fund',
+          callParams: [amount],
+        },
+      ],
     );
     const fundHash = await Global.account.sendUserOperation(fundTx, Config.ADDRESS_ENTRYPOINT);
     if (fundHash.status !== 200) {
@@ -104,11 +108,15 @@ export const useCrossChain = (transactionDetail: TransactionDetail) => {
       Config.ADDRESS_ENTRYPOINT,
       Config.ADDRESS_TOKEN_PAYMASTER,
       gasPrice,
-      '0',
-      sourceChainSenderAbi,
-      sourceContract,
-      'sendMessage',
-      [destSelector, messageReceiver, FEE_TOKEN, receiver, amount],
+      [
+        {
+          ethValue: '0',
+          callContractAbi: sourceChainSenderAbi,
+          callContractAddress: sourceContract,
+          callFunc: 'sendMessage',
+          callParams: [destSelector, messageReceiver, FEE_TOKEN, receiver, amount],
+        },
+      ],
     );
     const sendHash = await Global.account.sendUserOperation(sendTx, Config.ADDRESS_ENTRYPOINT);
     if (sendHash.status !== 200) {
