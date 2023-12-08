@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable eqeqeq */
 import HeaderBar from '../../elements/HeaderBar';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Collapse, Form, Input, Space, message, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Global } from '../../../server/Global';
@@ -41,9 +41,6 @@ export default () => {
   };
 
   const eoaLogin = async (values: any) => {
-    console.log('values', values);
-
-    console.log('login');
     if (!Global.account.existLocalStorageKey()) {
       message.error('You need sign up first');
       return;
@@ -66,7 +63,6 @@ export default () => {
         duration: 0,
       });
       Global.account.initAccount(eoaKey);
-
       Global.account.isLoggedIn = true;
       messageApi.success({
         key: Global.messageTypeKeyLoading,

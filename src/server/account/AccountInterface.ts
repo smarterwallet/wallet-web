@@ -3,6 +3,14 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { ContractInterface, ethers } from 'ethers';
 import { UserOperation } from '../../app/modals/UserOperation';
 
+export interface ContractCallParams {
+  ethValue: string;
+  callContractAbi: ContractInterface;
+  callContractAddress: string;
+  callFunc: string;
+  callParams?: ReadonlyArray<any>;
+}
+
 /**
  * Account Manage Interface
  */
@@ -165,10 +173,6 @@ export interface AccountInterface {
     entryPointAddress: string,
     tokenPaymasterAddress: string,
     gasPrice: BigNumber,
-    ethValue: string,
-    callContractAbi: ContractInterface,
-    callContractAddress: string,
-    callFunc: string,
-    callParams?: ReadonlyArray<any>,
+    contractCalls: ContractCallParams[],
   ): Promise<UserOperation>;
 }

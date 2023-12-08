@@ -126,17 +126,15 @@ class HomePage extends React.Component<{}, HomePageState> {
     switch (chainName.toLowerCase()) {
       case 'polygon':
         await Config.init(JSON.stringify(polygonConfig));
-        await Global.init()
-        await this.flushAsset(); 
+        await this.flushAsset();
         break;
       case 'mumbai':
         await Config.init(JSON.stringify(polygonMumbaiConfig));
-        await Global.init()
         await this.flushAsset();
+
         break;
       case 'avax fuji':
         await Config.init(JSON.stringify(fujiConfig));
-        await Global.init()
         await this.flushAsset();
     }
   }
@@ -190,11 +188,9 @@ class HomePage extends React.Component<{}, HomePageState> {
         <div>
           {Object.entries(this.state.asset)
             .sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
-            .map(([key, assetInfo], index) => {
-              console.log(index, assetInfo);
-
-              return this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0);
-            })}
+            .map(([key, assetInfo], index) =>
+              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0),
+            )}
         </div>
 
         <br />
