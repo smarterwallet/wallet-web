@@ -30,7 +30,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
 
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { loadingState, handleApprove, handleFund, handleSendMessage } = useCrossChain({
+  const { loadingState, handleTx } = useCrossChain({
     receiver,
     target,
     amount,
@@ -39,13 +39,9 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
 
   const handleConfirm = async () => {
     setIsProcessing(true);
-    const approveHash = await handleApprove(); // 代币授权
-    const fundHash = await handleFund();
-    const sendHash = await handleSendMessage();
+    const crossHash = await handleTx(); // 代币授权
     // 打印交易 hash
-    console.log('approveHash', approveHash);
-    console.log('fundHash', fundHash);
-    console.log('sendHash', sendHash);
+    console.log('crossHash', crossHash);
   };
 
   useEffect(() => {
@@ -205,21 +201,21 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
             icon={<></>}
             title={
               <>
-                {loadingState.percent !== '100%' && (
+                {loadingState.message !== 'Success' && (
                   <div className="mb-12" style={{ color: '#51b27d' }}>
                     <span className="text-4xl font-semibold">{loadingState?.message || 'Waiting'}</span>
                     <span className="text-3xl">
-                      <DotLoading color="primary" />
+                      <DotLoading style={{ color: '#51b27d' }} />
                     </span>
                     <span className="text-4xl">
-                      <DotLoading color="primary" />
+                      <DotLoading style={{ color: '#51b27d' }} />
                     </span>
                     <span className="text-5xl">
-                      <DotLoading color="primary" />
+                      <DotLoading style={{ color: '#51b27d' }} />
                     </span>
                   </div>
                 )}
-                {loadingState.percent === '100%' && (
+                {loadingState.message === 'Success' && (
                   <>
                     <CheckCircleFilled rev={undefined} className="text-9xl" style={{ color: '#739f4d' }} />
                     <div className="text-5xl font-semibold mb-12 mt-4" style={{ color: 'rgba(10, 61, 83, 1)' }}>
@@ -300,7 +296,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
               </div>
             }
           />
-          {loadingState.percent === '100%' && (
+          {loadingState.message === 'Success' && (
             <div
               className="mx-auto my-0 h-[5rem] w-[42rem] rounded-lg text-center text-4xl items-center flex justify-center font-semibold"
               style={{ backgroundColor: 'rgba(255, 253, 253, 1)', color: 'rgba(10, 61, 83, 1)' }}
