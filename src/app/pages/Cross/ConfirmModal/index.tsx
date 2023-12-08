@@ -25,6 +25,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
     receiver = '0xF42f4b5cb102b3f5A180E08E6BA726c0179D172E',
     source = 'mumbai',
     target = 'fuji',
+    fees = '$ 0.24',
   } = transactionDetail;
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -144,7 +145,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
                 <div>
                   <div>
                     <span className="font-medium ">Transaction fees</span>
-                    <span className=" ml-6 ">{/* {transactionFees} */}0</span>
+                    <span className=" ml-6 ">{fees}</span>
                   </div>
                 </div>
                 <div className="text-2xl  mb-2">
@@ -275,7 +276,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
                   <div>
                     <div>
                       <span className="font-medium ">Transaction fees</span>
-                      <span className=" ml-6 ">{/* {transactionFees} */}0</span>
+                      <span className=" ml-6 ">{fees}</span>
                     </div>
                   </div>
                   <div className="text-2xl  mb-2">
