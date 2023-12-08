@@ -21,7 +21,7 @@ export class Global {
 
   public static async changeAccountType(accountType: number) {
     // if change account type, need set pre object to null
-    if (accountType !== this._accountType && this.account != null) {
+    if (accountType !== this._accountType && this.account) {
       this.account = null;
     }
     this._accountType = accountType;
@@ -30,7 +30,8 @@ export class Global {
 
   public static async init() {
     let initData = null;
-    if (this.account !== null) {
+
+    if (this.account) {
       initData = this.account.initData;
     }
     this.initialized = true;

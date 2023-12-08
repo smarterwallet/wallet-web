@@ -593,7 +593,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
    * @param tokenPaymasterAddress
    * @param gasPrice
    * @param ethValue 交易发送ETH数量，单纯调合约时为0
-   * @param callContarctAbi 调用的合约ABI文件
+   * @param callContractAbi 调用的合约ABI文件
    * @param callContractAddress 调用的合约地址
    * @param callFunc 调用的方法
    * @param callParams 调用参数
