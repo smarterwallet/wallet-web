@@ -51,20 +51,20 @@ const Contacts: React.FC<Props> = () => {
   const [activeKey, setActiveKey] = useState(tabItems[0].key);
   const [initialData, setInitialData] = useState<InitalData>(initialAmountAndAddressData);
   const [messageApi, contextHolder] = message.useMessage();
-  
+
   const successMessageBox = (successMessage: string) => {
     messageApi.open({
-      type:'success',
-      content: successMessage
-    })
-  }
+      type: 'success',
+      content: successMessage,
+    });
+  };
 
   const errorMessageBox = (errorMessage: string) => {
     messageApi.open({
-      type:'error',
-      content:errorMessage
-    })
-  }
+      type: 'error',
+      content: errorMessage,
+    });
+  };
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
@@ -80,8 +80,7 @@ const Contacts: React.FC<Props> = () => {
       try {
         const contractAddress = localStorage.getItem('contractWalletAddress').toString();
         const _balance = await Global.account.getBalanceOfERC20(USDContact, contractAddress, 6);
-        console.log(_balance)
-        handleTransactionDetail('address',contractAddress);
+        handleTransactionDetail('address', contractAddress);
         handleInfoDetail('balance', _balance);
       } catch (e) {
         console.error('fetchBalance error is: ', e);
@@ -90,15 +89,13 @@ const Contacts: React.FC<Props> = () => {
     fetchBalance();
   }, []);
 
-    const handleTransfer = async () => {
+  const handleTransfer = async () => {
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, receiver } = transactionDetail;
       const { balance } = initialData;
-      console.log(address, amount, receiver);
-      console.log(balance);
       // error check
-      const errorMessage = SendErrorCheck(transactionDetail,balance);
+      const errorMessage = SendErrorCheck(transactionDetail, balance);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
@@ -119,12 +116,11 @@ const Contacts: React.FC<Props> = () => {
         Config.ADDRESS_ENTRYPOINT,
         gas,
       );
-      console.log(result);
-      if(result.status === 200) {
+      if (result.status === 200) {
         successMessageBox('Send success');
       }
     } catch (e) {
-      errorMessageBox(e as string)
+      errorMessageBox(e as string);
       console.log(e);
     }
   };

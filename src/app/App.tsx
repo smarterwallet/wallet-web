@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Global } from '../server/Global';
 import HomePage from './pages/HomePage';
 import SitePage from './pages/SitePage';
-import LoadingPage from './pages/LoadingPage';
 import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
 import WelcomePage from './pages/WelcomePage/welcomePage';
@@ -17,7 +16,6 @@ import LoginPage from './pages/Login';
 import SimpleTransactionPage from './pages/SimpleTransaction';
 import { Config } from '../server/config/Config';
 import SignupAccountTypePage from './pages/signin/SignupAccountTypePage';
-import AutomaticTrading from './pages/AutomaticTrading';
 import GridStrategies from './pages/GridStrategies';
 import SimpleTradingStrategy from './pages/SimpleTradingStrategy';
 import SimpleTradingBot from './pages/SimpleTradingBot';
@@ -28,7 +26,6 @@ import MultiPartyBackupKeysPage from './pages/signin/multi/MultiPartyBackupKeysP
 import MultiPartyChooseStorePage from './pages/signin/multi/MultiPartyChooseStorePage';
 import MultiParty_SignUp_Local from './pages/signin/multi/MultiParty_SignUp_Local';
 import MultiParty_SignUp_OtherPeople from './pages/signin/multi/MultiParty_SignUp_OtherPeople';
-import SignUp from './pages/SignUp';
 import MultiPartyAccount from './pages/MultiPartyAccount';
 import SignupAtMultiParty from './pages/SignupAtMultiParty';
 import SignupSuccessfully from './pages/SignupSuccessfully';
@@ -47,7 +44,6 @@ import DemandChat from './pages/DemandChat';
 const polygonConfig = require('./config/' + Config.DEFAULT_NETWORK.toLowerCase() + '.json');
 
 const AppComponent = () => {
-  const [postLoginPage, setPostLoginPage] = useState('account');
   const [initialized, setInitialized] = useState(false);
   const [maintenance, setMaintenance] = useState(false);
 
