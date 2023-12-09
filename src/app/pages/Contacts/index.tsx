@@ -12,7 +12,7 @@ import { Global } from '../../../server/Global';
 import { message } from 'antd';
 import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
-import { TransactionDetail as CorssTransactionDetail } from '../../types';
+import { TransactionDetail as CrossTransactionDetail } from '../../types';
 import { ethers } from 'ethers';
 // read network data from preconfig json && write them in different project
 const fujiConfig = require('../../config/fuji.json');
@@ -75,7 +75,7 @@ const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
 
 const OtherChain = (current: 'mumbai' | 'fuji') => {
   return current === 'mumbai' ? 'fuji' : 'mumbai';
-}
+};
 
 type Props = {};
 
@@ -95,11 +95,11 @@ const initialTransactionDetail = {
   receiver: '', // 接收人地址
 };
 
-const initialCorssDatail : CorssTransactionDetail= {
+const initialCrossDatail: CrossTransactionDetail = {
   receiver: '',
   amount: '',
-  fees:''
-}
+  fees: '',
+};
 
 export type BalanceData = {
   balance?: { fuji: number; mumbai: number };
@@ -120,8 +120,8 @@ const Contacts: React.FC<Props> = () => {
   const [activeKey, setActiveKey] = useState(tabItems[0].key);
   const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
   const [messageApi, contextHolder] = message.useMessage();
-  const [isCorss, setisCorss] = useState(false);
-  const [CorssDetial, setCorssDetail] = useState<CorssTransactionDetail>(initialCorssDatail);
+  const [isCross, setisCross] = useState(false);
+  const [CrossDetial, setCrossDetail] = useState<CrossTransactionDetail>(initialCrossDatail);
 
   const successMessageBox = (successMessage: string) => {
     messageApi.open({
@@ -145,9 +145,9 @@ const Contacts: React.FC<Props> = () => {
     setbalanceData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
-  const handleCorssDetail = (key: keyof CorssTransactionDetail, value: any) => {
-    setCorssDetail((prev) => ({...prev, [key]: value}));
-  }
+  const handleCrossDetail = (newState: CrossTransactionDetail) => {
+    setCrossDetail(newState);
+  };
 
   // 获取Balance
   useEffect(() => {
@@ -158,11 +158,7 @@ const Contacts: React.FC<Props> = () => {
           Mumbai_Config.USDContact,
           Mumbai_Config.address,
         );
-        const fuji_balance = await erc20BalanceQuery(
-          Fuij_Config.Rpc_api,
-          Fuij_Config.USDContact,
-          Fuij_Config.address,
-        );
+        const fuji_balance = await erc20BalanceQuery(Fuij_Config.Rpc_api, Fuij_Config.USDContact, Fuij_Config.address);
         // console.log('mumbai balance', mumbai_balance);
         // console.log('fuji balance', fuji_balance);
         handleInfoDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
@@ -172,20 +168,29 @@ const Contacts: React.FC<Props> = () => {
     };
     fetchBalance();
   }, []);
-  // 获得当前链
+  // 获得当前链 和 发送人地址
   useEffect(() => {
     const setSourceBlockChain = () => {
       handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
-      console.log(transactionDetail);
+      console.log('Current blockchain is:', transactionDetail.source);
+    };
+    const setCurrentAddress = () => {
+      handleTransactionDetail('address', Global.account.contractWalletAddress);
+      console.log('Current address is:', transactionDetail.address);
     };
     setSourceBlockChain();
+    setCurrentAddress();
   }, []);
+  // test
+  // useEffect(() => {
+  //   console.log('CrossDetial has been updated',CrossDetial)
+  // },[CrossDetial])
 
   const handleTransfer = async () => {
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      // console.log(address, amount, receiver);
+      //  console.log(address, amount, receiver);
       const { balance } = balanceData;
       console.log(balance['fuji'], balance['mumbai']);
       // error check
@@ -198,55 +203,66 @@ const Contacts: React.FC<Props> = () => {
       let T_result;
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      const otherBlockChain = OtherChain(senderBlockChain) // 获得异链Tag
-      if (balance[senderBlockChain] > parseFloat(amount as string)) {  // 本链钱够
-        if(senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') { //目标和本链一样
+      const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
+      if (balance[senderBlockChain] > parseFloat(amount as string)) {
+        // 本链钱够
+        if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
+          //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          T_result = Global.account.sendTxTransferERC20Token(
+          T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
             amount.toString(),
             receiver,
             Mumbai_Config.ADDRESS_TOKEN_PAYMASTER,
             Mumbai_Config.ADDRESS_ENTRYPOINT,
-            gas
-          )
-        } 
-        else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') { //目标和本链一样
+            gas,
+          );
+        } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
+          //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          T_result = Global.account.sendTxTransferERC20Token(
+          T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
             amount.toString(),
             receiver,
             Fuij_Config.ADDRESS_TOKEN_PAYMASTER,
             Fuij_Config.ADDRESS_ENTRYPOINT,
-            gas
-          )
-        }
-      } 
-      if(balance[otherBlockChain] > parseFloat(amount as string)) { // 异链钱够
-        if(otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai' ) { 
-          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          // Transfer
-        } 
-        if(otherBlockChain == targetBlockChain && otherBlockChain == 'fuji' ) { 
-          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          // Transfer
-        } 
-        if (otherBlockChain != targetBlockChain) { // 跨链
-          // 设数据
-          handleCorssDetail('amount',amount);
-          handleCorssDetail('receiver',receiver);
-          handleCorssDetail('source',otherBlockChain);
-          handleCorssDetail('target',targetBlockChain);
-          handleCorssDetail('token',token);
-          const fees = + ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') * 5000 * 2000;
-           handleCorssDetail('fees',fees);
-          // 使用
-          setisCorss(true);
+            gas,
+          );
         }
       }
-      
-//      successMessageBox()
+      if (balance[otherBlockChain] > parseFloat(amount as string)) {
+        // 异链钱够
+        if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
+          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
+          // Transfer
+        }
+        if (otherBlockChain == targetBlockChain && otherBlockChain == 'fuji') {
+          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
+          // Transfer
+        }
+      } 
+      if (balance[senderBlockChain] > parseFloat(amount as string) && senderBlockChain != targetBlockChain) { // 跨链
+        // 设数据
+        console.log('Cross');
+        const fees =
+          +ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') *
+          5000 *
+          2000;
+        const CrossDetial = {
+          receiver,
+          amount,
+          source: senderBlockChain as 'mumbai' | 'fuji',
+          target: targetBlockChain as 'mumbai' | 'fuji',
+          token: token as 'USDC' | 'usdc',
+          fees,
+        };
+        handleCrossDetail(CrossDetial);
+        console.log('Cross Datial:', CrossDetial);
+        // 使用Cross组件
+        setisCross(true);
+      } 
+
+      //      successMessageBox()
     } catch (e) {
       errorMessageBox(e as string);
       console.log(e);
@@ -254,63 +270,80 @@ const Contacts: React.FC<Props> = () => {
   };
 
   return (
-    <div>
-      <div className="">
-        <BackBtn />
-      </div>
-      {contextHolder}
-      <main className="flex flex-col pt-0" style={{ height: '80vh' }}>
-        {/* Send Form*/}
-        <div className="flex-auto p-8 ">
-          <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
-            Send
-          </h1>
-          <SendForm {...transactionDetail} onChange={handleTransactionDetail} />
-        </div>
-        {/* To Form*/}
-        <div className="h-3/5" style={{ minHeight: '800px' }}>
-          <div className="flex-auto h-16 px-8 py-4" style={{}}>
-            <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
-              To
-            </h1>
+    <>
+      {isCross ? (
+        <Cross
+          receiver={CrossDetial.receiver}
+          amount={CrossDetial.amount}
+          source={CrossDetial.source}
+          target={CrossDetial.target}
+          token={CrossDetial.token}
+          fees={CrossDetial.fees}
+        />
+      ) : (
+        <div>
+          {contextHolder}
+          <div className="">
+            <BackBtn />
           </div>
-          <div className="flex-auto p-1">
-            <Tabs
-              activeKey={activeKey}
-              onChange={(key) => {
-                setActiveKey(key);
-              }}
-              className=""
-              style={{ margin: 'none' }}
-            >
-              <Tabs.Tab
-                title="Address"
-                key="add"
-                className="h-28 flex items-center text-2xl"
-                style={activeKey === 'add' ? { fontWeight: 'bold', backgroundColor: 'rgba(217, 217, 217, 0.7)' } : {}}
-              >
-                <AddressForm {...transactionDetail} onChange={handleTransactionDetail} />
-              </Tabs.Tab>
-              <Tabs.Tab
-                title="Receipt"
-                key="rec"
-                className="h-28 flex items-center"
-                style={activeKey === 'add' ? {} : { fontWeight: 'bold', backgroundColor: 'rgba(217, 217, 217, 0.7)' }}
-              >
-                <ReceiptForm
-                  {...transactionDetail}
-                  onChange={handleTransactionDetail}
-                  setTradingMode={setTradingMode}
-                />
-              </Tabs.Tab>
-            </Tabs>
-          </div>
+
+          <main className="flex flex-col pt-0" style={{ height: '80vh' }}>
+            {/* Send Form*/}
+            <div className="flex-auto p-8 ">
+              <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
+                Send
+              </h1>
+              <SendForm {...transactionDetail} onChange={handleTransactionDetail} />
+            </div>
+            {/* To Form*/}
+            <div className="h-3/5" style={{ minHeight: '800px' }}>
+              <div className="flex-auto h-16 px-8 py-4" style={{}}>
+                <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
+                  To
+                </h1>
+              </div>
+              <div className="flex-auto p-1">
+                <Tabs
+                  activeKey={activeKey}
+                  onChange={(key) => {
+                    setActiveKey(key);
+                  }}
+                  className=""
+                  style={{ margin: 'none' }}
+                >
+                  <Tabs.Tab
+                    title="Address"
+                    key="add"
+                    className="h-28 flex items-center text-2xl"
+                    style={
+                      activeKey === 'add' ? { fontWeight: 'bold', backgroundColor: 'rgba(217, 217, 217, 0.7)' } : {}
+                    }
+                  >
+                    <AddressForm {...transactionDetail} onChange={handleTransactionDetail} />
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    title="Receipt"
+                    key="rec"
+                    className="h-28 flex items-center"
+                    style={
+                      activeKey === 'add' ? {} : { fontWeight: 'bold', backgroundColor: 'rgba(217, 217, 217, 0.7)' }
+                    }
+                  >
+                    <ReceiptForm
+                      {...transactionDetail}
+                      onChange={handleTransactionDetail}
+                      setTradingMode={setTradingMode}
+                    />
+                  </Tabs.Tab>
+                </Tabs>
+              </div>
+            </div>
+            {/* Send Btn*/}
+            <div className="flex-auto h-1/5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
+          </main>
         </div>
-        {/* Send Btn*/}
-        <div className="flex-auto h-1/5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
-      </main>
-      {isCorss && <Cross />}
-    </div>
+      )}
+    </>
   );
 };
 

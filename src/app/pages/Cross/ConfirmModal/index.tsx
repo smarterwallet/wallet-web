@@ -141,7 +141,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
                 <div>
                   <div>
                     <span className="font-medium ">Transaction fees</span>
-                    <span className=" ml-6 ">{fees}</span>
+                    <span className=" ml-6 ">{`$: ${parseFloat(fees as string).toFixed(2)}`}</span>
                   </div>
                 </div>
                 <div className="text-2xl  mb-2">
@@ -272,7 +272,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
                   <div>
                     <div>
                       <span className="font-medium ">Transaction fees</span>
-                      <span className=" ml-6 ">{fees}</span>
+                      <span className=" ml-6 ">{`$: ${parseFloat(fees as string).toFixed(2)}`}</span>
                     </div>
                   </div>
                   <div className="text-2xl  mb-2">

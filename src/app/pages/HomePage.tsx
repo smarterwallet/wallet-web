@@ -206,7 +206,7 @@ class HomePage extends React.Component<{}, HomePageState> {
           {Object.entries(this.state.asset)
             .sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
             .map(([key, assetInfo], index) =>
-              this.renderAsset(key, assetInfo.asset?.icon, assetInfo.asset.name, assetInfo.amount, 0),
+              this.renderAsset(key, assetInfo.asset?.icon, assetInfo.asset?.name, assetInfo?.amount, 0),
             )}
         </div>
 
