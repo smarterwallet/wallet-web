@@ -137,6 +137,13 @@ const Contacts: React.FC<Props> = () => {
     });
   };
 
+  const infoMessageBox = (infoMessage: string) => {
+    messageApi.open({
+      type:'info',
+      content: infoMessage
+    })
+  }
+
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
@@ -209,6 +216,7 @@ const Contacts: React.FC<Props> = () => {
         if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
+        infoMessageBox('starting mumbai to mumbai transfer')
           T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
             amount.toString(),
@@ -220,6 +228,7 @@ const Contacts: React.FC<Props> = () => {
         } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
           //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
+          infoMessageBox('starting fuji to fuji transfer')
           T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
             amount.toString(),
@@ -258,6 +267,7 @@ const Contacts: React.FC<Props> = () => {
         };
         handleCrossDetail(CrossDetial);
         console.log('Cross Datial:', CrossDetial);
+        infoMessageBox('starting cross transfer')
         // 使用Cross组件
         setisCross(true);
       } 
