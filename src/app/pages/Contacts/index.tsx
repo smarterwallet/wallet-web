@@ -1,4 +1,4 @@
-import { Tabs, Form, Input, Button, Card, Result } from 'antd-mobile';
+import { Tabs } from 'antd-mobile';
 import React, { useEffect } from 'react';
 import BackBtn from '../../component/BackBtn';
 import { useState } from 'react';
@@ -13,9 +13,69 @@ import { message } from 'antd';
 import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
 import { TransactionDetail as CorssTransactionDetail } from '../../types';
-
+import { ethers } from 'ethers';
+// read network data from preconfig json && write them in different project
 const fujiConfig = require('../../config/fuji.json');
 const polygonMumbaiConfig = require('../../config/mumbai.json');
+
+const Fuij_Config = {
+  address: localStorage.getItem('avax fujiAddress'),
+  USDContact: fujiConfig.token.USDC.address,
+  ADDRESS_TOKEN_PAYMASTER: fujiConfig.address.address_token_paymaster,
+  ADDRESS_ENTRYPOINT: fujiConfig.address.address_entrypoint,
+  Rpc_api: fujiConfig.api.rpc_api,
+};
+
+const Mumbai_Config = {
+  address: localStorage.getItem('mumbaiAddress'),
+  USDContact: polygonMumbaiConfig.token.USDC.address,
+  ADDRESS_TOKEN_PAYMASTER: polygonMumbaiConfig.address.address_token_paymaster,
+  ADDRESS_ENTRYPOINT: polygonMumbaiConfig.address.address_entrypoint,
+  Rpc_api: polygonMumbaiConfig.api.rpc_api,
+};
+// ----------------------
+
+const TransferConfig = {
+  mumbai: Mumbai_Config,
+  fuji: Fuij_Config,
+};
+
+// for sendTxTransferERC20Token(..., Gas)
+const gasPriceQuery = async (rpc_api: string) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
+    const GasPrice = await provider.getGasPrice();
+    return GasPrice;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// for balance
+const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
+    const erc20Contract = new ethers.Contract(
+      tokenAddress,
+      ['function balanceOf(address) view returns (uint256)'],
+      provider,
+    );
+    const balance = await erc20Contract.balanceOf(walletAddress);
+    const formattedBalance = ethers.utils.formatUnits(balance, 6);
+    return formattedBalance;
+  } catch (e) {
+    console.error(e);
+  }
+};
+// for "avax fuji" to 'fuji'
+const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
+  if (tag == 'avax fuji') return 'fuji';
+  return tag;
+};
+
+const OtherChain = (current: 'mumbai' | 'fuji') => {
+  return current === 'mumbai' ? 'fuji' : 'mumbai';
+}
 
 type Props = {};
 
@@ -24,8 +84,8 @@ export type TransactionDetail = {
   amount?: string | number;
   token?: string;
   receiver?: string;
-  source?: 'mumbai' | 'fuji';
-  target?: 'mumbai' | 'fuji';
+  source?: 'mumbai' | 'avax fuji';
+  target?: 'mumbai' | 'avax fuji';
 };
 
 const initialTransactionDetail = {
@@ -35,32 +95,24 @@ const initialTransactionDetail = {
   receiver: '', // 接收人地址
 };
 
+const initialCorssDatail : CorssTransactionDetail= {
+  receiver: '',
+  amount: '',
+  fees:''
+}
+
 export type BalanceData = {
-  balance?: {'fuji': number , 'mumbai': number};
+  balance?: { fuji: number; mumbai: number };
 };
 
 const initialAmountAndAddressData = {
-  balance: {'fuji': 0, 'mumbai': 0},
+  balance: { fuji: 0, mumbai: 0 },
 };
 
 const tabItems = [
   { key: 'add', title: 'Address' },
   { key: 'rec', title: 'Receipt' },
 ];
-
-const Fuij_Config = {
-  Fuji_address : '0x54af53a5c0377F0e5C0d3990c560062182b1ce57',
-  Fuji_USDContact : '0x5425890298aed601595a70AB815c96711a31Bc65',
-  Fuji_ADDRESS_TOKEN_PAYMASTER : "0x188cEaFf80D32373C52837e162A52c82484D3A6b",
-  Fuji_ADDRESS_ENTRYPOINT : "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4"
-}
-
-const Mumbai_Config = {
-  Mumbai_address: '0x4aF4AA7C0a76b9e0AA3F876F27279d8aE12B5B67',
-  Mumbai_USDContact : '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97',
-  Mumbai_ADDRESS_TOKEN_PAYMASTER : "0x0F1499cBB313492a164e93f2c5a35a35246d030E",
-  Mumbai_ADDRESS_ENTRYPOINT : "0xD79b0817A1Aeb55042d7b10bD25f99F17239333a"
-}
 
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
@@ -69,20 +121,21 @@ const Contacts: React.FC<Props> = () => {
   const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
   const [messageApi, contextHolder] = message.useMessage();
   const [isCorss, setisCorss] = useState(false);
-  
+  const [CorssDetial, setCorssDetail] = useState<CorssTransactionDetail>(initialCorssDatail);
+
   const successMessageBox = (successMessage: string) => {
     messageApi.open({
-      type:'success',
-      content: successMessage
-    })
-  }
+      type: 'success',
+      content: successMessage,
+    });
+  };
 
   const errorMessageBox = (errorMessage: string) => {
     messageApi.open({
-      type:'error',
-      content:errorMessage
-    })
-  }
+      type: 'error',
+      content: errorMessage,
+    });
+  };
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
@@ -92,55 +145,110 @@ const Contacts: React.FC<Props> = () => {
     setbalanceData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
+  const handleCorssDetail = (key: keyof CorssTransactionDetail, value: any) => {
+    setCorssDetail((prev) => ({...prev, [key]: value}));
+  }
+
   // 获取Balance
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const mumbai_balance = await Global.account.getBalanceOfERC20(Mumbai_Config.Mumbai_USDContact, Mumbai_Config.Mumbai_address, 6);
-        const fuji_balance = await Global.account.getBalanceOfERC20(Fuij_Config.Fuji_USDContact,Fuij_Config.Fuji_address,6)
-        console.log('mumbai',mumbai_balance)
-        console.log('fuji',fuji_balance)
-        handleInfoDetail('balance', { 'fuji' : fuji_balance, 'mumbai': mumbai_balance });
+        const mumbai_balance = await erc20BalanceQuery(
+          Mumbai_Config.Rpc_api,
+          Mumbai_Config.USDContact,
+          Mumbai_Config.address,
+        );
+        const fuji_balance = await erc20BalanceQuery(
+          Fuij_Config.Rpc_api,
+          Fuij_Config.USDContact,
+          Fuij_Config.address,
+        );
+        // console.log('mumbai balance', mumbai_balance);
+        // console.log('fuji balance', fuji_balance);
+        handleInfoDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
       } catch (e) {
         console.error('fetchBalance error is: ', e);
       }
     };
     fetchBalance();
   }, []);
+  // 获得当前链
+  useEffect(() => {
+    const setSourceBlockChain = () => {
+      handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
+      console.log(transactionDetail);
+    };
+    setSourceBlockChain();
+  }, []);
 
-    const handleTransfer = async () => {
+  const handleTransfer = async () => {
     // Global.account.contractWalletAddress 为发送人地址
     try {
-      const { address, amount, source,receiver, target } = transactionDetail;
-      console.log(address, amount, receiver);
-      const { balance } = balanceData
-      console.log(balance['fuji'],balance['mumbai']);
+      const { address, amount, source, receiver, target, token } = transactionDetail;
+      // console.log(address, amount, receiver);
+      const { balance } = balanceData;
+      console.log(balance['fuji'], balance['mumbai']);
       // error check
-      const errorMessage = SendErrorCheck(transactionDetail,balanceData);
+      const errorMessage = SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
       }
-      const gas = await Global.account.getGasPrice();
       ////Transfer
       let T_result;
-      if(source == target) { // 同链
-        switch(source) {
-          case 'fuji' : {
-            // T_result = Global.account.sendTxTransferERC20Token()
-            break;
-          }
-          case 'mumbai': {
-            // T_result = Global.account.sendTxTransferERC20Token()
-            break;
-          }
+      const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
+      const targetBlockChain = TagConversion(target);
+      const otherBlockChain = OtherChain(senderBlockChain) // 获得异链Tag
+      if (balance[senderBlockChain] > parseFloat(amount as string)) {  // 本链钱够
+        if(senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') { //目标和本链一样
+          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
+          T_result = Global.account.sendTxTransferERC20Token(
+            Mumbai_Config.USDContact,
+            amount.toString(),
+            receiver,
+            Mumbai_Config.ADDRESS_TOKEN_PAYMASTER,
+            Mumbai_Config.ADDRESS_ENTRYPOINT,
+            gas
+          )
+        } 
+        else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') { //目标和本链一样
+          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
+          T_result = Global.account.sendTxTransferERC20Token(
+            Fuij_Config.USDContact,
+            amount.toString(),
+            receiver,
+            Fuij_Config.ADDRESS_TOKEN_PAYMASTER,
+            Fuij_Config.ADDRESS_ENTRYPOINT,
+            gas
+          )
         }
       } 
+      if(balance[otherBlockChain] > parseFloat(amount as string)) { // 异链钱够
+        if(otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai' ) { 
+          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
+          // Transfer
+        } 
+        if(otherBlockChain == targetBlockChain && otherBlockChain == 'fuji' ) { 
+          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
+          // Transfer
+        } 
+        if (otherBlockChain != targetBlockChain) { // 跨链
+          // 设数据
+          handleCorssDetail('amount',amount);
+          handleCorssDetail('receiver',receiver);
+          handleCorssDetail('source',otherBlockChain);
+          handleCorssDetail('target',targetBlockChain);
+          handleCorssDetail('token',token);
+          const fees = + ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') * 5000 * 2000;
+           handleCorssDetail('fees',fees);
+          // 使用
+          setisCorss(true);
+        }
+      }
       
-      
-
+//      successMessageBox()
     } catch (e) {
-      errorMessageBox(e as string)
+      errorMessageBox(e as string);
       console.log(e);
     }
   };

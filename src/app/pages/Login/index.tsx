@@ -18,6 +18,14 @@ import ProviderTab from '../SignupMultiParty/ProviderTab';
 const fujiConfig = require('../../config/fuji.json');
 const polygonMumbaiConfig = require('../../config/mumbai.json');
 
+const saveAddress = async() => { 
+  await Config.init(JSON.stringify(fujiConfig));
+  await Global.init();
+  localStorage.setItem('fujiAddress', Global.account.contractWalletAddress)
+  await Config.init(JSON.stringify(polygonMumbaiConfig));
+  await Global.init();
+  localStorage.setItem('mumbaiAddress',Global.account.contractWalletAddress);
+}
 
 export default () => {
   const navigate = useNavigate();

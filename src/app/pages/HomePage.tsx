@@ -41,6 +41,10 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
+    this.init()
+  }
+  
+  async init() {
     console.log(Global.account.contractWalletAddress)
     let newAsset = { ...this.state.asset };
     for (let key in Config.TOKENS) {
@@ -51,11 +55,22 @@ class HomePage extends React.Component<{}, HomePageState> {
       };
     }
     this.setState({ asset: newAsset });
-    this.flushAsset();
-  }
   
+    await this.flushAsset();
+  }
+
+  async saveAddress() {
+    await Config.init(JSON.stringify(fujiConfig));
+    await Global.init();
+    localStorage.setItem('fujiAddress', Global.account.contractWalletAddress)
+    await Config.init(JSON.stringify(polygonMumbaiConfig));
+    await Global.init();
+    localStorage.setItem('mumbaiAddress',Global.account.contractWalletAddress);
+  }
+
   async flushAsset() {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
+      localStorage.setItem(Config.CURRENT_CHAIN_NAME.toLowerCase() + 'Address', Global.account.contractWalletAddress);
       let promises = [];
       for (let key in Config.TOKENS) {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
@@ -126,15 +141,17 @@ class HomePage extends React.Component<{}, HomePageState> {
     switch (chainName.toLowerCase()) {
       case 'polygon':
         await Config.init(JSON.stringify(polygonConfig));
+         Global.init();
         await this.flushAsset();
         break;
       case 'mumbai':
         await Config.init(JSON.stringify(polygonMumbaiConfig));
+        await Global.init();
         await this.flushAsset();
-
         break;
       case 'avax fuji':
         await Config.init(JSON.stringify(fujiConfig));
+        await Global.init();
         await this.flushAsset();
     }
   }
@@ -189,7 +206,7 @@ class HomePage extends React.Component<{}, HomePageState> {
           {Object.entries(this.state.asset)
             .sort(([, assetInfoA], [, assetInfoB]) => assetInfoA.sort - assetInfoB.sort)
             .map(([key, assetInfo], index) =>
-              this.renderAsset(key, assetInfo.asset.icon, assetInfo.asset.name, assetInfo.amount, 0),
+              this.renderAsset(key, assetInfo.asset?.icon, assetInfo.asset.name, assetInfo.amount, 0),
             )}
         </div>
 
