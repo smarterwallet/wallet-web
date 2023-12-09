@@ -85,8 +85,31 @@ export const useCrossChain = (transactionDetail: TransactionDetail) => {
     return crossHash;
   }, [realAmount, destSelector, messageReceiver, receiver, sourceContract]);
 
+
+
   return {
     loadingState,
     handleTx,
   };
 };
+
+export const handleApprove = async() => {
+  const gasPrice = await Global?.account?.getGasPrice();
+
+  const Tx = await Global?.account?.sendTxCallContract(
+    Config.ADDRESS_ENTRYPOINT,
+    Config.ADDRESS_TOKEN_PAYMASTER,
+    gasPrice,
+    [
+      {
+        ethValue: '0',
+        callContractAbi: erc20Abi,
+        callContractAddress: Config.TOKENS['USDC'].address,
+        callFunc: 'approve',
+        callParams: [Global?.account?.contractWalletAddress, ethers.constants.MaxUint256],
+      },
+    ],
+  );
+  const Hash = await Global.account.sendUserOperation(Tx, Config.ADDRESS_ENTRYPOINT);
+
+}

@@ -14,6 +14,7 @@ import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
 import { TransactionDetail as CrossTransactionDetail } from '../../types';
 import { ethers } from 'ethers';
+import { handleApprove } from '../../../hooks/useCrossChain';
 // read network data from preconfig json && write them in different project
 const fujiConfig = require('../../config/fuji.json');
 const polygonMumbaiConfig = require('../../config/mumbai.json');
@@ -199,7 +200,7 @@ const Contacts: React.FC<Props> = () => {
       const { address, amount, source, receiver, target, token } = transactionDetail;
       //  console.log(address, amount, receiver);
       const { balance } = balanceData;
-      console.log(balance['fuji'], balance['mumbai']);
+      // console.log(balance['fuji'], balance['mumbai']);
       // error check
       const errorMessage = SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
@@ -217,6 +218,7 @@ const Contacts: React.FC<Props> = () => {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
         infoMessageBox('starting mumbai to mumbai transfer')
+        await handleApprove();
           T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
             amount.toString(),
@@ -229,6 +231,7 @@ const Contacts: React.FC<Props> = () => {
           //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           infoMessageBox('starting fuji to fuji transfer')
+          await handleApprove();
           T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
             amount.toString(),
