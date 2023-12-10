@@ -6,9 +6,9 @@ import { Global } from '../../../server/Global';
 import { TxUtils } from '../../../server/utils/TxUtils';
 import { ethers } from 'ethers';
 
-interface SignupPayload{
-  password: string,
-  repeatPassword: string
+interface SignupPayload {
+  password: string;
+  repeatPassword: string;
 }
 
 const SinglePartyAccount = () => {
@@ -16,8 +16,12 @@ const SinglePartyAccount = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const signUp = async (values: SignupPayload) => {
-    console.log(Global.account, 'Global.account')
-    if (values.password == null || values.password === '' || values.repeatPassword == null || values.repeatPassword === '') {
+    if (
+      values.password == null ||
+      values.password === '' ||
+      values.repeatPassword == null ||
+      values.repeatPassword === ''
+    ) {
       message.error('Password can not be empty.');
       return;
     }
@@ -36,36 +40,36 @@ const SinglePartyAccount = () => {
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Create account...',
-      duration: 0
+      duration: 0,
     });
     let account = ethers.Wallet.createRandom();
 
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Save key to local storage...',
-      duration: 0
+      duration: 0,
     });
     if (!Global.account.saveKey2LocalStorage(account.privateKey, password)) {
-      message.error("Save key to local storage error.");
+      message.error('Save key to local storage error.');
       return;
     }
 
     // create smart contract account on chain
     let params = {
-      "address": account.address
-    }
+      address: account.address,
+    };
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Create wallet on chain....',
-      duration: 0
+      duration: 0,
     });
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, tx.body["result"]);
+    await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, tx.body['result']);
 
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
       content: 'Init Smarter AA Wallet....',
-      duration: 0
+      duration: 0,
     });
     Global.tempLocalPassword = password;
     await Global.account.initAccount(account.privateKey);
@@ -73,41 +77,37 @@ const SinglePartyAccount = () => {
     messageApi.success({
       key: Global.messageTypeKeyLoading,
       content: 'Jump to single party account page',
-      duration: 0
+      duration: 0,
     });
-    navigate('/signin/singlePartyAccount')
-  }
+    navigate('/signin/singlePartyAccount');
+  };
 
   return (
     <>
       {contextHolder}
       <Form className="ww-signup-form" onFinish={signUp}>
-        <Form.Item
-            label="Password"
-            name="password"
-        >
-            <Input.Password
-            iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}
-            />
+        <Form.Item label="Password" name="password">
+          <Input.Password
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />
+            }
+          />
         </Form.Item>
 
-        <Form.Item
-            name="repeatPassword"
-            label="Repeat"
-        >
-            <Input.Password
-            iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}
-            />
+        <Form.Item name="repeatPassword" label="Repeat">
+          <Input.Password
+            iconRender={(visible) =>
+              visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />
+            }
+          />
         </Form.Item>
 
-        <Button
-            htmlType="submit"
-            style={{ width: '100%' }}
-        >Sign up</Button>
+        <Button htmlType="submit" style={{ width: '100%' }}>
+          Sign up
+        </Button>
       </Form>
     </>
-    
-  )
-}
+  );
+};
 
 export default SinglePartyAccount;

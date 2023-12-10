@@ -1,13 +1,20 @@
-import { Asset } from "../config/Config";
-import { BigNumber } from "@ethersproject/bignumber";
-import { ethers } from "ethers";
-import { UserOperation } from "../../app/modals/UserOperation";
+import { Asset } from '../config/Config';
+import { BigNumber } from '@ethersproject/bignumber';
+import { ContractInterface, ethers } from 'ethers';
+import { UserOperation } from '../../app/modals/UserOperation';
+
+export interface ContractCallParams {
+  ethValue: string;
+  callContractAbi: ContractInterface;
+  callContractAddress: string;
+  callFunc: string;
+  callParams?: ReadonlyArray<any>;
+}
 
 /**
  * Account Manage Interface
  */
 export interface AccountInterface {
-
   /**
    * base state
    */
@@ -43,7 +50,7 @@ export interface AccountInterface {
   /**
    * deploy smart contract wallet
    */
-  createSmartContractWalletAccount(params: any): Promise<{ status: number, body?: any }>;
+  createSmartContractWalletAccount(params: any): Promise<{ status: number; body?: any }>;
 
   deployContractWalletIfNotExist(ownerAddress: string): void;
 
@@ -69,28 +76,57 @@ export interface AccountInterface {
    */
   ownerSign(hash: string): Promise<string>;
 
-  sendUserOperation(op: UserOperation, entryPointAddress: string): Promise<{ status: number, body?: any }>
+  sendUserOperation(op: UserOperation, entryPointAddress: string): Promise<{ status: number; body?: any }>;
 
-  getUserOperationByHash(opHash: string): Promise<{ status: number, body?: any }>;
+  getUserOperationByHash(opHash: string): Promise<{ status: number; body?: any }>;
 
-  getUserOperationReceipt(opHash: string): Promise<{ status: number, body?: any }>;
+  getUserOperationReceipt(opHash: string): Promise<{ status: number; body?: any }>;
 
-  sendTxTransferMainToken(amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  sendTxTransferMainToken(
+    amount: string,
+    toAddress: string,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
 
-  sendTxTransferERC20Token(contractAddress: string, amount: string, toAddress: string, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  sendTxTransferERC20Token(
+    contractAddress: string,
+    amount: string,
+    toAddress: string,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
 
-  sendTxApproveERC20Token(contractAddress: string, toAddress: string, amount: BigNumber, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  sendTxTransferERC20TokenWithUSDCPay(
+    contractAddress: string,
+    amount: string,
+    toAddress: string,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
+
+  sendTxApproveERC20Token(
+    contractAddress: string,
+    toAddress: string,
+    amount: BigNumber,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
 
   /**
    * get tx list interface
    */
-  getMainTokenTxList(): Promise<{ status: number, body?: any }>
+  getMainTokenTxList(): Promise<{ status: number; body?: any }>;
 
-  getMainTokenInternalTxList(): Promise<{ status: number, body?: any }>
+  getMainTokenInternalTxList(): Promise<{ status: number; body?: any }>;
 
-  getTokenTxListFromThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
+  getTokenTxListFromThisAddr(tokenContractAddress: string): Promise<{ status: number; body?: any }>;
 
-  getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number, body?: any }>
+  getTokenTxListToThisAddr(tokenContractAddress: string): Promise<{ status: number; body?: any }>;
 
   /**
    * handle key
@@ -108,9 +144,35 @@ export interface AccountInterface {
   /**
    * auto trading
    */
-  signTxTradingStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<UserOperation>;
+  signTxTradingStrategy(
+    contractAddress: string,
+    params: any,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<UserOperation>;
 
-  sendTxAddStrategy(contractAddress: string, params: any, tokenPaymasterAddress: string, entryPointAddress: string, gasPrice: BigNumber): Promise<{ status: number, body?: any }>;
+  sendTxAddStrategy(
+    contractAddress: string,
+    params: any,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
 
+  sendTxTransferERC20TokenWithUSDCPay(
+    contractAddress: string,
+    amount: string,
+    toAddress: string,
+    tokenPaymasterAddress: string,
+    entryPointAddress: string,
+    gasPrice: BigNumber,
+  ): Promise<{ status: number; body?: any }>;
+
+  sendTxCallContract(
+    entryPointAddress: string,
+    tokenPaymasterAddress: string,
+    gasPrice: BigNumber,
+    contractCalls: ContractCallParams[],
+  ): Promise<UserOperation>;
 }
-
