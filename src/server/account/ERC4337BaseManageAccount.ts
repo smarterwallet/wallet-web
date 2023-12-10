@@ -9,6 +9,7 @@ import { AccountInterface, ContractCallParams } from './AccountInterface';
 import { TxUtils } from '../utils/TxUtils';
 import { JSONBigInt } from '../js/common_utils';
 import { exec } from 'child_process';
+import { parseUnits } from 'ethers/lib/utils';
 
 const { arrayify } = require('@ethersproject/bytes');
 
@@ -581,7 +582,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
         callContractAbi: erc20Abi,
         callContractAddress: contractAddress,
         callFunc: 'transfer',
-        callParams: [toAddress, ETH(amount)],
+        callParams: [toAddress, parseUnits(amount, 6)],
       },
     ]);
     return await this.sendUserOperation(op, entryPointAddress);

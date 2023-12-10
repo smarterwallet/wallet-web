@@ -24,9 +24,11 @@ interface HomePageState {
   question: string;
   alert: string;
   asset: { [key: string]: AssetInfo };
+  intervalId: NodeJS.Timeout | null;
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
+
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -34,6 +36,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       question: '',
       alert: '',
       asset: {},
+      intervalId: null,
     };
 
     this.onQuestionYes = this.onQuestionYes.bind(this);
@@ -41,9 +44,10 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
-    this.init()
+    this.setState({ intervalId: setInterval(this.flushAsset, 2000) });
+    this.init();
   }
-  
+
   async init() {
     console.log(Global.account.contractWalletAddress)
     let newAsset = { ...this.state.asset };
@@ -55,7 +59,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       };
     }
     this.setState({ asset: newAsset });
-  
+
     await this.flushAsset();
   }
 
@@ -65,10 +69,10 @@ class HomePage extends React.Component<{}, HomePageState> {
     localStorage.setItem('fujiAddress', Global.account.contractWalletAddress)
     await Config.init(JSON.stringify(polygonMumbaiConfig));
     await Global.init();
-    localStorage.setItem('mumbaiAddress',Global.account.contractWalletAddress);
+    localStorage.setItem('mumbaiAddress', Global.account.contractWalletAddress);
   }
 
-  async flushAsset() {
+  flushAsset = async () => {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       localStorage.setItem(Config.CURRENT_CHAIN_NAME.toLowerCase() + 'Address', Global.account.contractWalletAddress);
       let promises = [];
@@ -95,7 +99,7 @@ class HomePage extends React.Component<{}, HomePageState> {
 
       this.setState({ asset: newAsset });
     } else {
-      console.log("first login can't read global.account.contractWalletAddress", )
+      console.log("first login can't read global.account.contractWalletAddress",)
     }
   }
 
@@ -141,7 +145,7 @@ class HomePage extends React.Component<{}, HomePageState> {
     switch (chainName.toLowerCase()) {
       case 'polygon':
         await Config.init(JSON.stringify(polygonConfig));
-         Global.init();
+        await Global.init();
         await this.flushAsset();
         break;
       case 'mumbai':
