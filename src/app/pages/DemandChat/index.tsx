@@ -42,7 +42,7 @@ const DemandChat = () => {
     if (inputDemand === "") return
     if (event.key === 'Enter') {
       const question = { content: inputDemand, displayButton: false, isResponse: false };
-      const userDemand = `Current Mumbai balance: ${balanceMumbai}USDC, Fuji balance: 0USDC. I want to transfer 10USDC to 0x5134F00C95b8e794db38E1eE39397d8086cee7Ed on Fuji`
+      const userDemand = `Current Mumbai balance: ${balanceMumbai}USDC, Fuji balance: 0USDC. ${inputDemand}`;
       setConversation((pre) => [...pre, question]);
       setInputDemand("")
       const result: Result = await crossChainAbstractionDemand(userDemand)
