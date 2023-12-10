@@ -39,7 +39,7 @@ const DemandChat = () => {
   const [balanceMumbai, setBalanceMumbai] = useState<string>('');
   const chatContentRef = useRef(null);
   const [ops, setOps] = useState<Ops>();
-  const [isCross, setIsCross] = useState(false);
+  const [isCross, setIsCross] = useState(true);
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(null);
   const [confirSuccessMessage, confirSuccessMessageHolder] = message.useMessage();
 
@@ -78,7 +78,7 @@ const DemandChat = () => {
         gasFee,
       );
     }
-    if (ops.type === 'cross-chain-transfer') {      
+    if (ops.type === 'cross-chain-transfer') {
       const gasFee = await Global.account.getGasPrice();
       const txDetail: TransactionDetail = {
         receiver: ops.receiver,
@@ -87,8 +87,8 @@ const DemandChat = () => {
         target: 'fuji',
         token: 'USDC',
         fees: gasFee.toString(),
-      }
-      setTransactionDetail(() => txDetail)
+      };
+      setTransactionDetail(() => txDetail);
       setIsCross(true);
     }
   };
@@ -110,10 +110,10 @@ const DemandChat = () => {
   }, []);
   return (
     <div className="ww-page-container page-demand">
-      <HeaderBar text="Demand" returnable={false} />
-      <div>{confirSuccessMessageHolder}</div>
       {!isCross ? (
         <div>
+          <HeaderBar text="Demand" returnable={false} />
+          <div>{confirSuccessMessageHolder}</div>
           <div className="chat-content" ref={chatContentRef}>
             {conversation.map((item, index) => (
               <MessageItem
