@@ -8,6 +8,7 @@ import { crossChainAbstractionDemand } from '../../../server/utils/ChainlinkTx';
 import mumbai from '../../config/mumbai.json';
 import { TransactionDetail } from '../../types';
 import Cross from '../Cross';
+import { message } from 'antd';
 
 interface Conversations {
   content: string;
@@ -40,6 +41,7 @@ const DemandChat = () => {
   const [ops, setOps] = useState<Ops>();
   const [isCross, setIsCross] = useState(false);
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(null);
+  const [confirSuccessMessage, confirSuccessMessageHolder] = message.useMessage();
 
   const handleInputOnKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputDemand === '') return;
@@ -63,6 +65,10 @@ const DemandChat = () => {
   const handleConfirmTx = async () => {
     if (ops.type === 'chain-internal-transfer') {
       const gasFee = await Global.account.getGasPrice();
+      confirSuccessMessage.open({
+        type: 'success',
+        content: 'Your transfer request has been confirmed',
+      });
       Global.account.sendTxTransferERC20TokenWithUSDCPay(
         '0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97',
         ops.amount,
@@ -105,6 +111,7 @@ const DemandChat = () => {
   return (
     <div className="ww-page-container page-demand">
       <HeaderBar text="Demand" returnable={false} />
+      <div>{confirSuccessMessageHolder}</div>
       {!isCross ? (
         <div>
           <div className="chat-content" ref={chatContentRef}>
