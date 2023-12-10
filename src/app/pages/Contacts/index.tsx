@@ -217,9 +217,9 @@ const Contacts: React.FC<Props> = () => {
         if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-        infoMessageBox('starting mumbai to mumbai transfer')
-        await handleApprove();
-          T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
+          infoMessageBox('starting mumbai to mumbai transfer')
+         // await handleApprove();
+          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
             amount.toString(),
             receiver,
@@ -227,12 +227,13 @@ const Contacts: React.FC<Props> = () => {
             Mumbai_Config.ADDRESS_ENTRYPOINT,
             gas,
           );
+          infoMessageBox('Transfer finish')
         } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
           //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           infoMessageBox('starting fuji to fuji transfer')
-          await handleApprove();
-          T_result = Global.account.sendTxTransferERC20TokenWithUSDCPay(
+        //  await handleApprove();
+          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
             amount.toString(),
             receiver,
@@ -240,6 +241,7 @@ const Contacts: React.FC<Props> = () => {
             Fuij_Config.ADDRESS_ENTRYPOINT,
             gas,
           );
+          infoMessageBox('Transfer finish')
         }
       }
       if (balance[otherBlockChain] > parseFloat(amount as string)) {
