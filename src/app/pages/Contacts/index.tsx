@@ -220,7 +220,7 @@ const Contacts: React.FC<Props> = () => {
       const { balance } = balanceData;
       //console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
       // error check
-      const errorMessage = SendErrorCheck(transactionDetail, balanceData);
+      const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
@@ -248,7 +248,7 @@ const Contacts: React.FC<Props> = () => {
             Mumbai_Config.ADDRESS_ENTRYPOINT,
             gas,
           );
-          infoMessageBox('Transfer finish')
+          successMessageBox('Transfer finish')
           // after transfer finish
           // successMessageBox('Transfer suceess');
         } else if (senderBlockChain === targetBlockChain && senderBlockChain === 'fuji') {
@@ -265,7 +265,7 @@ const Contacts: React.FC<Props> = () => {
             Fuij_Config.ADDRESS_ENTRYPOINT,
             gas,
           );
-          infoMessageBox('Transfer finish')
+          successMessageBox('Transfer finish')
         }
       }
       if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {

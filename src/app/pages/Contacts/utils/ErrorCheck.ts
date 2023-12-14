@@ -1,6 +1,6 @@
 import {BalanceData, TransactionDetail} from '../index';
 
-export const SendErrorCheck = (transactionDetail : TransactionDetail, { balance } : BalanceData) => {
+export const SendErrorCheck = async(transactionDetail : TransactionDetail, { balance } : BalanceData) => {
       if (transactionDetail.address === '' || transactionDetail.address === null || transactionDetail.address === undefined) {
         return "Sender can't not be empty"
       }
