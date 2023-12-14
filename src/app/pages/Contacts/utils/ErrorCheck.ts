@@ -10,7 +10,7 @@ export const SendErrorCheck = (transactionDetail : TransactionDetail, { balance 
       if (transactionDetail.address.length < 42) {
         return "The length of Sender's address is not a ETH WALLET address"
       }
-      if (parseFloat(transactionDetail.amount.toString()) > (parseFloat(balance['fuji'].toString()) + parseFloat(balance['mumbai'].toString()))) {
+      if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balance['fuji']?.toString()) + parseFloat(balance['mumbai']?.toString()))) {
         return "Your Wallet Balance is not enough"
       }
       if (transactionDetail.receiver === '' || transactionDetail.receiver === null || transactionDetail.receiver === undefined) {
