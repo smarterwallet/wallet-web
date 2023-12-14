@@ -14,7 +14,6 @@ import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
 import { TransactionDetail as CrossTransactionDetail } from '../../types';
 import { ethers } from 'ethers';
-import { handleApprove } from '../../../hooks/useCrossChain';
 // read network data from preconfig json && write them in different project
 const fujiConfig = require('../../config/fuji.json');
 const polygonMumbaiConfig = require('../../config/mumbai.json');
@@ -35,11 +34,6 @@ const Mumbai_Config = {
   Rpc_api: polygonMumbaiConfig.api.rpc_api,
 };
 // ----------------------
-
-const TransferConfig = {
-  mumbai: Mumbai_Config,
-  fuji: Fuij_Config,
-};
 
 // for sendTxTransferERC20Token(..., Gas)
 const gasPriceQuery = async (rpc_api: string) => {
@@ -354,7 +348,7 @@ const Contacts: React.FC<Props> = () => {
               </div>
             </div>
             {/* Send Btn*/}
-            <div className="flex-auto h-1/5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
+            <div className="flex-auto h-1/5 px-5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
           </main>
         </div>
       )}

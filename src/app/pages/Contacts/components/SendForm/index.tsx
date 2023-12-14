@@ -1,4 +1,4 @@
-import { Form, Input, Picker, Button, Card } from 'antd-mobile';
+import { Input, Picker, Button, } from 'antd-mobile';
 import { useState } from 'react';
 import { TransactionDetail } from '../../index';
 import './styles.scss';

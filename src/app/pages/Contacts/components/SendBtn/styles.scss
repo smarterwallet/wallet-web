@@ -1,4 +1,11 @@
-.adm-button.adm-button-large {
+// .adm-button.adm-button-large {
+//     font-size: 2.5rem;
+//     text-align: center;
+// }
+
+:where(.css-dev-only-do-not-override-1tudys6).ant-btn.ant-btn-lg {
     font-size: 2.5rem;
-    text-align: center;
+    height: 6rem;
+    padding: 6.428571428571429px 15px;
+    border-radius: 1rem;
 }
