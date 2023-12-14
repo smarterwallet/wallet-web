@@ -224,6 +224,7 @@ const Contacts: React.FC<Props> = () => {
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
+        return
       }
       ////Transfer
       let T_result;

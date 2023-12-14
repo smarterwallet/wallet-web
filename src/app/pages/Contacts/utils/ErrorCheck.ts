@@ -5,10 +5,16 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
         return "Sender can't not be empty"
       }
       if (transactionDetail.address.lastIndexOf('0x') !== 0) {
-        return 'This is no a ETH WALLET address syntax'
+        return 'This is no an ETH WALLET address syntax'
       }
       if (transactionDetail.address.length < 42) {
         return "The length of Sender's address is not a ETH WALLET address"
+      }
+      if(transactionDetail.token === '' || transactionDetail.token === null || transactionDetail.token === undefined) {
+        return "You must choose a token for Transfer"
+      }
+      if(transactionDetail.amount?.toString() === null || transactionDetail.amount?.toString() === '' || transactionDetail.amount?.toString() === undefined || isNaN(parseFloat(transactionDetail.amount?.toString()))) {
+        return "Please input a correct number"
       }
       if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balance['fuji']?.toString()) + parseFloat(balance['mumbai']?.toString()))) {
         return "Your Wallet Balance is not enough"
@@ -17,10 +23,13 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
         return "receiver can't not be empty"
       }
       if (transactionDetail.receiver.lastIndexOf('0x') != 0) {
-        return 'This is no a ETH WALLET address syntax'
+        return 'This is no an ETH WALLET address syntax'
       }
       if (transactionDetail.receiver.length < 42) {
-        return "The length of receiver's address is not a ETH WALLET address"
+        return "The length of receiver's address is not an ETH WALLET address"
+      }
+      if (transactionDetail.target?.toString() === '' || transactionDetail.target === null || transactionDetail.target === undefined) {
+        return 'You must choose a target blockchain'
       }
       if (transactionDetail.target !== 'Fuji'.toLowerCase() && transactionDetail.target !== 'Mumbai'.toLowerCase()) {
         return 'only support Fuji and Mumbai blockchain'
