@@ -212,7 +212,7 @@ const Contacts: React.FC<Props> = () => {
       const targetBlockChain = TagConversion(target);
       const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
       
-      if (balance[senderBlockChain] > parseFloat(amount as string)) {
+      if (balance[senderBlockChain] > parseFloat(amount.toString())) {
         // 本链钱够
         if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
           //目标和本链一样
@@ -248,7 +248,7 @@ const Contacts: React.FC<Props> = () => {
           infoMessageBox('Transfer finish')
         }
       }
-      if (balance[otherBlockChain] > parseFloat(amount as string)) {
+      if (balance[otherBlockChain] > parseFloat(amount.toString())) {
         // 异链钱够
         console.log("use other chain transfer usdc directly.");
         if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
@@ -262,7 +262,7 @@ const Contacts: React.FC<Props> = () => {
           // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
         }
       } 
-      if (balance[senderBlockChain] > parseFloat(amount as string) && senderBlockChain != targetBlockChain) { // 跨链
+      if (balance[senderBlockChain] > parseFloat(amount.toString()) && senderBlockChain != targetBlockChain) { // 跨链
         // 设数据
         console.log('Cross');
         const fees =
