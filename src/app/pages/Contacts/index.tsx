@@ -209,16 +209,16 @@ const Contacts: React.FC<Props> = () => {
   // },[CrossDetial])
 
   const handleTransfer = async () => {
-    if(isTrading == true) return; 
+    if(isTrading === true) return; 
     infoMessageBox('Start Transfer');
-    console.log('测试点击打印')
+    //console.log('测试点击打印')
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      console.log(`sender: ${address},amount: ${amount}, receiver:${receiver}`);
-      console.log(`source: ${source}, target: ${target}, token: ${token}`);
+      //console.log(`sender: ${address},amount: ${amount}, receiver:${receiver}`);
+      //console.log(`source: ${source}, target: ${target}, token: ${token}`);
       const { balance } = balanceData;
-       console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
+      //console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
       // error check
       const errorMessage = SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
@@ -233,11 +233,11 @@ const Contacts: React.FC<Props> = () => {
       
       if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount)) {
         // 本链钱够
-        if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
+        if (senderBlockChain === targetBlockChain && senderBlockChain === 'mumbai') {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
           infoMessageBox('starting mumbai to mumbai transfer')
-          console.log('mumbai to mumbai...')
+        //  console.log('mumbai to mumbai...')
           setTrading(true);
          // await handleApprove();
           T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
@@ -251,7 +251,7 @@ const Contacts: React.FC<Props> = () => {
           infoMessageBox('Transfer finish')
           // after transfer finish
           // successMessageBox('Transfer suceess');
-        } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
+        } else if (senderBlockChain === targetBlockChain && senderBlockChain === 'fuji') {
           //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           infoMessageBox('starting fuji to fuji transfer')
@@ -271,12 +271,12 @@ const Contacts: React.FC<Props> = () => {
       if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {
         // 异链钱够
         console.log("use other chain transfer usdc directly.");
-        if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
+        if (otherBlockChain === targetBlockChain && otherBlockChain === 'mumbai') {
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
           // Transfer
           // need solve a problem: I need to switch mumbai_blockChain to transfer usdc;
         }
-        if (otherBlockChain == targetBlockChain && otherBlockChain == 'fuji') {
+        if (otherBlockChain === targetBlockChain && otherBlockChain === 'fuji') {
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           // Transfer
           // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
@@ -304,7 +304,7 @@ const Contacts: React.FC<Props> = () => {
         setisCross(true);
       } 
       setTrading(false);
-      console.log('测试结束')
+      // console.log('测试结束')
       //      successMessageBox()
     } catch (e) {
       errorMessageBox(e as string);

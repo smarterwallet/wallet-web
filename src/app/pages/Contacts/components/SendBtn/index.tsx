@@ -9,7 +9,7 @@ const SendBtn:React.FC<Props> = ({handleTransfer, isTrading }) => {
       <Button block size="large" 
       loading={isTrading} 
       disabled={isTrading} 
-      className="bg-white rounded-2xl h-24 font-bold shadow-2xl flex items-center justify-center btn" 
+      className="bg-white rounded-2xl h-24 font-bold shadow-2xl flex items-center justify-center Sendbtn" 
       onClick={() => handleTransfer()}>
         { isTrading ?  
         <div className="flex items-center justify-center ">
