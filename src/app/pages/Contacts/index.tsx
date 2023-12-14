@@ -117,6 +117,7 @@ const Contacts: React.FC<Props> = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [isCross, setisCross] = useState(false);
   const [CrossDetial, setCrossDetail] = useState<CrossTransactionDetail>(initialCrossDatail);
+  const [isTrading, setTrading] = useState(false);
 
   const successMessageBox = (successMessage: string) => {
     messageApi.open({
@@ -160,7 +161,10 @@ const Contacts: React.FC<Props> = () => {
           Mumbai_Config.USDContact,
           Mumbai_Config.address,
         );
-        const fuji_balance = await erc20BalanceQuery(Fuij_Config.Rpc_api, Fuij_Config.USDContact, Fuij_Config.address);
+        const fuji_balance = await erc20BalanceQuery(
+          Fuij_Config.Rpc_api,
+          Fuij_Config.USDContact,
+          Fuij_Config.address);
         // console.log('mumbai balance', mumbai_balance);
         // console.log('fuji balance', fuji_balance);
         handleInfoDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
@@ -178,7 +182,7 @@ const Contacts: React.FC<Props> = () => {
     };
     const setCurrentAddress = () => {
       handleTransactionDetail('address', Global.account.contractWalletAddress);
-      console.log('Current address is:', transactionDetail.address);
+      console.log('Current Sender address is:', transactionDetail.address);
     };
     setSourceBlockChain();
     setCurrentAddress();
@@ -189,6 +193,7 @@ const Contacts: React.FC<Props> = () => {
   // },[CrossDetial])
 
   const handleTransfer = async () => {
+    if(isTrading == true) return; 
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
@@ -206,12 +211,14 @@ const Contacts: React.FC<Props> = () => {
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
       const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
+      
       if (balance[senderBlockChain] > parseFloat(amount as string)) {
         // 本链钱够
         if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
           infoMessageBox('starting mumbai to mumbai transfer')
+          setTrading(true);
          // await handleApprove();
           T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
@@ -222,10 +229,13 @@ const Contacts: React.FC<Props> = () => {
             gas,
           );
           infoMessageBox('Transfer finish')
+          // after transfer finish
+          // successMessageBox('Transfer suceess');
         } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
           //目标和本链一样
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           infoMessageBox('starting fuji to fuji transfer')
+          setTrading(true);
         //  await handleApprove();
           T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
@@ -240,13 +250,16 @@ const Contacts: React.FC<Props> = () => {
       }
       if (balance[otherBlockChain] > parseFloat(amount as string)) {
         // 异链钱够
+        console.log("use other chain transfer usdc directly.");
         if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
           // Transfer
+          // need solve a problem: I need to switch mumbai_blockChain to transfer usdc;
         }
         if (otherBlockChain == targetBlockChain && otherBlockChain == 'fuji') {
           const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
           // Transfer
+          // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
         }
       } 
       if (balance[senderBlockChain] > parseFloat(amount as string) && senderBlockChain != targetBlockChain) { // 跨链
@@ -270,7 +283,7 @@ const Contacts: React.FC<Props> = () => {
         // 使用Cross组件
         setisCross(true);
       } 
-
+      setTrading(false);
       //      successMessageBox()
     } catch (e) {
       errorMessageBox(e as string);
@@ -348,7 +361,9 @@ const Contacts: React.FC<Props> = () => {
               </div>
             </div>
             {/* Send Btn*/}
-            <div className="flex-auto h-1/5 px-5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
+            <div className="flex-auto h-1/5 px-5">
+              {tradingMode ? <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} /> : null}
+            </div>
           </main>
         </div>
       )}
