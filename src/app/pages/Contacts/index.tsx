@@ -18,7 +18,7 @@ import { ethers } from 'ethers';
 const fujiConfig = require('../../config/fuji.json');
 const polygonMumbaiConfig = require('../../config/mumbai.json');
 
-const Fuij_Config = {
+export const Fuij_Config = {
   address: localStorage.getItem('avax fujiAddress'),
   USDContact: fujiConfig.token.USDC.address,
   ADDRESS_TOKEN_PAYMASTER: fujiConfig.address.address_token_paymaster,
@@ -26,7 +26,7 @@ const Fuij_Config = {
   Rpc_api: fujiConfig.api.rpc_api,
 };
 
-const Mumbai_Config = {
+export const Mumbai_Config = {
   address: localStorage.getItem('mumbaiAddress'),
   USDContact: polygonMumbaiConfig.token.USDC.address,
   ADDRESS_TOKEN_PAYMASTER: polygonMumbaiConfig.address.address_token_paymaster,
@@ -47,7 +47,7 @@ const gasPriceQuery = async (rpc_api: string) => {
 };
 
 // for balance
-const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
+export const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
   try {
     const provider = new ethers.providers.JsonRpcProvider(rpc_api);
     const erc20Contract = new ethers.Contract(
