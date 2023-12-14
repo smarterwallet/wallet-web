@@ -6,7 +6,11 @@ type Props = { handleTransfer : () => void , isTrading: boolean}
 const SendBtn:React.FC<Props> = ({handleTransfer, isTrading }) => {
   
   return (
-      <Button block size="large" loading={isTrading} disabled={isTrading} className="bg-white rounded-2xl h-24 font-bold shadow-2xl flex items-center justify-center" onClick={() => handleTransfer()}>
+      <Button block size="large" 
+      loading={isTrading} 
+      disabled={isTrading} 
+      className="bg-white rounded-2xl h-24 font-bold shadow-2xl flex items-center justify-center btn" 
+      onClick={() => handleTransfer()}>
         { isTrading ?  
         <div className="flex items-center justify-center ">
           <div>Trading...</div>
