@@ -194,6 +194,8 @@ const Contacts: React.FC<Props> = () => {
 
   const handleTransfer = async () => {
     if(isTrading == true) return; 
+    infoMessageBox('Start Transfer');
+    console.log('测试点击打印')
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
@@ -218,6 +220,7 @@ const Contacts: React.FC<Props> = () => {
           //目标和本链一样
           const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
           infoMessageBox('starting mumbai to mumbai transfer')
+          console.log('mumbai to mumbai...')
           setTrading(true);
          // await handleApprove();
           T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
@@ -284,10 +287,11 @@ const Contacts: React.FC<Props> = () => {
         setisCross(true);
       } 
       setTrading(false);
+      console.log('测试结束')
       //      successMessageBox()
     } catch (e) {
       errorMessageBox(e as string);
-      console.log(e);
+      console.error(e);
     }
   };
 
