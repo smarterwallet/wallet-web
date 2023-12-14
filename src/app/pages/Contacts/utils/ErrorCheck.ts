@@ -29,7 +29,7 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
       walletBalnaceObj.fuji_balance = balance['fuji']?.toString() ?? '';
       walletBalnaceObj.mumbai_balance = balance['mumbai']?.toString() ?? '';
 
-      while(walletBalnaceObj.fuji_balance === '' || walletBalnaceObj.mumbai_balance === '') {
+      if(walletBalnaceObj.fuji_balance === '' || walletBalnaceObj.mumbai_balance === '') {
         while(isNaN(parseFloat(walletBalnaceObj.fuji_balance) + parseFloat(walletBalnaceObj.mumbai_balance)) || time !== 3) {
           const [_mumbai_balance, _fuji_balance] = await fetchBalance();
           walletBalnaceObj.fuji_balance = _fuji_balance?.toString();
