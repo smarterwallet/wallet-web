@@ -63,6 +63,11 @@ const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAd
   }
 };
 // for "avax fuji" to 'fuji'
+
+const _parseFloat = (input: number | string) => {
+  return parseFloat(input?.toString());
+}
+
 const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
   if (tag == 'avax fuji') return 'fuji';
   return tag;
@@ -177,15 +182,26 @@ const Contacts: React.FC<Props> = () => {
   // 获得当前链 和 发送人地址
   useEffect(() => {
     const setSourceBlockChain = () => {
+      try {
       handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
       console.log('Current blockchain is:', transactionDetail.source);
+      } catch(e) {
+        console.error(e);
+      }
     };
     const setCurrentAddress = () => {
-      handleTransactionDetail('address', Global.account.contractWalletAddress);
-      console.log('Current Sender address is:', transactionDetail.address);
+      try {
+        handleTransactionDetail('address', Global.account.contractWalletAddress);
+        console.log('Current Sender address is:', transactionDetail.address);
+      } catch(e) {
+        console.error(e);
+      }
     };
+
+    
     setSourceBlockChain();
     setCurrentAddress();
+    
   }, []);
   // test
   // useEffect(() => {
@@ -199,9 +215,10 @@ const Contacts: React.FC<Props> = () => {
     // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      //  console.log(address, amount, receiver);
+      console.log(`sender: ${address},amount: ${amount}, receiver:${receiver}`);
+      console.log(`source: ${source}, target: ${target}, token: ${token}`);
       const { balance } = balanceData;
-      // console.log(balance['fuji'], balance['mumbai']);
+       console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
       // error check
       const errorMessage = SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
@@ -214,7 +231,7 @@ const Contacts: React.FC<Props> = () => {
       const targetBlockChain = TagConversion(target);
       const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
       
-      if (balance[senderBlockChain] > parseFloat(amount.toString())) {
+      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount)) {
         // 本链钱够
         if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
           //目标和本链一样
@@ -251,7 +268,7 @@ const Contacts: React.FC<Props> = () => {
           infoMessageBox('Transfer finish')
         }
       }
-      if (balance[otherBlockChain] > parseFloat(amount.toString())) {
+      if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {
         // 异链钱够
         console.log("use other chain transfer usdc directly.");
         if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
@@ -265,7 +282,7 @@ const Contacts: React.FC<Props> = () => {
           // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
         }
       } 
-      if (balance[senderBlockChain] > parseFloat(amount.toString()) && senderBlockChain != targetBlockChain) { // 跨链
+      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain != targetBlockChain) { // 跨链
         // 设数据
         console.log('Cross');
         const fees =
