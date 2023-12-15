@@ -1,44 +1,8 @@
-import {BalanceData, TransactionDetail,erc20BalanceQuery,Mumbai_Config,Fuij_Config} from '../index';
+import {BalanceData, TransactionDetail} from '../index';
 
-const walletBalnaceObj = {
-  fuji_balance: '',
-  mumbai_balance: ''
-}
-
-const fetchBalance = async () => {
-  try {
-    const _mumbai_balance = await erc20BalanceQuery(
-      Mumbai_Config.Rpc_api,
-      Mumbai_Config.USDContact,
-      Mumbai_Config.address,
-    );
-    const _fuji_balance = await erc20BalanceQuery(
-      Fuij_Config.Rpc_api,
-      Fuij_Config.USDContact,
-      Fuij_Config.address);
-    // console.log('mumbai balance', mumbai_balance);
-    // console.log('fuji balance', fuji_balance);
-    return [_mumbai_balance,_fuji_balance]
-  } catch (e) {
-    console.error('fetchBalance error is: ', e);
-  }
-};
 
 export const SendErrorCheck = async(transactionDetail : TransactionDetail, { balance } : BalanceData) => {
-      let time = 0;
-      walletBalnaceObj.fuji_balance = balance['fuji']?.toString() ?? '';
-      walletBalnaceObj.mumbai_balance = balance['mumbai']?.toString() ?? '';
-
-      if(walletBalnaceObj.fuji_balance === '' || walletBalnaceObj.mumbai_balance === '') {
-        while(isNaN(parseFloat(walletBalnaceObj.fuji_balance) + parseFloat(walletBalnaceObj.mumbai_balance)) || time !== 3) {
-          const [_mumbai_balance, _fuji_balance] = await fetchBalance();
-          walletBalnaceObj.fuji_balance = _fuji_balance?.toString();
-          walletBalnaceObj.mumbai_balance = _mumbai_balance?.toString();
-          time ++;
-        }
-        if(time === 3) return 'Balance fetch fauiled.';
-      }
-  
+      
       if (transactionDetail.address === '' || transactionDetail.address === null || transactionDetail.address === undefined) {
         return "Sender can't not be empty"
       }
@@ -54,7 +18,7 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
       if(transactionDetail.amount?.toString() === null || transactionDetail.amount?.toString() === '' || transactionDetail.amount?.toString() === undefined || isNaN(parseFloat(transactionDetail.amount?.toString()))) {
         return "Please input a correct number"
       }
-      if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(walletBalnaceObj.fuji_balance) + parseFloat(walletBalnaceObj.mumbai_balance))) {
+      if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balance['fuji']?.toString()) + parseFloat(balance['mumbai']?.toString()))) {
         return "Your Wallet Balance is not enough"
       }
       if (transactionDetail.receiver === '' || transactionDetail.receiver === null || transactionDetail.receiver === undefined) {

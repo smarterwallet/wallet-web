@@ -210,7 +210,7 @@ const Contacts: React.FC<Props> = () => {
 
   const handleTransfer = async () => {
     if(isTrading === true) return; 
-    infoMessageBox('Start Transfer');
+    infoMessageBox('Error Checking..');
     //console.log('测试点击打印')
     // Global.account.contractWalletAddress 为发送人地址
     try {
@@ -269,7 +269,7 @@ const Contacts: React.FC<Props> = () => {
           successMessageBox('Transfer finish')
         }
       }
-      if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {
+      else if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {
         // 异链钱够
         console.log("use other chain transfer usdc directly.");
         if (otherBlockChain === targetBlockChain && otherBlockChain === 'mumbai') {
@@ -283,7 +283,7 @@ const Contacts: React.FC<Props> = () => {
           // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
         }
       } 
-      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain != targetBlockChain) { // 跨链
+      else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain != targetBlockChain) { // 跨链
         // 设数据
         console.log('Cross');
         const fees =
@@ -303,10 +303,10 @@ const Contacts: React.FC<Props> = () => {
         infoMessageBox('starting cross transfer')
         // 使用Cross组件
         setisCross(true);
-      } 
+      } else {
+        errorMessageBox("You'r Wallet balance can't afford any Transfer")
+      }
       setTrading(false);
-      // console.log('测试结束')
-      //      successMessageBox()
     } catch (e) {
       errorMessageBox(e as string);
       console.error(e);
