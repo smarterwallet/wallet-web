@@ -232,7 +232,7 @@ const Contacts: React.FC<Props> = () => {
       const targetBlockChain = TagConversion(target);
       const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
       
-      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount)) {
+      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
         if (senderBlockChain === targetBlockChain && senderBlockChain === 'mumbai') {
           //目标和本链一样
@@ -269,21 +269,21 @@ const Contacts: React.FC<Props> = () => {
           successMessageBox('Transfer finish')
         }
       }
-      else if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount)) {
-        // 异链钱够
-        console.log("use other chain transfer usdc directly.");
-        if (otherBlockChain === targetBlockChain && otherBlockChain === 'mumbai') {
-          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          // Transfer
-          // need solve a problem: I need to switch mumbai_blockChain to transfer usdc;
-        }
-        if (otherBlockChain === targetBlockChain && otherBlockChain === 'fuji') {
-          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          // Transfer
-          // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
-        }
-      } 
-      else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain != targetBlockChain) { // 跨链
+      // else if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount) && otherBlockChain === targetBlockChain) {
+      //   // 异链钱够
+      //   console.log("use other chain transfer usdc directly.");
+      //   if (otherBlockChain === targetBlockChain && otherBlockChain === 'mumbai') {
+      //     const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
+      //     // Transfer
+      //     // need solve a problem: I need to switch mumbai_blockChain to transfer usdc;
+      //   }
+      //   if (otherBlockChain === targetBlockChain && otherBlockChain === 'fuji') {
+      //     const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
+      //     // Transfer
+      //     // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
+      //   }
+      // } 
+      else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
         // 设数据
         console.log('Cross');
         const fees =

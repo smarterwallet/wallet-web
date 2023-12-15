@@ -15,7 +15,7 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
       if(transactionDetail.token === '' || transactionDetail.token === null || transactionDetail.token === undefined) {
         return "You must choose a token for Transfer"
       }
-      if(transactionDetail.amount?.toString() === null || transactionDetail.amount?.toString() === '' || transactionDetail.amount?.toString() === undefined || isNaN(parseFloat(transactionDetail.amount?.toString()))) {
+      if(transactionDetail.amount === null || transactionDetail.amount === '' || transactionDetail.amount === undefined || isNaN(parseFloat(transactionDetail.amount?.toString()))) {
         return "Please input a correct number"
       }
       if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balance['fuji']?.toString()) + parseFloat(balance['mumbai']?.toString()))) {
