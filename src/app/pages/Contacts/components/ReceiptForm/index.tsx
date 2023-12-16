@@ -4,6 +4,7 @@ import { TransactionDetail } from '../..';
 import './styles.scss';
 import { message } from 'antd';
 import { ErrorCheck } from '../../utils/RErrorCheck';
+import { blockchainColumns } from '../../utils/blockchainConfig';
 
 type Props = TransactionDetail & {
   onChange: (key: keyof TransactionDetail, value: any) => void;
@@ -15,6 +16,19 @@ export type contactType = {
   target: string;
 };
 
+const useNewContact = () => {
+  const [name, setName] = useState('');
+  const [newReciver, setNewReciver] = useState('');
+  const [BlockChainValue, setBlockChainValue] = useState('');
+  return {name, setName, newReciver, setNewReciver, BlockChainValue, setBlockChainValue};
+}
+
+const usePicker = () => {
+  const [visible, setVisible] = useState(false);
+  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']);
+  return {visible, setVisible, blockchain, setBlockChain};
+}
+
 const ReceiptForm: React.FC<Props> = ({
   source,
   target,
@@ -25,30 +39,17 @@ const ReceiptForm: React.FC<Props> = ({
   onChange,
   setTradingMode,
 }) => {
+  // 渲染From
   const [isAddingNewContact, setAddNewContact] = useState(false);
   // 用於添加聯繫人 與父頁面隔離
-  const [name, setName] = useState('');
-  const [newReciver, setNewReciver] = useState('');
-  const [BlockChainValue, setBlockChainValue] = useState('');
-  // 添加信息框显示
-  const [visible, setVisible] = useState(false);
-  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 目前被写死
-  // 存储loaclstorage数据
+  const { name,setName,newReciver, setNewReciver, BlockChainValue, setBlockChainValue } = useNewContact();
+  // picker显示
+  const { visible, setVisible, blockchain, setBlockChain} = usePicker();
+  // Contacts from loaclstorage数据
   const [storedContacts, setStoredContacts] = useState<contactType[] | null>([]);
-  // 存储对应联系人的信息
-  const [contact, setContact] = useState<contactType>();
   // 消息框
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const blockchainColumns = [
-    [
-      { label: 'Mumbai', value: 'mumbai' },
-      { label: 'Fuji', value: 'fuji' },
-    ],
-  ];
-
-  
-
+  const [, contextHolder] = message.useMessage();
+  // load Contact first time
   useEffect(() => {
     try {
       const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
@@ -57,7 +58,7 @@ const ReceiptForm: React.FC<Props> = ({
       console.log(e);
     }
   }, []);
-
+  // Contact Search
   useEffect(() => {
     try {
       if (!isAddingNewContact) {
@@ -102,15 +103,19 @@ const ReceiptForm: React.FC<Props> = ({
     })
   }
 
+  const cleanInput= () => {
+    // setNewContant => false
+    setAddNewContact(false);
+    // clear input info
+    setName('');
+    setBlockChainValue('');
+    setNewReciver('');
+    setTradingMode(true);
+  }
+
   const hanldCancelClick = () => {
     try {
-      // setNewContant => false
-      setAddNewContact(false);
-      setTradingMode(true);
-      // clear input info
-      setName('');
-      setBlockChainValue('');
-      setNewReciver('');
+      cleanInput()
     } catch (e) {
       console.log(e);
       setAddNewContact(false);
@@ -135,11 +140,7 @@ const ReceiptForm: React.FC<Props> = ({
       const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
       setStoredContacts(storedCon)
       // reset state
-      setAddNewContact(false);
-      setName('');
-      setBlockChainValue('');
-      setNewReciver('');
-      setTradingMode(true);
+      cleanInput();
     } catch (e) {
       console.log(e);
     }

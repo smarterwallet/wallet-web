@@ -1,69 +1,23 @@
+import React, { useEffect,useState } from 'react';
+import { Global } from '../../../server/Global';
+import { Config } from '../../../server/config/Config';
+import { TransactionDetail as CrossTransactionDetail } from '../../types';
+import { gasPriceQuery, erc20BalanceQuery,CrossFee } from './utils/etherQueryMethod';
+import { SendErrorCheck } from './utils/ErrorCheck';
+import { Mumbai_Config, Fuij_Config } from './utils/blockchainConfig';
+import { message } from 'antd';
 import { Tabs } from 'antd-mobile';
-import React, { useEffect } from 'react';
-import BackBtn from '../../component/BackBtn';
-import { useState } from 'react';
+
 import AddressForm from './components/AddressForm';
 import SendForm from './components/SendForm';
 import ReceiptForm from './components/ReceiptForm';
-import './styles.scss';
+import BackBtn from '../../component/BackBtn';
 import SendBtn from './components/SendBtn';
-import { SendErrorCheck } from './utils/ErrorCheck';
-import { Global } from '../../../server/Global';
-import { message } from 'antd';
-import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
-import { TransactionDetail as CrossTransactionDetail } from '../../types';
-import { ethers } from 'ethers';
-// read network data from preconfig json && write them in different project
-const fujiConfig = require('../../config/fuji.json');
-const polygonMumbaiConfig = require('../../config/mumbai.json');
 
-export const Fuij_Config = {
-  address: localStorage.getItem('avax fujiAddress'),
-  USDContact: fujiConfig.token.USDC.address,
-  ADDRESS_TOKEN_PAYMASTER: fujiConfig.address.address_token_paymaster,
-  ADDRESS_ENTRYPOINT: fujiConfig.address.address_entrypoint,
-  Rpc_api: fujiConfig.api.rpc_api,
-};
+import './styles.scss';
 
-export const Mumbai_Config = {
-  address: localStorage.getItem('mumbaiAddress'),
-  USDContact: polygonMumbaiConfig.token.USDC.address,
-  ADDRESS_TOKEN_PAYMASTER: polygonMumbaiConfig.address.address_token_paymaster,
-  ADDRESS_ENTRYPOINT: polygonMumbaiConfig.address.address_entrypoint,
-  Rpc_api: polygonMumbaiConfig.api.rpc_api,
-};
-// ----------------------
-
-// for sendTxTransferERC20Token(..., Gas)
-const gasPriceQuery = async (rpc_api: string) => {
-  try {
-    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
-    const GasPrice = await provider.getGasPrice();
-    return GasPrice;
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-// for balance
-export const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
-  try {
-    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
-    const erc20Contract = new ethers.Contract(
-      tokenAddress,
-      ['function balanceOf(address) view returns (uint256)'],
-      provider,
-    );
-    const balance = await erc20Contract.balanceOf(walletAddress);
-    const formattedBalance = ethers.utils.formatUnits(balance, 6);
-    return formattedBalance;
-  } catch (e) {
-    console.error(e);
-  }
-};
 // for "avax fuji" to 'fuji'
-
 const _parseFloat = (input: number | string) => {
   return parseFloat(input?.toString());
 }
@@ -286,10 +240,7 @@ const Contacts: React.FC<Props> = () => {
       else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
         // 设数据
         console.log('Cross');
-        const fees =
-          +ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') *
-          5000 *
-          2000;
+        const fees = await CrossFee();
         const CrossDetial = {
           receiver,
           amount,
@@ -384,7 +335,7 @@ const Contacts: React.FC<Props> = () => {
             </div>
             {/* Send Btn*/}
             <div className="flex-auto h-1/5 px-5">
-              {tradingMode ? <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} /> : null}
+              {tradingMode && <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} />}
             </div>
           </main>
         </div>

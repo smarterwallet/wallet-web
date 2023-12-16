@@ -1,21 +1,25 @@
-import {  Input, Picker, Button, } from 'antd-mobile';
+import {  Input,  Button, } from 'antd-mobile';
 import { useState } from 'react';
 import { TransactionDetail } from '../../index';
+
 import './styles.scss';
+import { BlockchainPicker } from '../BlockchainPicker';
 
 type Props = TransactionDetail & {
   onChange: (key: keyof TransactionDetail, value: any) => void;
 };
-const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amount, token, onChange }) => {
-  const [visible, setVisible] = useState(false);
-  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']); // 會被props傳進來 這裏做交互測試
-  const blockchainColumns = [
-    [
-      { label: 'Mumbai', value: 'mumbai' },
-      { label: 'Fuji', value: 'fuji' },
-    ],
-  ];
 
+const usePicker = () => {
+  const [visible, setVisible] = useState(false);
+  const [blockchain, setBlockChain] = useState<(string | null)[]>(['']);
+  return { visible, setVisible, blockchain, setBlockChain}
+}
+
+const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amount, token, onChange }) => {
+  // Picker
+  const {visible,setVisible, blockchain, setBlockChain} = usePicker()
+  
+  
   return (
     <div className="bg-transparent h-[30rem] flex flex-col">
       {/* address */}
@@ -49,17 +53,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
             block
             size='large'
           >{target ? target.toUpperCase() : ''}</Button>
-          <Picker
-            columns={blockchainColumns}
-            visible={visible}
-            value={blockchain}
-            onClose={() => {
-              setVisible(false);
-            }}
-            onConfirm={(v) => {
-              onChange('target', v[0]);
-            }}
-          ></Picker>
+          <BlockchainPicker  visible={visible} setVisible={setVisible} onChange={onChange} blockchain={blockchain} />
         </div>
       </div>
     </div>
