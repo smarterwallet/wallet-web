@@ -28,7 +28,6 @@ interface HomePageState {
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
-
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -49,7 +48,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   async init() {
-    console.log(Global.account.contractWalletAddress)
+    console.log(Global.account.contractWalletAddress);
     let newAsset = { ...this.state.asset };
     for (let key in Config.TOKENS) {
       newAsset[key] = {
@@ -66,7 +65,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   async saveAddress() {
     await Config.init(JSON.stringify(fujiConfig));
     await Global.init();
-    localStorage.setItem('fujiAddress', Global.account.contractWalletAddress)
+    localStorage.setItem('fujiAddress', Global.account.contractWalletAddress);
     await Config.init(JSON.stringify(polygonMumbaiConfig));
     await Global.init();
     localStorage.setItem('mumbaiAddress', Global.account.contractWalletAddress);
@@ -80,6 +79,7 @@ class HomePage extends React.Component<{}, HomePageState> {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
           promises.push(
             Global.account.getBalanceOf(Config.TOKENS[key]).then((balance) => {
+              console.log('key', key, balance, Global.account);
               return {
                 key: key,
                 asset: Config.TOKENS[key],
@@ -99,9 +99,9 @@ class HomePage extends React.Component<{}, HomePageState> {
 
       this.setState({ asset: newAsset });
     } else {
-      console.log("first login can't read global.account.contractWalletAddress",)
+      console.log("first login can't read global.account.contractWalletAddress");
     }
-  }
+  };
 
   onQuestionYes() {
     // Global.account.isLoggedIn = false;
@@ -157,6 +157,11 @@ class HomePage extends React.Component<{}, HomePageState> {
         await Config.init(JSON.stringify(fujiConfig));
         await Global.init();
         await this.flushAsset();
+        break;
+      case 'moonbase':
+        await Config.init(JSON.stringify(fujiConfig));
+        await Global.init();
+        await this.flushAsset();
     }
   }
 
@@ -197,6 +202,7 @@ class HomePage extends React.Component<{}, HomePageState> {
             <option value="Polygon">Polygon</option>
             <option value="Mumbai">Mumbai</option>
             <option value="Avax Fuji">Avax Fuji</option>
+            <option value="Moonbase">Moonbase</option>
           </select>
           <img className="home-page-icon-logout" src="/icon/logout.png" onClick={() => this.onLogout()} />
         </div>

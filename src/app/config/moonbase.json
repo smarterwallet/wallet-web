@@ -1,0 +1,36 @@
+{
+  "address": {
+    "address_simple_account_factory": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
+    "address_token_paymaster": "0x1B53F0E62e62a7cE76e9018B6701c9CaACfcE9B1",
+    "address_entrypoint": "0xA02867e1b8410a810Ca3b4875A7A33C89846Ea10"
+  },
+  "api": {
+    "blockchain_scan": "https://moonscan.io/tx/",
+    "backend_api": "https://smarter-api-moonbase.web3idea.xyz/be/api/v1",
+    "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
+    "rpc_api": "https://rpc.testnet.moonbeam.network",
+    "bundler_api": "https://smarter-api-bundler.web3idea.xyz/moonbase",
+    "matic_tx_list_internal_api": "https://api-moonbase.moonscan.io/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&address=%s",
+    "matic_tx_list_api": "https://api-moonbase.moonscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&address=%s",
+    "erc20_tx_from_list_api": "https://api-moonbase.moonscan.io/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic1=0x000000000000000000000000%s",
+    "erc20_tx_to_list_api": "https://api-moonbase.moonscan.io/api?module=logs&action=getLogs&address=%s&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&topic0_1_opr=and&topic2=0x000000000000000000000000%s"
+  },
+  "token": {
+    "DEV": {
+      "sort": 0,
+      "name": "DEV",
+      "address": null,
+      "decimals": 18,
+      "type": 1,
+      "icon": "/icon/matic.png"
+    },
+    "SWT": {
+      "sort": 1,
+      "name": "SWT",
+      "address": "0xc3E0A55109c032328F67202c020f7Da2Fddd8B8a",
+      "decimals": 18,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    }
+  }
+}
