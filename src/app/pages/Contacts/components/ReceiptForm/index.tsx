@@ -5,6 +5,7 @@ import './styles.scss';
 import { message } from 'antd';
 import { ErrorCheck } from '../../utils/RErrorCheck';
 import { blockchainColumns } from '../../utils/blockchainConfig';
+import { useMessageBox } from '../../utils/messageBox';
 
 type Props = TransactionDetail & {
   onChange: (key: keyof TransactionDetail, value: any) => void;
@@ -48,7 +49,7 @@ const ReceiptForm: React.FC<Props> = ({
   // Contacts from loaclstorage数据
   const [storedContacts, setStoredContacts] = useState<contactType[] | null>([]);
   // 消息框
-  const [, contextHolder] = message.useMessage();
+  const [successMessageBox, errorMessageBox, ,contextHolder] = useMessageBox();
   // load Contact first time
   useEffect(() => {
     try {
@@ -88,20 +89,6 @@ const ReceiptForm: React.FC<Props> = ({
       console.log(e);
     }
   }, [name, isAddingNewContact]);
-
-  const errorMessageBox = (errorMessage: string) => {
-    message.open({
-      type:'error',
-      content:errorMessage
-    })
-  }
-
-  const successMessageBox = (successMessage: string) => {
-    message.open({
-      type:'success',
-      content:successMessage
-    })
-  }
 
   const cleanInput= () => {
     // setNewContant => false

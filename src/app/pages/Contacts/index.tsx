@@ -16,6 +16,7 @@ import SendBtn from './components/SendBtn';
 import Cross from '../Cross';
 
 import './styles.scss';
+import { useMessageBox } from './utils/messageBox';
 
 
 const _parseFloat = (input: number | string) => {
@@ -67,36 +68,18 @@ const tabItems = [
 
 
 
+
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
   const [tradingMode, setTradingMode] = useState(true); // 为了实现添加联系人时，控制send 按钮不渲染。
   const [activeKey, setActiveKey] = useState(tabItems[0].key); // tabs
   const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
-  const [messageApi, contextHolder] = message.useMessage();
   const [isTrading, setTrading] = useState(false);
   const [isCross, crossDetial, crossChain] = useCrossChain();
+  const [successMessageBox,errorMessageBox,infoMessageBox,contextHolder] = useMessageBox();
 
 
-  const successMessageBox = (successMessage: string) => {
-    messageApi.open({
-      type: 'success',
-      content: successMessage,
-    });
-  };
 
-  const errorMessageBox = (errorMessage: string) => {
-    messageApi.open({
-      type: 'error',
-      content: errorMessage,
-    });
-  };
-
-  const infoMessageBox = (infoMessage: string) => {
-    messageApi.open({
-      type:'info',
-      content: infoMessage
-    })
-  }
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
