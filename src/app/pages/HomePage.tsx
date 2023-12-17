@@ -11,6 +11,7 @@ import { ethers } from 'ethers';
 
 const polygonConfig = require('../config/polygon.json');
 const fujiConfig = require('../config/fuji.json');
+const moonbaseConfig = require('../config/moonbase.json');
 const polygonMumbaiConfig = require('../config/mumbai.json');
 
 interface AssetInfo {
@@ -159,7 +160,7 @@ class HomePage extends React.Component<{}, HomePageState> {
         await this.flushAsset();
         break;
       case 'moonbase':
-        await Config.init(JSON.stringify(fujiConfig));
+        await Config.init(JSON.stringify(moonbaseConfig));
         await Global.init();
         await this.flushAsset();
     }
