@@ -1,10 +1,10 @@
 import React, { useEffect,useState } from 'react';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
-import { TransactionDetail as CrossTransactionDetail } from '../../types';
-import { gasPriceQuery, erc20BalanceQuery,CrossFee } from './utils/etherQueryMethod';
+import { gasPriceQuery, erc20BalanceQuery } from './utils/etherQueryMethod';
 import { SendErrorCheck } from './utils/ErrorCheck';
 import { Mumbai_Config, Fuij_Config } from './utils/blockchainConfig';
+import { useCrossChain } from './utils/crossChain';
 import { message } from 'antd';
 import { Tabs } from 'antd-mobile';
 
@@ -17,11 +17,12 @@ import Cross from '../Cross';
 
 import './styles.scss';
 
-// for "avax fuji" to 'fuji'
+
 const _parseFloat = (input: number | string) => {
   return parseFloat(input?.toString());
 }
 
+// for "avax fuji" to 'fuji'
 const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
   if (tag == 'avax fuji') return 'fuji';
   return tag;
@@ -49,11 +50,7 @@ const initialTransactionDetail = {
   receiver: '', // 接收人地址
 };
 
-const initialCrossDatail: CrossTransactionDetail = {
-  receiver: '',
-  amount: '',
-  fees: '',
-};
+
 
 export type BalanceData = {
   balance?: { fuji: number; mumbai: number };
@@ -68,15 +65,17 @@ const tabItems = [
   { key: 'rec', title: 'Receipt' },
 ];
 
+
+
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
   const [tradingMode, setTradingMode] = useState(true); // 为了实现添加联系人时，控制send 按钮不渲染。
-  const [activeKey, setActiveKey] = useState(tabItems[0].key);
+  const [activeKey, setActiveKey] = useState(tabItems[0].key); // tabs
   const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
   const [messageApi, contextHolder] = message.useMessage();
-  const [isCross, setisCross] = useState(false);
-  const [CrossDetial, setCrossDetail] = useState<CrossTransactionDetail>(initialCrossDatail);
   const [isTrading, setTrading] = useState(false);
+  const [isCross, crossDetial, crossChain] = useCrossChain();
+
 
   const successMessageBox = (successMessage: string) => {
     messageApi.open({
@@ -103,12 +102,8 @@ const Contacts: React.FC<Props> = () => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
-  const handleInfoDetail = (key: keyof BalanceData, value: any) => {
+  const handleBalanceDetail = (key: keyof BalanceData, value: any) => {
     setbalanceData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
-  };
-
-  const handleCrossDetail = (newState: CrossTransactionDetail) => {
-    setCrossDetail(newState);
   };
 
   // 获取Balance
@@ -124,9 +119,7 @@ const Contacts: React.FC<Props> = () => {
           Fuij_Config.Rpc_api,
           Fuij_Config.USDContact,
           Fuij_Config.address);
-        // console.log('mumbai balance', mumbai_balance);
-        // console.log('fuji balance', fuji_balance);
-        handleInfoDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
+        handleBalanceDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
       } catch (e) {
         console.error('fetchBalance error is: ', e);
       }
@@ -157,14 +150,9 @@ const Contacts: React.FC<Props> = () => {
     setCurrentAddress();
     
   }, []);
-  // test
-  // useEffect(() => {
-  //   console.log('CrossDetial has been updated',CrossDetial)
-  // },[CrossDetial])
 
   const handleTransfer = async () => {
     if(isTrading === true) return; 
-    infoMessageBox('Error Checking..');
     //console.log('测试点击打印')
     // Global.account.contractWalletAddress 为发送人地址
     try {
@@ -174,6 +162,7 @@ const Contacts: React.FC<Props> = () => {
       const { balance } = balanceData;
       //console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
       // error check
+      infoMessageBox('Error Checking..');
       const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
@@ -181,7 +170,6 @@ const Contacts: React.FC<Props> = () => {
         return
       }
       ////Transfer
-      let T_result;
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
       const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
@@ -195,7 +183,7 @@ const Contacts: React.FC<Props> = () => {
         //  console.log('mumbai to mumbai...')
           setTrading(true);
          // await handleApprove();
-          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
+          await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Mumbai_Config.USDContact,
             amount.toString(),
             receiver,
@@ -212,7 +200,7 @@ const Contacts: React.FC<Props> = () => {
           infoMessageBox('starting fuji to fuji transfer')
           setTrading(true);
         //  await handleApprove();
-          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
+          await Global.account.sendTxTransferERC20TokenWithUSDCPay(
             Fuij_Config.USDContact,
             amount.toString(),
             receiver,
@@ -238,22 +226,9 @@ const Contacts: React.FC<Props> = () => {
       //   }
       // } 
       else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
-        // 设数据
-        console.log('Cross');
-        const fees = await CrossFee();
-        const CrossDetial = {
-          receiver,
-          amount,
-          source: senderBlockChain as 'mumbai' | 'fuji',
-          target: targetBlockChain as 'mumbai' | 'fuji',
-          token: token as 'USDC' | 'usdc',
-          fees,
-        };
-        handleCrossDetail(CrossDetial);
-        console.log('Cross Datial:', CrossDetial);
-        infoMessageBox('starting cross transfer')
-        // 使用Cross组件
-        setisCross(true);
+        infoMessageBox('Initializing CrossChain-transfer')
+        // // 使用Cross组件
+        crossChain({ receiver: receiver, amount : amount, source: senderBlockChain, target: targetBlockChain, token : token as ('USDC' | 'usdc') });
       } else {
         errorMessageBox("You'r Wallet balance can't afford any Transfer")
       }
@@ -268,12 +243,12 @@ const Contacts: React.FC<Props> = () => {
     <>
       {isCross ? (
         <Cross
-          receiver={CrossDetial.receiver}
-          amount={CrossDetial.amount}
-          source={CrossDetial.source}
-          target={CrossDetial.target}
-          token={CrossDetial.token}
-          fees={CrossDetial.fees}
+          receiver={crossDetial.receiver}
+          amount={crossDetial.amount}
+          source={crossDetial.source}
+          target={crossDetial.target}
+          token={crossDetial.token}
+          fees={crossDetial.fees}
         />
       ) : (
         <div>

@@ -12,7 +12,7 @@ export const gasPriceQuery = async (rpc_api: string) => {
   };
   
   // for balance
-  export const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
+export const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(rpc_api);
       const erc20Contract = new ethers.Contract(
