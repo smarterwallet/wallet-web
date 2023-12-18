@@ -70,15 +70,15 @@ export default () => {
         content: 'Login...',
         duration: 0,
       });
-      Global.account.initAccount(eoaKey);
+      await Global.account.initAccount(eoaKey);
       Global.account.isLoggedIn = true;
       messageApi.success({
         key: Global.messageTypeKeyLoading,
         content: 'Jump to home page',
-        duration: 2,
-      });
+        duration: 1,
+      })
+      .then(() => navigate('/home'));
       // 切换存下地址
-      navigate('/home');
     } else {
       message.error('Password incorrect');
       return;
@@ -152,13 +152,13 @@ export default () => {
         key: Global.messageTypeKeyLoading,
         type: 'success',
         content: 'Jump to home page',
-        duration: 2,
-      });
+        duration: 1,
+      })
+      .then(() => navigate('/home'));
 
       console.log('result.body result:', result.body['result']);
       localStorage.setItem('email', email);
       Global.account.isLoggedIn = true;
-      navigate('/home');
     } catch (error: any) {
       message.error((error as Error).message);
       return;
