@@ -1,19 +1,19 @@
-
 .header-bar {
   display: flex;
   align-items: center;
-  height: 80px;
+  height: 120px;
   cursor: pointer;
 }
 
 .header-bar-icon {
-  width: 30px;
-  height: 30px;
+  width: 70px;
+  height: 70px;
+  margin-left: -16px;
+  margin-right: 16px;
 }
 
 .header-bar-text {
-  font-size: 30px;
+  font-size: 60px;
   font-weight: 700;
-    color: #0D5870;
-
+  color: #0D5870;
 }

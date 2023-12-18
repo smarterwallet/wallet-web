@@ -3,13 +3,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 20px;
+        font-size: 40px;
     }
 
     .login-keys {
         .ant-col {
-            font-size: 20px;
-            line-height: 38px;
+            font-size: 36px;
+            line-height: 1.5;
             font-weight: 700;
         }
     }
@@ -33,12 +33,19 @@
     }
 
     .ant-checkbox .ant-checkbox-inner {
-        width: 20px;
-        height: 20px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
     }
 
     .ant-checkbox-wrapper:hover .ant-checkbox:after {
         visibility: hidden;
+    }
+
+    .btn-wrapper {
+        button {
+            margin: 0 20px;
+            padding: 0 20px;
+        }
     }
 }

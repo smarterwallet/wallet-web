@@ -10,7 +10,7 @@ export default function SinglePartyAccountPage(props: {}) {
   const navigate = useNavigate();
 
   return (
-    <div className="ww-page-container">
+    <div className="ww-page-container single-party-account-page">
       <HeaderBar text="Single Party Account" />
       <div className="ww-alpha-container">
         <h2>Single-party account</h2>
@@ -30,7 +30,7 @@ export default function SinglePartyAccountPage(props: {}) {
           }}
         >Login</Button>
       </div>
-      <div>
+      <div className="opacity-wrapper">
         <h2>Multi-party account</h2>
         <p className="multi-party-account-tip">
           At least 2 of 3 keys will be required to login successfully

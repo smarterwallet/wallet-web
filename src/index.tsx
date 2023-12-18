@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { ConfigProvider } from 'antd';
-import App from './app/App';
+import AppComponent from './app/App';
 import './index.css';
 import './styles/common.scss';
 
@@ -14,6 +14,6 @@ root.render(
       },
     }}
     >
-    <App />
+    <AppComponent />
   </ConfigProvider>
 );

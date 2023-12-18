@@ -1,5 +1,5 @@
 .asset-page {
-  padding: 0 20px;
+  padding: 0 40px;
 }
 
 .asset-page-header {
@@ -9,25 +9,25 @@
 }
 
 .asset-page-image {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
 }
 
 .asset-page-asset {
-  font-size: 25px;
+  font-size: 40px;
   font-weight: 700;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 .asset-page-usd {
-  font-size: 18px;
+  font-size: 32px;
   font-weight: 500;
-  margin-top: 10px;
+  margin-top: 20px;
   color: gray;
 }
 
 .asset-page-title {
-  font-size: 20px;
+  font-size: 36px;
   font-weight: 700;
   margin: 20px 0;
 }
@@ -38,9 +38,9 @@
 }
 
 .asset-page-filter {
-  font-size: 20px;
+  font-size: 36px;
   font-weight: 600;
-  padding: 15px 0;
+  padding: 30px 0;
   text-align: center;
   cursor: pointer;
 }
@@ -54,5 +54,5 @@
   /*display: flex;*/
   flex-direction: column;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 20px;
 }

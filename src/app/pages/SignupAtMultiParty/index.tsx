@@ -14,6 +14,7 @@ import CountDownButton from '../../component/CountDownButton';
 const SignupAtMultiParty = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  console.log(form);
   const [messageApi, contextHolder] = message.useMessage();
 
   const register = async (values: any) => {
@@ -149,7 +150,7 @@ const SignupAtMultiParty = () => {
             name="code"
           >
             <Space>
-              <Input />
+              <Input />              
               <CountDownButton
                 className="ww-mini-btn"
                 onClick={sendCode}

@@ -27,7 +27,7 @@ export default () => {
 
   const navigate = useNavigate();
   const upgrade = async (values: any) => {
-    message.info("Comming soon");
+    message.info("Coming soon");
   }
 
   const showModalDeleteKeys = () => {
@@ -59,7 +59,7 @@ export default () => {
   const isMPC = Global.accountType() === 2;
 
   if (!Global.account.isLoggedIn) {
-    message.error("Please sign in first");
+    message.error("Please login first");
     return <Navigate to="/" replace />;
   }
 
@@ -185,10 +185,10 @@ export default () => {
                 <Col span={1}><Checkbox /></Col>
               </Row> */}
 
-              <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center' }}>
+              <Space style={{ width: '100%', marginTop: '20px', justifyContent: 'center', gap: 20 }} className="btn-wrapper">
                 {
                   isMPC ?
-                    <Button onClick={upgrade}>Update  <SyncOutlined rev={undefined} /></Button>
+                    <Button onClick={upgrade} >Update  <SyncOutlined rev={undefined} /></Button>
                     :
                     <Button onClick={() => {
                       navigate('/signupAtMultiParty')

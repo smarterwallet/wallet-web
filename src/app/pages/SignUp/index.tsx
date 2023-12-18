@@ -57,7 +57,7 @@ const SignUp = () => {
       duration: 0
     });
     let tx = await Global.account.createSmartContractWalletAccount(params);
-    await TxUtils.checkTransactionStatus(Global.account.ethersProvider, tx.body["result"]);
+    await TxUtils.waitForTransactionUntilOnChain(Global.account.ethersProvider, tx.body["result"]);
 
     messageApi.loading({
       key: Global.messageTypeKeyLoading,
@@ -92,13 +92,7 @@ const SignUp = () => {
           </Form.Item>
           <Form.Item
             name="repeatPassword"
-            label={(<div style={{
-              lineHeight: 1.2
-            }}
-            >
-              <div>Repeat</div>
-              <div>Password</div>
-            </div>)}
+            label="Repeat"
           >
             <Input.Password
               iconRender={(visible) => (visible ? <EyeTwoTone rev={undefined} /> : <EyeInvisibleOutlined rev={undefined} />)}

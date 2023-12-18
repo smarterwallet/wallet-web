@@ -1,12 +1,14 @@
 {
   "address": {
-    "address_simple_account_factory": "0xA02867e1b8410a810Ca3b4875A7A33C89846Ea10",
-    "address_token_paymaster": "0x4B63443E5eeecE233AADEC1359254c5C601fB7f4",
-    "address_entrypoint": "0x081d5B6e93B686cEA78B87f5f96Ec274cC6FFe41"
+    "address_simple_account_factory": "0x57811fb5ea260740244fc81f421a5Ca156c78060",
+    "address_token_paymaster": "0x0F1499cBB313492a164e93f2c5a35a35246d030E",
+    "address_entrypoint": "0xD79b0817A1Aeb55042d7b10bD25f99F17239333a",
+    "address_auto_trading": "0x0987e55f3d11847ef4099dabfb38c6acbd8acfc5"
   },
   "api": {
     "blockchain_scan": "https://mumbai.polygonscan.com/tx/",
-    "backend_api": "https://smarter-api-mumbai.web3idea.xyz/be/api/v1",
+    "backend_api": "https://smarter-api-mumbai-v2.web3idea.xyz/be/api/v1",
+    "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
     "rpc_api": "https://mumbai-rpc.web3idea.xyz",
     "bundler_api": "https://smarter-api-mumbai.web3idea.xyz/bundler/",
     "matic_tx_list_internal_api": "https://api-testnet.polygonscan.com/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=9Q18WP56QKIDJWZQDGMC4QZE8AJQXJM3Z8&address=%s",
@@ -31,10 +33,18 @@
       "type": 2,
       "icon": "/icon/usdc.png"
     },
-    "USDC": {
+    "USWT": {
       "sort": 2,
+      "name": "USWT",
+      "address": "0xF981Ac497A0fe7ad2Dd670185c6e7D511Bf36d6d",
+      "decimals": 18,
+      "type": 2,
+      "icon": "/icon/usdc.png"
+    },
+    "USDC": {
+      "sort": 3,
       "name": "USDC",
-      "address": "0x0FA8781a83E46826621b3BC094Ea2A0212e71B23",
+      "address": "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
       "decimals": 6,
       "type": 2,
       "icon": "/icon/usdc.png"

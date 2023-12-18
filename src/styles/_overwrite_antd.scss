@@ -24,25 +24,26 @@
 
         .ant-collapse-header {
             padding: 12px $pagePadding;
-            padding-inline-start: 20px;
+            padding-inline-start: $pagePadding;
             align-items: center;
 
             .ant-collapse-arrow {
-                font-size: 20px;
+                font-size: 40px;
             }
         }
 
         .ant-collapse-content>.ant-collapse-content-box {
             padding: 16px $pagePadding 30px;
+            font-size: 28px;
         }
 
 
     }
 
     .ant-collapse-header-text {
-        font-size: 24px;
+        font-size: 48px;
         font-weight: 700;
-        line-height: 30px;
+        line-height: 60px;
         color: $titleColor;
     }
 
@@ -55,18 +56,29 @@
 
                 .ant-form-item-control {
                     flex: 1;
+
+                    .ant-input {
+                        font-size: 28px;
+                        border-radius: 26px;
+                    }
                 }
 
                 .ant-form-item-label {
                     flex: initial;
                     padding-bottom: 0;
+                    width: 240px;
+                    text-align: left;
 
                     label {
-                        font-size: 17px;
+                        font-size: 42px;
                         font-weight: 700;
                         color: $primary;
                         line-height: $btnHeight;
                         height: $btnHeight;
+
+                        &::after {
+                            display: none;
+                        }
                     }
                 }
             }
@@ -74,23 +86,49 @@
     }
 
     .ant-btn {
-        font-size: 20px;
+        font-size: 44px;
         font-weight: 700;
         height: $btnHeight;
         color: $primary;
-        border-radius: 10px;
+        border-radius: 36px;
 
         &.ww-mini-btn {
-            font-size: 18px;
+            font-size: 36px;
+            height: 80px;
+            border-radius: 26px;
         }
     }
 
+    .ant-input-number {
+        border-radius: 24px;
+    }
+
     .ant-input-affix-wrapper {
-        padding: 0 11px;
+        padding: 0 20px;
+        font-size: 30px;
+        border-radius: 26px;
+    }
+
+    .ant-select-single .ant-select-selector {
+        font-size: 28px;
+        border-radius: 24px;
+    }
+
+    .ant-select-single .ant-select-selector .ant-select-selection-item {
+        line-height: 60px;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector  {
+        height: 60px;
+    }
+
+    .ant-input-number .ant-input-number-input {
+        font-size: 28px;
     }
 
 
     .ww-msg {
+        font-size: 40px;
         border: 0;
         background: none;
         min-height: 56px;
@@ -101,9 +139,9 @@
         }
 
         .ant-alert-message {
-            font-size: 24px;
+            font-size: 48px;
             font-weight: 700;
-            line-height: 30px;
+            line-height: 60px;
             color: $primary;
         }
     }
@@ -114,9 +152,9 @@
         border-radius: 10px;
 
         .ant-radio-button-wrapper {
-            height: $btnHeight;
-            font-size: 18px;
-            line-height: $btnHeight;
+            height: 80px;
+            font-size: 30px;
+            line-height: 80px;
             border: 0;
             color: $primary;
             background: transparent;
@@ -137,7 +175,7 @@
 
     .ant-checkbox-wrapper {
         color: $primary;
-        font-size: 18px;
+        font-size: 32px;
         font-weight: 500;
     }
 }

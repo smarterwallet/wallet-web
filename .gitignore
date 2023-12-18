@@ -57,5 +57,4 @@ Thumbs.db
 cache
 artifacts
 typechain-types
-/public/
 .vercel

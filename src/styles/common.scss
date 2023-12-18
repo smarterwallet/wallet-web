@@ -5,32 +5,27 @@
     padding: 0 $pagePadding;
     min-height: 100%;
     color: $primary;
-    //background: url("../assets/inner_bg.png") no-repeat center 100%;
 }
 
 .ww-menu {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 15px;
-    height: 60px;
-    border-radius: 20px;
+    padding: 0 24px;
+    height: 90px;
+    border-radius: 30px;
     text-decoration: none;
-    font-size: 20px;
-    line-height: 60px;
+    font-size: 30px;
+    line-height: 90px;
     font-weight: 700;
     color: $primary;
-    //border: 1px solid currentColor;
     box-shadow: 5px 5px 20px 0 #00000040;
 
-
-    .ww-menu-icon {
-
-    }
+    .ww-menu-icon {}
 
     .ww-menu-text {
         flex: 1;
-        font-size: 18px;
+        font-size: 32px;
     }
 
     .ww-menu-arrow {
@@ -41,9 +36,9 @@
 }
 
 .ww-content-text {
-    font-size: 16px;
-    line-height: 22px;
-    padding-bottom: 10px;
+    font-size: 28px;
+    line-height: 36px;
+    padding-bottom: 20px;
 }
 
 .ww-tc {
@@ -55,24 +50,67 @@
         flex-direction: row-reverse;
     }
 
-    &.ant-collapse>.ant-collapse-item >.ant-collapse-header .ant-collapse-expand-icon {
+    &.ant-collapse>.ant-collapse-item>.ant-collapse-header .ant-collapse-expand-icon {
         padding-inline-end: 0;
     }
 }
 
 .ww-selector {
     .ant-select-selector {
-        height: 40px!important;
+        height: 80px !important;
         min-width: 120px;
+        font-size: 30px;
     }
 
     .ant-select-selection-item {
-        line-height: 36px!important;
+        line-height: 75px !important;
+        margin: 0 10px;
+    }
+
+    .ant-select-arrow,
+    .ant-select-clear-icon {
+        font-size: 20px !important;
     }
 }
 
+.ant-select-dropdown .ant-select-item {
+    font-size: 30px !important;
+}
+
+
+
 .ww-alpha-container {
-    padding: 20px;
-    margin: 0 -20px;
+    padding: #{$pagePadding / 2} $pagePadding $pagePadding;
+    margin: 0 #{-$pagePadding};
     background: #D9D9D9B2;
+
+    h2 {
+        font-size: 50px;
+        margin-bottom: 20px;
+    }
+}
+
+ul,
+ol,
+li {
+    list-style: none;
+    padding: 0;
+}
+
+.ww-page-container .ant-btn {
+    font-size: 44px;
+    font-weight: 700;
+    height: 100px;
+    color: #0A3D53;
+    border-radius: 36px;
+}
+
+
+.ant-message-notice-content {
+    font-size: 30px;
+}
+
+.ant-message-notice-content .anticon svg {
+    width: 30px;
+    height: 30px;
 }

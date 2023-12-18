@@ -1,7 +1,7 @@
 .multi-party-account-tip {
     padding: 0 20px;
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 36px;
+    line-height: 42px;
     margin-bottom: 20px;
     font-weight: 600;
 }
@@ -9,10 +9,22 @@
 .multi-party-account-tip-list {
     list-style: none;
     padding: 0 20px;
+    font-size: 28px;
 
     li {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 20px;
+    }
+}
+
+.opacity-wrapper {
+    padding-top: 20px;
+}
+
+.single-party-account-page {
+    .header-bar-text {
+        font-size: 54px;
     }
 }

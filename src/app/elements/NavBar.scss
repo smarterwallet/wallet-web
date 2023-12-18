@@ -1,40 +1,40 @@
 @import "../../styles/theme";
 
 .navbar-container {
-  display: flex;
-  justify-content: space-evenly;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .navbar-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .navbar-button-icon {
-  width: 40px;
-  height: 40px;
+    width: 40px;
+    height: 40px;
 }
 
 .navbar-button-text {
-  margin-top: 2px;
-  font-size: 14px;
-  font-weight: 600;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .navbar-link,
 .navbar-link-active {
-  width: 100px;
-  height: 60px;
-  padding: 10px 0;
+    width: 200px;
+    height: 140px;
+    padding: 10px 0;
     color: rgba($primary, .65);
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .navbar-link-active {
     color: $primary;
     .navbar-icon-wrap {
-        svg, path {
+        svg,
+        path {
             fill: #353535;
         }
     }
@@ -44,11 +44,12 @@
     font-size: 40px;
 
     svg {
-        width: 40px;
-        height: 40px;
+        width: 80px;
+        height: 80px;
     }
 
-    svg, path {
+    svg,
+    path {
         fill: #707070;
     }
 }
@@ -63,7 +64,8 @@
             color: #FFFFFFCC;
         }
 
-        svg, path {
+        svg,
+        path {
             fill: #707070;
         }
 
@@ -73,7 +75,9 @@
             }
 
             .navbar-icon-wrap {
-                svg, path {
+
+                svg,
+                path {
                     fill: #fff;
                 }
             }
@@ -81,4 +85,3 @@
 
     }
 }
-

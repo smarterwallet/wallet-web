@@ -1,0 +1,159 @@
+@import "../../../styles/theme";
+
+.input-number {
+    min-width: 130%
+}
+
+.sg-price-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .sg-price {
+        font-size: 30px;
+        font-weight: bold;
+        color: #053346;
+    }
+
+    .sg-price-changes {
+        font-size: 30px;
+        font-weight: bold;
+        color: #1E772C;
+    }
+
+    .sg-yield-label {
+        font-size: 30px;
+        font-weight: bold;
+        color: #053346;
+    }
+
+    .sg-yield {
+        font-size: 30px;
+        color: #053346;
+    }
+}
+
+.spot-grid-page {
+    padding-bottom: 30px;
+
+    .radio-button {
+        text-align: center;
+    }
+
+    min-height: 500vh;
+
+    h3 {
+        font-size: 36px;
+        color: $primary;
+    }
+
+    .ant-form-item-label {
+        margin-left: 20px;
+        min-width: 100px;
+    }
+
+    .ant-row {
+        padding: 0 20px;
+    }
+
+    &.ww-page-container {
+        padding-bottom: 180px;
+    }
+
+    &.ww-page-container .ant-form .ant-form-item .ant-row .ant-form-item-label {
+        width: 280px;
+    }
+
+    .text-suffix {
+        font-size: 42px;
+        font-weight: 700;
+        color: #0A3D53;
+        line-height: 90px;
+        height: 112px;
+        padding-right: 20px;
+    }
+}
+
+.bot-page-app-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    float: inline-start;
+}
+
+.bot-page-app-name {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 36px;
+}
+
+.bot-page-app-name-bold {
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 30px;
+}
+
+.bot-page-app-row {
+    text-align: center;
+    padding: 4px;
+    color: black;
+    text-decoration: none;
+}
+
+.bot-page-app-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 0px;
+}
+
+.bot-page-head {
+    font-size: 50px;
+    font-weight: bold;
+    color: #053346;
+}
+
+.bot-create-success {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .text{
+        p {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        font-size: 2rem;
+        text-align: left;
+        padding: 0 20px;
+    }
+}
+
+.my-strategys-page{
+    .header{
+        display: flex;
+        align-items: center;
+    }
+
+    .list{
+        display: flex;
+        align-items: center;
+    }
+
+    .p{
+        font-size: 3rem;
+        margin-left: 40px;
+    }
+
+    .onGoing{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .onGoingText{
+        font-size: 2rem;
+    }
+}

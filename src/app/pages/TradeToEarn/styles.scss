@@ -1,0 +1,76 @@
+.page-trade-to-earn {
+    .header-bar-text {
+        font-size: 54px;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+    .content-box {
+        margin-bottom: 20px;
+        padding: 20px;
+        font-size: 30px;
+        border-radius: 20px;
+        box-shadow: 5px 5px 20px 0 #00000040;
+        background: #ECE9E9CC;
+
+        dl {
+            margin: 12px;
+
+            &.line {
+                display: flex;
+
+                dd {
+                    margin: 0 0 0 0.5em;
+                }
+            }
+        }
+
+        dt {
+            font-weight: bold;
+        }
+
+        dd {
+            margin: 20px 0 0;
+
+            &.sequence-opt-wrap {
+                .icon-wrap:last-child{
+                    display: none;
+                }
+            }
+
+            .icon-wrap {
+                text-align: center;
+                font-size: 40px;
+                padding: 20px;
+                color: #666;
+
+                svg {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                svg, path {
+                    fill: #666;
+                }
+            }
+        }
+    }
+
+    .content-title-wrap {
+        display: flex;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            flex: 1;
+            font-size: 40px;
+        }
+
+        .icon-wrap {
+            font-size: 36px;
+            padding: 20px;
+            color: #666;
+        }
+    }
+}

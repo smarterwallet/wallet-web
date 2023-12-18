@@ -12,23 +12,29 @@
   --link-color: rgb(98, 98, 216);
 }
 
-html {
-  font-family: Inter;
-  font-size: 110%;
-  line-height: 25px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
+    font-size: 24px;
   background: var(--body-color);
-  margin: 0px;
+}
+
+h2 {
+    font-size: 50px;
+    /*line-height: 1.5;*/
+    margin-bottom: 20px;
 }
 
 input {
   font-size: inherit;
   font-family: inherit;
-  height: 50px;
-  min-height: 50px;
-  border-radius: 6px;
+  height: 80px;
+  min-height: 80px;
+  border-radius: 26px;
   border: 1px solid gray;
   padding: 0 10px;
 }
@@ -71,8 +77,8 @@ button {
 select {
   font-size: inherit;
   font-family: inherit;
-  height: 40px;
-  border-radius: 6px;
+  height: 80px;
+  border-radius: 12px;
   padding: 0 10px;
 }
 
@@ -110,9 +116,9 @@ a {
 .app-container {
     position: relative;
   height: 100vh;
-  max-width: 500px;
+  max-width: 750px;
   margin: auto;
-    background: url("../assets/inner_bg.png") no-repeat center 100%;
+    background: url("../assets/inner_bg.png") no-repeat center / 100% 100%;
 }
 
 .app-page {
@@ -124,8 +130,8 @@ a {
 .app-navbar {
     position: fixed;
     left: 50%;
-    width: 500px;
-    margin-left: -250px;
+    width: 750px;
+    margin-left: -375px;
     bottom: 0;
     /*transform: translate3d(-50%, 0, 0);*/
 }

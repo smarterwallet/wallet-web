@@ -20,7 +20,7 @@ const GridStrategies = () => {
                 Buy low sell high in volatile markets,
                 Multi trigger types to grasp the best entry points
               </div>
-              <MenuLink to="/spotGridStrategy">Config and create</MenuLink>
+              <MenuLink to="/simpleStrategy">Config and create</MenuLink>
             </>)
           },
           {

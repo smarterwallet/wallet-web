@@ -1,0 +1,60 @@
+@import '../../../styles/theme';
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 115px - 110px - 140px - 60px);
+  overflow-x: none;
+  overflow-y: auto;
+  margin-top: 0.5em;
+  
+  // .message-box {
+  //   display: flex;
+  //   flex-direction: column;
+  //   .message-container {
+  //     display: flex;
+  //     .message-content {
+  //       flex: 90%;
+  //       .message-radius {
+  //         display: flex;
+  //         flex-direction: column;
+  //         align-items: flex-start; /* 使子元素对齐到起点 */
+  //         p {
+  //           padding: 0.5em;
+  //           display: inline-block;
+  //           font-size: 1.5rem;
+  //           background-color: #13b6ea4d;
+  //           align-items: center;
+  //           border-radius: 1em;
+  //           overflow-x: none;
+  //           flex: 1;
+  //         }
+
+  //         .message-button {
+  //           display: flex;
+  //           width: 100%;
+  //           overflow: hidden;
+  //           flex: 1;
+  //           margin-top: 0.1em;
+  //           .ant-btn {
+  //             border-radius: 0;
+  //             height: 1.8em;
+  //             font-size: 1.5rem;
+  //           }
+  //           .message-button-change {
+  //             border-radius: 0 0 0 1em;
+  //             flex: 1;
+  //           }
+  //           .message-button-confirm {
+  //             border-radius: 0 0 1em 0;
+  //             flex: 1;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     .message-space {
+  //       flex: 10%;
+  //     }
+  //   }
+  // }
+}

@@ -24,7 +24,7 @@ class WelcomePage extends React.Component {
         </NavLink>
 
         <NavLink className="welcome-page-button-container" to="/signin">
-          <div className="welcome-page-button-text">Sign in</div>
+          <div className="welcome-page-button-text">Login</div>
           <img className="welcome-page-button-icon" src="/icon/arrow-right.png" />
         </NavLink>
 
