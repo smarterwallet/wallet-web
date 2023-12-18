@@ -3,7 +3,7 @@ import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
 import { gasPriceQuery, erc20BalanceQuery } from './utils/etherQueryMethod';
 import { SendErrorCheck } from './utils/ErrorCheck';
-import { Mumbai_Config, Fuij_Config } from './utils/blockchainConfig';
+import { BlockChains, BlockChainConfig } from './utils/blockchainConfig';
 import { useCrossChain } from './utils/crossChain';
 import { message } from 'antd';
 import { Tabs } from 'antd-mobile';
@@ -17,6 +17,7 @@ import Cross from '../Cross';
 
 import './styles.scss';
 import { useMessageBox } from './utils/messageBox';
+import { BigNumber } from '@ethersproject/bignumber';
 
 
 const _parseFloat = (input: number | string) => {
@@ -51,8 +52,6 @@ const initialTransactionDetail = {
   receiver: '', // 接收人地址
 };
 
-
-
 export type BalanceData = {
   balance?: { fuji: number; mumbai: number };
 };
@@ -66,8 +65,26 @@ const tabItems = [
   { key: 'rec', title: 'Receipt' },
 ];
 
+type sameBlockChainParams = { BlockChain_Config : BlockChainConfig, amount: string | number , receiver :string, token: string }
 
+const onSameBlockChainTransfer = async({BlockChain_Config, amount, receiver, token} : sameBlockChainParams) => {
+      const gas = await gasPriceQuery(BlockChain_Config.Rpc_api);
+      
+      const transferDetail : [string,string,string,string,string, BigNumber] = [
+        BlockChain_Config.USDContact,
+        amount.toString(),
+        receiver,
+        BlockChain_Config.ADDRESS_TOKEN_PAYMASTER,
+        BlockChain_Config.ADDRESS_ENTRYPOINT,
+        gas]
 
+      try {
+        token === 'usdc' && await Global.account.sendTxTransferERC20TokenWithUSDCPay(...transferDetail);
+        token !== 'usdc' && await Global.account.sendTxTransferERC20Token(...transferDetail);
+      } catch(e) {
+        console.error('Error in transfer',e);
+      }
+}
 
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
@@ -77,9 +94,6 @@ const Contacts: React.FC<Props> = () => {
   const [isTrading, setTrading] = useState(false);
   const [isCross, crossDetial, crossChain] = useCrossChain();
   const [successMessageBox,errorMessageBox,infoMessageBox,contextHolder] = useMessageBox();
-
-
-
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
@@ -93,6 +107,9 @@ const Contacts: React.FC<Props> = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
+        const Mumbai_Config  = BlockChains['mumbai'];
+        const Fuij_Config  = BlockChains['fuji'];
+
         const mumbai_balance = await erc20BalanceQuery(
           Mumbai_Config.Rpc_api,
           Mumbai_Config.USDContact,
@@ -155,44 +172,15 @@ const Contacts: React.FC<Props> = () => {
       ////Transfer
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
+      // const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
       
       if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
-        if (senderBlockChain === targetBlockChain && senderBlockChain === 'mumbai') {
-          //目标和本链一样
-          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          infoMessageBox('starting mumbai to mumbai transfer')
-        //  console.log('mumbai to mumbai...')
-          setTrading(true);
-         // await handleApprove();
-          await Global.account.sendTxTransferERC20TokenWithUSDCPay(
-            Mumbai_Config.USDContact,
-            amount.toString(),
-            receiver,
-            Mumbai_Config.ADDRESS_TOKEN_PAYMASTER,
-            Mumbai_Config.ADDRESS_ENTRYPOINT,
-            gas,
-          );
-          successMessageBox('Transfer finish')
-          // after transfer finish
-          // successMessageBox('Transfer suceess');
-        } else if (senderBlockChain === targetBlockChain && senderBlockChain === 'fuji') {
-          //目标和本链一样
-          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          infoMessageBox('starting fuji to fuji transfer')
-          setTrading(true);
-        //  await handleApprove();
-          await Global.account.sendTxTransferERC20TokenWithUSDCPay(
-            Fuij_Config.USDContact,
-            amount.toString(),
-            receiver,
-            Fuij_Config.ADDRESS_TOKEN_PAYMASTER,
-            Fuij_Config.ADDRESS_ENTRYPOINT,
-            gas,
-          );
-          successMessageBox('Transfer finish')
-        }
+        infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`)
+        setTrading(true);
+        const BlockChain_Config = BlockChains[senderBlockChain];
+        await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token});
+        successMessageBox('Transfer finish')
       }
       // else if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount) && otherBlockChain === targetBlockChain) {
       //   // 异链钱够

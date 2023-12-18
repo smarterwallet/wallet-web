@@ -11,7 +11,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
   // picker mockdata
   const [visible, setVisible] = useState(false);
   // data
-  const tokenColumns = [[{ label: 'USDC', value: 'usdc' }]];
+  const tokenColumns = [[{ label: 'USDC', value: 'usdc' },{label: 'SWT', value: 'swt'}]];
 
   return (
     <div className="grid grid-flow-row box-border">
