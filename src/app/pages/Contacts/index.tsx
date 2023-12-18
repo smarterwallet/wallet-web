@@ -18,6 +18,7 @@ import Cross from '../Cross';
 import './styles.scss';
 import { useMessageBox } from './utils/messageBox';
 import { BigNumber } from '@ethersproject/bignumber';
+import { useBalance } from './utils/balance';
 
 
 const _parseFloat = (input: number | string) => {
@@ -25,7 +26,7 @@ const _parseFloat = (input: number | string) => {
 }
 
 // for "avax fuji" to 'fuji'
-const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
+const TagConversion = (tag : any) => {
   if (tag == 'avax fuji') return 'fuji';
   return tag;
 };
@@ -36,13 +37,15 @@ const OtherChain = (current: 'mumbai' | 'fuji') => {
 
 type Props = {};
 
+type BlockchainType = 'mumbai' | 'avax fuji' | 'moonbase';
+
 export type TransactionDetail = {
   address?: string;
   amount?: string | number;
   token?: string;
   receiver?: string;
-  source?: 'mumbai' | 'avax fuji';
-  target?: 'mumbai' | 'avax fuji';
+  source?: BlockchainType;
+  target?: BlockchainType;
 };
 
 const initialTransactionDetail = {
@@ -50,14 +53,6 @@ const initialTransactionDetail = {
   amount: '', // 发送数量
   token: '', // 代币类型
   receiver: '', // 接收人地址
-};
-
-export type BalanceData = {
-  balance?: { fuji: number; mumbai: number };
-};
-
-const initialAmountAndAddressData = {
-  balance: { fuji: 0, mumbai: 0 },
 };
 
 const tabItems = [
@@ -69,9 +64,12 @@ type sameBlockChainParams = { BlockChain_Config : BlockChainConfig, amount: stri
 
 const onSameBlockChainTransfer = async({BlockChain_Config, amount, receiver, token} : sameBlockChainParams) => {
       const gas = await gasPriceQuery(BlockChain_Config.Rpc_api);
-      
-      const transferDetail : [string,string,string,string,string, BigNumber] = [
-        BlockChain_Config.USDContact,
+      console.log(token)
+      console.log(BlockChain_Config.Rpc_api)
+      console.log(gas)
+      console.log(BlockChain_Config.SWTContact);
+
+      const transferDetail : [string,string,string,string, BigNumber] = [
         amount.toString(),
         receiver,
         BlockChain_Config.ADDRESS_TOKEN_PAYMASTER,
@@ -79,8 +77,8 @@ const onSameBlockChainTransfer = async({BlockChain_Config, amount, receiver, tok
         gas]
 
       try {
-        token === 'usdc' && await Global.account.sendTxTransferERC20TokenWithUSDCPay(...transferDetail);
-        token !== 'usdc' && await Global.account.sendTxTransferERC20Token(...transferDetail);
+        token === 'usdc' && await Global.account.sendTxTransferERC20TokenWithUSDCPay(BlockChain_Config?.USDContact, ...transferDetail);
+        token === 'swt' && await Global.account.sendTxTransferERC20Token(BlockChain_Config?.SWTContact, ...transferDetail);
       } catch(e) {
         console.error('Error in transfer',e);
       }
@@ -90,42 +88,17 @@ const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
   const [tradingMode, setTradingMode] = useState(true); // 为了实现添加联系人时，控制send 按钮不渲染。
   const [activeKey, setActiveKey] = useState(tabItems[0].key); // tabs
-  const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
   const [isTrading, setTrading] = useState(false);
   const [isCross, crossDetial, crossChain] = useCrossChain();
   const [successMessageBox,errorMessageBox,infoMessageBox,contextHolder] = useMessageBox();
+  const [balanceData]  = useBalance();
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
-  const handleBalanceDetail = (key: keyof BalanceData, value: any) => {
-    setbalanceData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
-  };
+  console.log(balanceData);
 
-  // 获取Balance
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const Mumbai_Config  = BlockChains['mumbai'];
-        const Fuij_Config  = BlockChains['fuji'];
-
-        const mumbai_balance = await erc20BalanceQuery(
-          Mumbai_Config.Rpc_api,
-          Mumbai_Config.USDContact,
-          Mumbai_Config.address,
-        );
-        const fuji_balance = await erc20BalanceQuery(
-          Fuij_Config.Rpc_api,
-          Fuij_Config.USDContact,
-          Fuij_Config.address);
-        handleBalanceDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
-      } catch (e) {
-        console.error('fetchBalance error is: ', e);
-      }
-    };
-    fetchBalance();
-  }, []);
   // 获得当前链 和 发送人地址
   useEffect(() => {
     const setSourceBlockChain = () => {
@@ -153,17 +126,10 @@ const Contacts: React.FC<Props> = () => {
 
   const handleTransfer = async () => {
     if(isTrading === true) return; 
-    //console.log('测试点击打印')
-    // Global.account.contractWalletAddress 为发送人地址
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      //console.log(`sender: ${address},amount: ${amount}, receiver:${receiver}`);
-      //console.log(`source: ${source}, target: ${target}, token: ${token}`);
-      const { balance } = balanceData;
-      //console.log(`fuji balance:${balance['fuji']},mumbai balance:${balance['mumbai']}`);
-      // error check
       infoMessageBox('Error Checking..');
-      const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
+      const errorMessage = await SendErrorCheck(transactionDetail,balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
@@ -172,31 +138,21 @@ const Contacts: React.FC<Props> = () => {
       ////Transfer
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      // const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
-      
-      if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
+      console.log(balanceData[token].toString())
+      console.log(balanceData[token].toString())
+      console.log(senderBlockChain)
+      console.log(targetBlockChain)
+      if (_parseFloat(balanceData[token].toString()) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
         infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`)
         setTrading(true);
         const BlockChain_Config = BlockChains[senderBlockChain];
         await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token});
+        console.log('transfer');
+        console.log({ BlockChain_Config, amount, receiver, token});
         successMessageBox('Transfer finish')
       }
-      // else if (_parseFloat(balance[otherBlockChain]) > _parseFloat(amount) && otherBlockChain === targetBlockChain) {
-      //   // 异链钱够
-      //   console.log("use other chain transfer usdc directly.");
-      //   if (otherBlockChain === targetBlockChain && otherBlockChain === 'mumbai') {
-      //     const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-      //     // Transfer
-      //     // need solve a problem: I need to switch mumbai_blockChain to transfer usdc;
-      //   }
-      //   if (otherBlockChain === targetBlockChain && otherBlockChain === 'fuji') {
-      //     const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-      //     // Transfer
-      //     // need solve a problem: I need to switch fuji_blockChain to transfer usdc;
-      //   }
-      // } 
-      else if (_parseFloat(balance[senderBlockChain]) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
+      else if (_parseFloat(balanceData[token].toString()) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
         infoMessageBox('Initializing CrossChain-transfer')
         // // 使用Cross组件
         crossChain({ receiver: receiver, amount : amount, source: senderBlockChain, target: targetBlockChain, token : token as ('USDC' | 'usdc') });

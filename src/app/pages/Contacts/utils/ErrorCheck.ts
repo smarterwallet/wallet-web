@@ -1,7 +1,9 @@
-import {BalanceData, TransactionDetail} from '../index';
+import {TransactionDetail} from '../index';
+import { BlockChains } from './blockchainConfig';
+import { IBalanceData } from './balance';
 
 
-export const SendErrorCheck = async(transactionDetail : TransactionDetail, { balance } : BalanceData) => {
+export const SendErrorCheck = async(transactionDetail : TransactionDetail, balanceData : IBalanceData) => {
       
       if (transactionDetail.address === '' || transactionDetail.address === null || transactionDetail.address === undefined) {
         return "Sender can't not be empty"
@@ -18,7 +20,7 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
       if(transactionDetail.amount === null || transactionDetail.amount === '' || transactionDetail.amount === undefined || isNaN(parseFloat(transactionDetail.amount?.toString()))) {
         return "Please input a correct number"
       }
-      if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balance['fuji']?.toString()) + parseFloat(balance['mumbai']?.toString()))) {
+      if (parseFloat(transactionDetail.amount?.toString()) > (parseFloat(balanceData[transactionDetail.token]?.toString()))) {
         return "Your Wallet Balance is not enough"
       }
       if (transactionDetail.receiver === '' || transactionDetail.receiver === null || transactionDetail.receiver === undefined) {
@@ -33,23 +35,8 @@ export const SendErrorCheck = async(transactionDetail : TransactionDetail, { bal
       if (transactionDetail.target?.toString() === '' || transactionDetail.target === null || transactionDetail.target === undefined) {
         return 'You must choose a target blockchain'
       }
-      if (transactionDetail.target !== 'Fuji'.toLowerCase() && transactionDetail.target !== 'Mumbai'.toLowerCase()) {
-        return 'only support Fuji and Mumbai blockchain'
+      if (!Object.keys(BlockChains).includes(transactionDetail.target)) {
+        return 'Your chosen chain is unsupported.'
       }
       return null
 }
-
-// const epsilon = 0.00000001; // 设置一个较小的误差范围
-//       const amount = parseFloat(transactionDetail.amount.toString());
-//       const fujiBalance = balance['fuji'];
-//       const mumbaiBalance = balance['mumbai'];
-
-//       const totalBalance = parseFloat(fujiBalance.toString()) + parseFloat(mumbaiBalance.toString());
-//       if(!isNaN(amount) && !isNaN(totalBalance)) {
-//         const isLarge = Math.abs(amount - totalBalance) > epsilon;
-
-//         console.log(isLarge);
-//       } else {
-//         console.log(isNaN(amount));
-//         console.log(isNaN(totalBalance));
-//       }

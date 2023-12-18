@@ -62,16 +62,7 @@ class HomePage extends React.Component<{}, HomePageState> {
 
     await this.flushAsset();
   }
-
-  async saveAddress() {
-    await Config.init(JSON.stringify(fujiConfig));
-    await Global.init();
-    localStorage.setItem('fujiAddress', Global.account.contractWalletAddress);
-    await Config.init(JSON.stringify(polygonMumbaiConfig));
-    await Global.init();
-    localStorage.setItem('mumbaiAddress', Global.account.contractWalletAddress);
-  }
-
+  
   flushAsset = async () => {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       localStorage.setItem(Config.CURRENT_CHAIN_NAME.toLowerCase() + 'Address', Global.account.contractWalletAddress);
@@ -80,7 +71,7 @@ class HomePage extends React.Component<{}, HomePageState> {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
           promises.push(
             Global.account.getBalanceOf(Config.TOKENS[key]).then((balance) => {
-              console.log('key', key, balance, Global.account);
+             // console.log('key', key, balance, Global.account);
               return {
                 key: key,
                 asset: Config.TOKENS[key],

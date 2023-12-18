@@ -306,6 +306,7 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     const senderAddress = this.contractWalletAddress;
     const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
+    console.log('debug:',Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME])
     let tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
     if (parseFloat(tokenPaymasterAmount) < 0.1) {
       throw new Error(`You must have TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
