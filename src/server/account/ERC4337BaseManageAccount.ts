@@ -1,14 +1,12 @@
 import { Global } from '../Global';
 import { HttpUtils } from '../utils/HttpUtils';
-import { BigNumber, ContractInterface, ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { divideAndMultiplyByTenPowerN, ETH } from '../../app/util/util';
 import { UserOperation } from '../../app/modals/UserOperation';
 import { Asset, Config } from '../config/Config';
 import { sprintf } from 'sprintf-js';
 import { AccountInterface, ContractCallParams } from './AccountInterface';
 import { TxUtils } from '../utils/TxUtils';
-import { JSONBigInt } from '../js/common_utils';
-import { exec } from 'child_process';
 import { parseUnits } from 'ethers/lib/utils';
 
 const { arrayify } = require('@ethersproject/bytes');
@@ -303,11 +301,21 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     entryPointAddress: string,
     gasPrice: BigNumber,
   ): Promise<UserOperation> {
+    // todo 波卡黑客松
+    // hack处理 目前 buildTx 只支持 USDC 代付合约，参数中暂时通过 tokenPaymasterAddress 来判断走的是否为 moonbase 的 swt 代付
+    // moonbase的 tokenPaymasterAddress 为 0x1B53F0E62e62a7cE76e9018B6701c9CaACfcE9B1
+    const HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS = '0x1B53F0E62e62a7cE76e9018B6701c9CaACfcE9B1';
+    console.log('tokenPaymasterAddresstokenPaymasterAddress', tokenPaymasterAddress);
+
     const senderAddress = this.contractWalletAddress;
     const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
-    console.log('debug:',Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME])
-    let tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
+    let tokenPaymasterAmount;
+    if (tokenPaymasterAddress === HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS) {
+      tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS['SWT']);
+    } else {
+      tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
+    }
     if (parseFloat(tokenPaymasterAmount) < 0.1) {
       throw new Error(`You must have TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
     }
