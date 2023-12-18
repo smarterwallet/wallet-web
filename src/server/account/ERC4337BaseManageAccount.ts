@@ -311,14 +311,18 @@ export class ERC4337BaseManageAccount implements AccountInterface {
     const nonce = await this.getContractWalletAddressNonce();
     // check SWT balance is enough
     let tokenPaymasterAmount;
-    if (tokenPaymasterAddress === HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS) {
+    if (tokenPaymasterAddress.toLocaleLowerCase() === HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS.toLocaleLowerCase()) {
       tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS['SWT']);
+      if (parseFloat(tokenPaymasterAmount) < 0.1) {
+        throw new Error(`You must have TokenPayMaster's token(${Config.TOKENS['SWT']}) at least`);
+      }
     } else {
       tokenPaymasterAmount = await this.getBalanceOf(Config.TOKENS[Config.TOKEN_PAYMASTER_TOKEN_NAME]);
+      if (parseFloat(tokenPaymasterAmount) < 0.1) {
+        throw new Error(`You must have TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
+      }
     }
-    if (parseFloat(tokenPaymasterAmount) < 0.1) {
-      throw new Error(`You must have TokenPayMaster's token(${Config.TOKEN_PAYMASTER_TOKEN_NAME}) at least`);
-    }
+
     const initCode = '0x';
 
     // TODO The way in which parameters are determined needs to be discussed

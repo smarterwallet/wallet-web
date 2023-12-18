@@ -1,11 +1,10 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
-import { gasPriceQuery, erc20BalanceQuery } from './utils/etherQueryMethod';
+import { gasPriceQuery } from './utils/etherQueryMethod';
 import { SendErrorCheck } from './utils/ErrorCheck';
 import { BlockChains, BlockChainConfig } from './utils/blockchainConfig';
 import { useCrossChain } from './utils/crossChain';
-import { message } from 'antd';
 import { Tabs } from 'antd-mobile';
 
 import AddressForm from './components/AddressForm';
@@ -20,13 +19,12 @@ import { useMessageBox } from './utils/messageBox';
 import { BigNumber } from '@ethersproject/bignumber';
 import { useBalance } from './utils/balance';
 
-
 const _parseFloat = (input: number | string) => {
   return parseFloat(input?.toString());
-}
+};
 
 // for "avax fuji" to 'fuji'
-const TagConversion = (tag : any) => {
+const TagConversion = (tag: any) => {
   if (tag == 'avax fuji') return 'fuji';
   return tag;
 };
@@ -60,29 +58,37 @@ const tabItems = [
   { key: 'rec', title: 'Receipt' },
 ];
 
-type sameBlockChainParams = { BlockChain_Config : BlockChainConfig, amount: string | number , receiver :string, token: string }
+type sameBlockChainParams = {
+  BlockChain_Config: BlockChainConfig;
+  amount: string | number;
+  receiver: string;
+  token: string;
+};
 
-const onSameBlockChainTransfer = async({BlockChain_Config, amount, receiver, token} : sameBlockChainParams) => {
-      const gas = await gasPriceQuery(BlockChain_Config.Rpc_api);
-      console.log(token)
-      console.log(BlockChain_Config.Rpc_api)
-      console.log(gas)
-      console.log(BlockChain_Config.SWTContact);
+const onSameBlockChainTransfer = async ({ BlockChain_Config, amount, receiver, token }: sameBlockChainParams) => {
+  const gas = await gasPriceQuery(BlockChain_Config.Rpc_api);
+  console.log(token);
+  console.log(BlockChain_Config.Rpc_api);
+  console.log(gas);
+  console.log(BlockChain_Config.SWTContact);
 
-      const transferDetail : [string,string,string,string, BigNumber] = [
-        amount.toString(),
-        receiver,
-        BlockChain_Config.ADDRESS_TOKEN_PAYMASTER,
-        BlockChain_Config.ADDRESS_ENTRYPOINT,
-        gas]
+  const transferDetail: [string, string, string, string, BigNumber] = [
+    amount.toString(),
+    receiver,
+    BlockChain_Config.ADDRESS_TOKEN_PAYMASTER,
+    BlockChain_Config.ADDRESS_ENTRYPOINT,
+    gas,
+  ];
 
-      try {
-        token === 'usdc' && await Global.account.sendTxTransferERC20TokenWithUSDCPay(BlockChain_Config?.USDContact, ...transferDetail);
-        token === 'swt' && await Global.account.sendTxTransferERC20Token(BlockChain_Config?.SWTContact, ...transferDetail);
-      } catch(e) {
-        console.error('Error in transfer',e);
-      }
-}
+  try {
+    token === 'usdc' &&
+      (await Global.account.sendTxTransferERC20TokenWithUSDCPay(BlockChain_Config?.USDContact, ...transferDetail));
+    token === 'swt' &&
+      (await Global.account.sendTxTransferERC20Token(BlockChain_Config?.SWTContact, ...transferDetail));
+  } catch (e) {
+    console.error('Error in transfer', e);
+  }
+};
 
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
@@ -90,8 +96,8 @@ const Contacts: React.FC<Props> = () => {
   const [activeKey, setActiveKey] = useState(tabItems[0].key); // tabs
   const [isTrading, setTrading] = useState(false);
   const [isCross, crossDetial, crossChain] = useCrossChain();
-  const [successMessageBox,errorMessageBox,infoMessageBox,contextHolder] = useMessageBox();
-  const [balanceData]  = useBalance();
+  const [successMessageBox, errorMessageBox, infoMessageBox, contextHolder] = useMessageBox();
+  const [balanceData] = useBalance();
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
@@ -103,9 +109,9 @@ const Contacts: React.FC<Props> = () => {
   useEffect(() => {
     const setSourceBlockChain = () => {
       try {
-      handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
-      console.log('Current blockchain is:', transactionDetail.source);
-      } catch(e) {
+        handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
+        console.log('Current blockchain is:', transactionDetail.source);
+      } catch (e) {
         console.error(e);
       }
     };
@@ -113,51 +119,58 @@ const Contacts: React.FC<Props> = () => {
       try {
         handleTransactionDetail('address', Global.account.contractWalletAddress);
         console.log('Current Sender address is:', transactionDetail.address);
-      } catch(e) {
+      } catch (e) {
         console.error(e);
       }
     };
 
-    
     setSourceBlockChain();
     setCurrentAddress();
-    
   }, []);
 
   const handleTransfer = async () => {
-    if(isTrading === true) return; 
+    if (isTrading === true) return;
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
       infoMessageBox('Error Checking..');
-      const errorMessage = await SendErrorCheck(transactionDetail,balanceData);
+      const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
-        return
+        return;
       }
       ////Transfer
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      console.log(balanceData[token].toString())
-      console.log(balanceData[token].toString())
-      console.log(senderBlockChain)
-      console.log(targetBlockChain)
+      console.log(balanceData[token].toString());
+      console.log(balanceData[token].toString());
+      console.log(senderBlockChain);
+      console.log(targetBlockChain);
       if (_parseFloat(balanceData[token].toString()) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
-        infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`)
+        infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`);
         setTrading(true);
         const BlockChain_Config = BlockChains[senderBlockChain];
-        await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token});
+        await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
         console.log('transfer');
-        console.log({ BlockChain_Config, amount, receiver, token});
-        successMessageBox('Transfer finish')
-      }
-      else if (_parseFloat(balanceData[token].toString()) > _parseFloat(amount) && senderBlockChain !== targetBlockChain) { // 跨链
-        infoMessageBox('Initializing CrossChain-transfer')
+        console.log({ BlockChain_Config, amount, receiver, token });
+        successMessageBox('Transfer finish');
+      } else if (
+        _parseFloat(balanceData[token].toString()) > _parseFloat(amount) &&
+        senderBlockChain !== targetBlockChain
+      ) {
+        // 跨链
+        infoMessageBox('Initializing CrossChain-transfer');
         // // 使用Cross组件
-        crossChain({ receiver: receiver, amount : amount, source: senderBlockChain, target: targetBlockChain, token : token as ('USDC' | 'usdc') });
+        crossChain({
+          receiver: receiver,
+          amount: amount,
+          source: senderBlockChain,
+          target: targetBlockChain,
+          token: token as 'USDC' | 'usdc',
+        });
       } else {
-        errorMessageBox("You'r Wallet balance can't afford any Transfer")
+        errorMessageBox("You'r Wallet balance can't afford any Transfer");
       }
       setTrading(false);
     } catch (e) {
