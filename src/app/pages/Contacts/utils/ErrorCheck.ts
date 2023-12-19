@@ -1,6 +1,6 @@
 import {TransactionDetail} from '../index';
 import { BlockChains } from './blockchainConfig';
-import { IBalanceData } from './balance';
+import { IBalanceData } from './useBalance';
 
 
 export const SendErrorCheck = async(transactionDetail : TransactionDetail, balanceData : IBalanceData) => {

@@ -303,9 +303,8 @@ export class ERC4337BaseManageAccount implements AccountInterface {
   ): Promise<UserOperation> {
     // todo 波卡黑客松
     // hack处理 目前 buildTx 只支持 USDC 代付合约，参数中暂时通过 tokenPaymasterAddress 来判断走的是否为 moonbase 的 swt 代付
-    // moonbase的 tokenPaymasterAddress 为 0x1B53F0E62e62a7cE76e9018B6701c9CaACfcE9B1
-    const HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS = '0x1B53F0E62e62a7cE76e9018B6701c9CaACfcE9B1';
-    console.log('tokenPaymasterAddresstokenPaymasterAddress', tokenPaymasterAddress);
+    // moonbase的 tokenPaymasterAddress 为 0xc3E0A55109c032328F67202c020f7Da2Fddd8B8a
+    const HACK_MOONBASE_TOKEN_PAYMASTER_ADDRESS = '0xc3E0A55109c032328F67202c020f7Da2Fddd8B8a';
 
     const senderAddress = this.contractWalletAddress;
     const nonce = await this.getContractWalletAddressNonce();

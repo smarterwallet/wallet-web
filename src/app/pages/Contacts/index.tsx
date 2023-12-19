@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Global } from '../../../server/Global';
 import { Config } from '../../../server/config/Config';
-import { gasPriceQuery } from './utils/etherQueryMethod';
 import { SendErrorCheck } from './utils/ErrorCheck';
-import { BlockChains, BlockChainConfig } from './utils/blockchainConfig';
-import { useCrossChain } from './utils/crossChain';
+import { BlockChains } from './utils/blockchainConfig';
+import { useCrossChain } from './utils/useCrossChain';
 import { Tabs } from 'antd-mobile';
 
 import AddressForm from './components/AddressForm';
@@ -15,9 +14,9 @@ import SendBtn from './components/SendBtn';
 import Cross from '../Cross';
 
 import './styles.scss';
-import { useMessageBox } from './utils/messageBox';
-import { BigNumber } from '@ethersproject/bignumber';
-import { useBalance } from './utils/balance';
+import { useMessageBox } from './utils/useMessageBox';
+import { useBalance } from './utils/useBalance';
+import { onSameBlockChainTransfer } from './utils/transfer';
 
 const _parseFloat = (input: number | string) => {
   return parseFloat(input?.toString());
@@ -58,38 +57,6 @@ const tabItems = [
   { key: 'rec', title: 'Receipt' },
 ];
 
-type sameBlockChainParams = {
-  BlockChain_Config: BlockChainConfig;
-  amount: string | number;
-  receiver: string;
-  token: string;
-};
-
-const onSameBlockChainTransfer = async ({ BlockChain_Config, amount, receiver, token }: sameBlockChainParams) => {
-  const gas = await gasPriceQuery(BlockChain_Config.Rpc_api);
-  console.log(token);
-  console.log(BlockChain_Config.Rpc_api);
-  console.log(gas);
-  console.log(BlockChain_Config.SWTContact);
-
-  const transferDetail: [string, string, string, string, BigNumber] = [
-    amount.toString(),
-    receiver,
-    BlockChain_Config.ADDRESS_TOKEN_PAYMASTER,
-    BlockChain_Config.ADDRESS_ENTRYPOINT,
-    gas,
-  ];
-
-  try {
-    token === 'usdc' &&
-      (await Global.account.sendTxTransferERC20TokenWithUSDCPay(BlockChain_Config?.USDContact, ...transferDetail));
-    token === 'swt' &&
-      (await Global.account.sendTxTransferERC20Token(BlockChain_Config?.SWTContact, ...transferDetail));
-  } catch (e) {
-    console.error('Error in transfer', e);
-  }
-};
-
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
   const [tradingMode, setTradingMode] = useState(true); // 为了实现添加联系人时，控制send 按钮不渲染。
@@ -102,8 +69,6 @@ const Contacts: React.FC<Props> = () => {
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
-
-  console.log(balanceData);
 
   // 获得当前链 和 发送人地址
   useEffect(() => {
@@ -142,11 +107,11 @@ const Contacts: React.FC<Props> = () => {
       ////Transfer
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      console.log(balanceData[token].toString());
-      console.log(balanceData[token].toString());
+      console.log(balanceData[token]?.toString());
+      console.log(balanceData[token]?.toString());
       console.log(senderBlockChain);
       console.log(targetBlockChain);
-      if (_parseFloat(balanceData[token].toString()) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
+      if (_parseFloat(balanceData[token]?.toString()) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
         infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`);
         setTrading(true);
@@ -156,7 +121,7 @@ const Contacts: React.FC<Props> = () => {
         console.log({ BlockChain_Config, amount, receiver, token });
         successMessageBox('Transfer finish');
       } else if (
-        _parseFloat(balanceData[token].toString()) > _parseFloat(amount) &&
+        _parseFloat(balanceData[token]?.toString()) > _parseFloat(amount) &&
         senderBlockChain !== targetBlockChain
       ) {
         // 跨链

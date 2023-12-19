@@ -5,7 +5,7 @@ import './styles.scss';
 import { message } from 'antd';
 import { ErrorCheck } from '../../utils/RErrorCheck';
 import { blockchainColumns } from '../../utils/blockchainConfig';
-import { useMessageBox } from '../../utils/messageBox';
+import { useMessageBox } from '../../utils/useMessageBox';
 
 type Props = TransactionDetail & {
   onChange: (key: keyof TransactionDetail, value: any) => void;
