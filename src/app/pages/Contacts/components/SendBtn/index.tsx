@@ -1,17 +1,22 @@
-import { Card, Button } from 'antd-mobile';
+import { Button } from 'antd';
 import './styles.scss';
 
-type Props = { handleTransfer : () => void}
+type Props = { handleTransfer : () => void , isTrading: boolean}
 
-const SendBtn:React.FC<Props> = ({handleTransfer }) => {
+const SendBtn:React.FC<Props> = ({handleTransfer, isTrading }) => {
   
-
   return (
-    <Card className="bg-transparent px-5">
-      <Button block size="large" className="rounded-2xl h-24 font-bold shadow-2xl" onClick={() => handleTransfer()}>
-        {' '}
+      <Button block size="large" 
+      loading={isTrading} 
+      disabled={isTrading} 
+      className="bg-white rounded-2xl h-24 font-bold shadow-2xl flex items-center justify-center Sendbtn" 
+      onClick={() => handleTransfer()}>
+        { isTrading ?  
+        <div className="flex items-center justify-center ">
+          <div>Trading...</div>
+        </div> : 
         <div className="flex items-center justify-center">
-          <div>Send</div>
+          <div>Send</div> 
           <div
             style={{
               color: '#0ea5e9',
@@ -24,9 +29,9 @@ const SendBtn:React.FC<Props> = ({handleTransfer }) => {
           >
             &gt;
           </div>{' '}
-        </div>
+        </div>  }
       </Button>
-    </Card>
+    
   );
 };
 

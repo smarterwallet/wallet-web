@@ -25,7 +25,7 @@ const ConfirmModal: React.FC<Props> = ({ title, transactionDetail, extra, needFo
     receiver = '0xF42f4b5cb102b3f5A180E08E6BA726c0179D172E',
     source = 'mumbai',
     target = 'fuji',
-    fees = '$ 0.24',
+    fees = '$1.64 (Gasfee:0.002+CrosschainFee:1.638)',
   } = transactionDetail;
 
   const [isProcessing, setIsProcessing] = useState(false);

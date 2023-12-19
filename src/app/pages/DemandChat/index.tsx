@@ -9,6 +9,7 @@ import mumbai from '../../config/mumbai.json';
 import { TransactionDetail } from '../../types';
 import Cross from '../Cross';
 import { message } from 'antd';
+import { ethers } from 'ethers';
 
 interface Conversations {
   content: string;
@@ -39,9 +40,19 @@ const DemandChat = () => {
   const [balanceMumbai, setBalanceMumbai] = useState<string>('');
   const chatContentRef = useRef(null);
   const [ops, setOps] = useState<Ops>();
-  const [isCross, setIsCross] = useState(true);
+  const [isCross, setIsCross] = useState(false);
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(null);
   const [confirSuccessMessage, confirSuccessMessageHolder] = message.useMessage();
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const messageBox = () => {
+    message.open({
+      content:'starting to transfer,please wait a second.',
+      type: 'loading',
+      duration: 0.75,
+    })
+  }
 
   const handleInputOnKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputDemand === '') return;
@@ -63,6 +74,7 @@ const DemandChat = () => {
   };
 
   const handleConfirmTx = async () => {
+    messageBox();
     if (ops.type === 'chain-internal-transfer') {
       const gasFee = await Global.account.getGasPrice();
       confirSuccessMessage.open({
@@ -79,14 +91,17 @@ const DemandChat = () => {
       );
     }
     if (ops.type === 'cross-chain-transfer') {
-      const gasFee = await Global.account.getGasPrice();
+      const fees =
+          +ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') *
+          5000 *
+          2000;
       const txDetail: TransactionDetail = {
         receiver: ops.receiver,
         amount: ops.amount,
         source: 'mumbai',
         target: 'fuji',
         token: 'USDC',
-        fees: gasFee.toString(),
+        fees: fees,
       };
       setTransactionDetail(() => txDetail);
       setIsCross(true);
@@ -108,9 +123,10 @@ const DemandChat = () => {
     getBalance();
     console.log(`address is ${address}`);
   }, []);
-  return (
-    <div className="ww-page-container page-demand">
-      {!isCross ? (
+  return (<>
+  {contextHolder}
+  {!isCross ?
+    (<div className="ww-page-container page-demand">
         <div>
           <HeaderBar text="Demand" returnable={false} />
           <div>{confirSuccessMessageHolder}</div>
@@ -137,7 +153,7 @@ const DemandChat = () => {
             </div>
           </div>
         </div>
-      ) : (
+        </div>) : (
         <div>
           <Cross
             receiver={transactionDetail.receiver}
@@ -148,9 +164,9 @@ const DemandChat = () => {
             fees={transactionDetail.fees}
           />
         </div>
-      )}
-    </div>
-  );
+      )
+    }
+  </>);
 };
 
 export default DemandChat;

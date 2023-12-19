@@ -1,3 +1,5 @@
+import { message } from "antd";
+
 interface MessageItemProps {
   content: string;
   displayButton: boolean;
@@ -6,6 +8,7 @@ interface MessageItemProps {
 }
 
 const MessageItem: React.FC<MessageItemProps> = ({ content, displayButton, isResponse, handleConfirmTx }) => {
+
   return (
     <div>
       {isResponse ? (

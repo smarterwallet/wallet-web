@@ -1,4 +1,4 @@
-import { Form, Input, Picker, Button, Card } from 'antd-mobile';
+import { Input, Picker, Button, } from 'antd-mobile';
 import { useState } from 'react';
 import { TransactionDetail } from '../../index';
 import './styles.scss';
@@ -11,7 +11,7 @@ const SendForm: React.FC<Props> = ({ source, target, address, receiver, amount, 
   // picker mockdata
   const [visible, setVisible] = useState(false);
   // data
-  const tokenColumns = [[{ label: 'USDC', value: 'usdc' }]];
+  const tokenColumns = [[{ label: 'USDC', value: 'usdc' },{label: 'SWT', value: 'swt'}]];
 
   return (
     <div className="grid grid-flow-row box-border">

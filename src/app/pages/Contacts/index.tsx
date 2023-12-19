@@ -1,75 +1,29 @@
+import React, { useEffect, useState } from 'react';
+import { Global } from '../../../server/Global';
+import { Config } from '../../../server/config/Config';
+import { SendErrorCheck } from './utils/ErrorCheck';
+import { BlockChains } from './utils/blockchainConfig';
+import { useCrossChain } from './utils/useCrossChain';
 import { Tabs } from 'antd-mobile';
-import React, { useEffect } from 'react';
-import BackBtn from '../../component/BackBtn';
-import { useState } from 'react';
+
 import AddressForm from './components/AddressForm';
 import SendForm from './components/SendForm';
 import ReceiptForm from './components/ReceiptForm';
-import './styles.scss';
+import BackBtn from '../../component/BackBtn';
 import SendBtn from './components/SendBtn';
-import { SendErrorCheck } from './utils/ErrorCheck';
-import { Global } from '../../../server/Global';
-import { message } from 'antd';
-import { Config } from '../../../server/config/Config';
 import Cross from '../Cross';
-import { TransactionDetail as CrossTransactionDetail } from '../../types';
-import { ethers } from 'ethers';
-import { handleApprove } from '../../../hooks/useCrossChain';
-// read network data from preconfig json && write them in different project
-const fujiConfig = require('../../config/fuji.json');
-const polygonMumbaiConfig = require('../../config/mumbai.json');
 
-const Fuij_Config = {
-  address: localStorage.getItem('avax fujiAddress'),
-  USDContact: fujiConfig.token.USDC.address,
-  ADDRESS_TOKEN_PAYMASTER: fujiConfig.address.address_token_paymaster,
-  ADDRESS_ENTRYPOINT: fujiConfig.address.address_entrypoint,
-  Rpc_api: fujiConfig.api.rpc_api,
+import './styles.scss';
+import { useMessageBox } from './utils/useMessageBox';
+import { useBalance } from './utils/useBalance';
+import { onSameBlockChainTransfer } from './utils/transfer';
+
+const _parseFloat = (input: number | string) => {
+  return parseFloat(input?.toString());
 };
 
-const Mumbai_Config = {
-  address: localStorage.getItem('mumbaiAddress'),
-  USDContact: polygonMumbaiConfig.token.USDC.address,
-  ADDRESS_TOKEN_PAYMASTER: polygonMumbaiConfig.address.address_token_paymaster,
-  ADDRESS_ENTRYPOINT: polygonMumbaiConfig.address.address_entrypoint,
-  Rpc_api: polygonMumbaiConfig.api.rpc_api,
-};
-// ----------------------
-
-const TransferConfig = {
-  mumbai: Mumbai_Config,
-  fuji: Fuij_Config,
-};
-
-// for sendTxTransferERC20Token(..., Gas)
-const gasPriceQuery = async (rpc_api: string) => {
-  try {
-    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
-    const GasPrice = await provider.getGasPrice();
-    return GasPrice;
-  } catch (e) {
-    console.error(e);
-  }
-};
-
-// for balance
-const erc20BalanceQuery = async (rpc_api: string, tokenAddress: string, walletAddress: string) => {
-  try {
-    const provider = new ethers.providers.JsonRpcProvider(rpc_api);
-    const erc20Contract = new ethers.Contract(
-      tokenAddress,
-      ['function balanceOf(address) view returns (uint256)'],
-      provider,
-    );
-    const balance = await erc20Contract.balanceOf(walletAddress);
-    const formattedBalance = ethers.utils.formatUnits(balance, 6);
-    return formattedBalance;
-  } catch (e) {
-    console.error(e);
-  }
-};
 // for "avax fuji" to 'fuji'
-const TagConversion = (tag: 'mumbai' | 'avax fuji') => {
+const TagConversion = (tag: any) => {
   if (tag == 'avax fuji') return 'fuji';
   return tag;
 };
@@ -80,13 +34,15 @@ const OtherChain = (current: 'mumbai' | 'fuji') => {
 
 type Props = {};
 
+type BlockchainType = 'mumbai' | 'avax fuji' | 'moonbase';
+
 export type TransactionDetail = {
   address?: string;
   amount?: string | number;
   token?: string;
   receiver?: string;
-  source?: 'mumbai' | 'avax fuji';
-  target?: 'mumbai' | 'avax fuji';
+  source?: BlockchainType;
+  target?: BlockchainType;
 };
 
 const initialTransactionDetail = {
@@ -94,20 +50,6 @@ const initialTransactionDetail = {
   amount: '', // 发送数量
   token: '', // 代币类型
   receiver: '', // 接收人地址
-};
-
-const initialCrossDatail: CrossTransactionDetail = {
-  receiver: '',
-  amount: '',
-  fees: '',
-};
-
-export type BalanceData = {
-  balance?: { fuji: number; mumbai: number };
-};
-
-const initialAmountAndAddressData = {
-  balance: { fuji: 0, mumbai: 0 },
 };
 
 const tabItems = [
@@ -118,169 +60,87 @@ const tabItems = [
 const Contacts: React.FC<Props> = () => {
   const [transactionDetail, setTransactionDetail] = useState<TransactionDetail>(initialTransactionDetail);
   const [tradingMode, setTradingMode] = useState(true); // 为了实现添加联系人时，控制send 按钮不渲染。
-  const [activeKey, setActiveKey] = useState(tabItems[0].key);
-  const [balanceData, setbalanceData] = useState<BalanceData>(initialAmountAndAddressData);
-  const [messageApi, contextHolder] = message.useMessage();
-  const [isCross, setisCross] = useState(false);
-  const [CrossDetial, setCrossDetail] = useState<CrossTransactionDetail>(initialCrossDatail);
-
-  const successMessageBox = (successMessage: string) => {
-    messageApi.open({
-      type: 'success',
-      content: successMessage,
-    });
-  };
-
-  const errorMessageBox = (errorMessage: string) => {
-    messageApi.open({
-      type: 'error',
-      content: errorMessage,
-    });
-  };
-
-  const infoMessageBox = (infoMessage: string) => {
-    messageApi.open({
-      type:'info',
-      content: infoMessage
-    })
-  }
+  const [activeKey, setActiveKey] = useState(tabItems[0].key); // tabs
+  const [isTrading, setTrading] = useState(false);
+  const [isCross, crossDetial, crossChain] = useCrossChain();
+  const [successMessageBox, errorMessageBox, infoMessageBox, contextHolder] = useMessageBox();
+  const [balanceData] = useBalance();
 
   const handleTransactionDetail = (key: keyof TransactionDetail, value: any) => {
     setTransactionDetail((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
   };
 
-  const handleInfoDetail = (key: keyof BalanceData, value: any) => {
-    setbalanceData((prev) => ({ ...prev, [key]: value })); // 把变量名为 key 的值设为 value
-  };
-
-  const handleCrossDetail = (newState: CrossTransactionDetail) => {
-    setCrossDetail(newState);
-  };
-
-  // 获取Balance
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const mumbai_balance = await erc20BalanceQuery(
-          Mumbai_Config.Rpc_api,
-          Mumbai_Config.USDContact,
-          Mumbai_Config.address,
-        );
-        const fuji_balance = await erc20BalanceQuery(Fuij_Config.Rpc_api, Fuij_Config.USDContact, Fuij_Config.address);
-        // console.log('mumbai balance', mumbai_balance);
-        // console.log('fuji balance', fuji_balance);
-        handleInfoDetail('balance', { fuji: fuji_balance, mumbai: mumbai_balance });
-      } catch (e) {
-        console.error('fetchBalance error is: ', e);
-      }
-    };
-    fetchBalance();
-  }, []);
   // 获得当前链 和 发送人地址
   useEffect(() => {
     const setSourceBlockChain = () => {
-      handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
-      console.log('Current blockchain is:', transactionDetail.source);
+      try {
+        handleTransactionDetail('source', Config.CURRENT_CHAIN_NAME.toLowerCase());
+        console.log('Current blockchain is:', transactionDetail.source);
+      } catch (e) {
+        console.error(e);
+      }
     };
     const setCurrentAddress = () => {
-      handleTransactionDetail('address', Global.account.contractWalletAddress);
-      console.log('Current address is:', transactionDetail.address);
+      try {
+        handleTransactionDetail('address', Global.account.contractWalletAddress);
+        console.log('Current Sender address is:', transactionDetail.address);
+      } catch (e) {
+        console.error(e);
+      }
     };
+
     setSourceBlockChain();
     setCurrentAddress();
   }, []);
-  // test
-  // useEffect(() => {
-  //   console.log('CrossDetial has been updated',CrossDetial)
-  // },[CrossDetial])
 
   const handleTransfer = async () => {
-    // Global.account.contractWalletAddress 为发送人地址
+    if (isTrading === true) return;
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      //  console.log(address, amount, receiver);
-      const { balance } = balanceData;
-      // console.log(balance['fuji'], balance['mumbai']);
-      // error check
-      const errorMessage = SendErrorCheck(transactionDetail, balanceData);
+      infoMessageBox('Error Checking..');
+      const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
         errorMessageBox(errorMessage);
+        return;
       }
       ////Transfer
-      let T_result;
       const senderBlockChain = TagConversion(source); // source 是Config.Current_chain_name 获取的
       const targetBlockChain = TagConversion(target);
-      const otherBlockChain = OtherChain(senderBlockChain); // 获得异链的Tag
-      if (balance[senderBlockChain] > parseFloat(amount as string)) {
+      console.log(balanceData[token]?.toString());
+      console.log(balanceData[token]?.toString());
+      console.log(senderBlockChain);
+      console.log(targetBlockChain);
+      if (_parseFloat(balanceData[token]?.toString()) > _parseFloat(amount) && senderBlockChain === targetBlockChain) {
         // 本链钱够
-        if (senderBlockChain == targetBlockChain && senderBlockChain == 'mumbai') {
-          //目标和本链一样
-          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          infoMessageBox('starting mumbai to mumbai transfer')
-         // await handleApprove();
-          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
-            Mumbai_Config.USDContact,
-            amount.toString(),
-            receiver,
-            Mumbai_Config.ADDRESS_TOKEN_PAYMASTER,
-            Mumbai_Config.ADDRESS_ENTRYPOINT,
-            gas,
-          );
-          infoMessageBox('Transfer finish')
-        } else if (senderBlockChain == targetBlockChain && senderBlockChain == 'fuji') {
-          //目标和本链一样
-          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          infoMessageBox('starting fuji to fuji transfer')
-        //  await handleApprove();
-          T_result = await Global.account.sendTxTransferERC20TokenWithUSDCPay(
-            Fuij_Config.USDContact,
-            amount.toString(),
-            receiver,
-            Fuij_Config.ADDRESS_TOKEN_PAYMASTER,
-            Fuij_Config.ADDRESS_ENTRYPOINT,
-            gas,
-          );
-          infoMessageBox('Transfer finish')
-        }
-      }
-      if (balance[otherBlockChain] > parseFloat(amount as string)) {
-        // 异链钱够
-        if (otherBlockChain == targetBlockChain && otherBlockChain == 'mumbai') {
-          const gas = await gasPriceQuery(Mumbai_Config.Rpc_api);
-          // Transfer
-        }
-        if (otherBlockChain == targetBlockChain && otherBlockChain == 'fuji') {
-          const gas = await gasPriceQuery(Fuij_Config.Rpc_api);
-          // Transfer
-        }
-      } 
-      if (balance[senderBlockChain] > parseFloat(amount as string) && senderBlockChain != targetBlockChain) { // 跨链
-        // 设数据
-        console.log('Cross');
-        const fees =
-          +ethers.utils.formatUnits((await Global.account.ethersProvider.getFeeData()).maxPriorityFeePerGas, 'ether') *
-          5000 *
-          2000;
-        const CrossDetial = {
-          receiver,
-          amount,
-          source: senderBlockChain as 'mumbai' | 'fuji',
-          target: targetBlockChain as 'mumbai' | 'fuji',
+        infoMessageBox(`starting ${senderBlockChain} to ${targetBlockChain} transfer`);
+        setTrading(true);
+        const BlockChain_Config = BlockChains[senderBlockChain];
+        await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
+        console.log('transfer');
+        console.log({ BlockChain_Config, amount, receiver, token });
+        successMessageBox('Transfer finish');
+      } else if (
+        _parseFloat(balanceData[token]?.toString()) > _parseFloat(amount) &&
+        senderBlockChain !== targetBlockChain
+      ) {
+        // 跨链
+        infoMessageBox('Initializing CrossChain-transfer');
+        // // 使用Cross组件
+        crossChain({
+          receiver: receiver,
+          amount: amount,
+          source: senderBlockChain,
+          target: targetBlockChain,
           token: token as 'USDC' | 'usdc',
-          fees,
-        };
-        handleCrossDetail(CrossDetial);
-        console.log('Cross Datial:', CrossDetial);
-        infoMessageBox('starting cross transfer')
-        // 使用Cross组件
-        setisCross(true);
-      } 
-
-      //      successMessageBox()
+        });
+      } else {
+        errorMessageBox("You'r Wallet balance can't afford any Transfer");
+      }
+      setTrading(false);
     } catch (e) {
       errorMessageBox(e as string);
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -288,12 +148,12 @@ const Contacts: React.FC<Props> = () => {
     <>
       {isCross ? (
         <Cross
-          receiver={CrossDetial.receiver}
-          amount={CrossDetial.amount}
-          source={CrossDetial.source}
-          target={CrossDetial.target}
-          token={CrossDetial.token}
-          fees={CrossDetial.fees}
+          receiver={crossDetial.receiver}
+          amount={crossDetial.amount}
+          source={crossDetial.source}
+          target={crossDetial.target}
+          token={crossDetial.token}
+          fees={crossDetial.fees}
         />
       ) : (
         <div>
@@ -354,7 +214,9 @@ const Contacts: React.FC<Props> = () => {
               </div>
             </div>
             {/* Send Btn*/}
-            <div className="flex-auto h-1/5">{tradingMode ? <SendBtn handleTransfer={handleTransfer} /> : null}</div>
+            <div className="flex-auto h-1/5 px-5">
+              {tradingMode && <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} />}
+            </div>
           </main>
         </div>
       )}
