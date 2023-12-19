@@ -8,7 +8,7 @@
     "blockchain_scan": "https://moonscan.io/tx/",
     "backend_api": "https://smarter-api-moonbase.web3idea.xyz/be/api/v1",
     "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
-    "rpc_api": "https://moonbase-alpha.public.blastapi.io",
+    "rpc_api": "https://moonbase.unitedbloc.com",
     "bundler_api": "https://smarter-api-bundler.web3idea.xyz/moonbase",
     "matic_tx_list_internal_api": "https://api-moonbase.moonscan.io/api?module=account&action=txlistinternal&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&address=%s",
     "matic_tx_list_api": "https://api-moonbase.moonscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&apikey=19RU25QYXYJKJPV1N3JUX23MS3FC141GNI&address=%s",
