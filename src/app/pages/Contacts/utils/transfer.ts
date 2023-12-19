@@ -3,7 +3,7 @@ import { gasPriceQuery } from "./etherQueryMethod";
 import { Global } from "../../../../server/Global";
 import { BlockChainConfig } from "./blockchainConfig";
 
-type sameBlockChainParams = {
+export type sameBlockChainParams = {
     BlockChain_Config: BlockChainConfig;
     amount: string | number;
     receiver: string;
