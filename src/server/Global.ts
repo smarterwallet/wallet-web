@@ -46,7 +46,7 @@ export class Global {
         this.account = new MPCManageAccount();
         break;
     }
-    this.account.initAccount(initData);
+    await this.account.initAccount(initData);
   }
 
   public static isMPCAccount() {

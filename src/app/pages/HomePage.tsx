@@ -187,7 +187,11 @@ class HomePage extends React.Component<{}, HomePageState> {
             onChange={async (event) => {
               localStorage.setItem('pk', Global.account.ethersWallet.privateKey);
               this.setState({ alert: 'Switch to ' + event.target.value + '...' });
-              await this.flushConfigAndAsset(event.target.value);
+              try {
+                await this.flushConfigAndAsset(event.target.value);
+              } catch (error) {
+                console.error(error)
+              }
               this.setState({ alert: '' });
             }}
           >
