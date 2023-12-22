@@ -113,7 +113,10 @@ const DemandChat = () => {
     const amount = ops.amount as string;
     const receiver = ops.receiver as string;
     const token = ops.token as string;
-    onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
+    messageApi.open({content:'Processing....',type:'loading',duration:10})
+    await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
+    messageApi.open({content:'Success',type:'success',duration:1})
+    setConversation((pre) => [...pre, { content: `${amount} ${token.toUpperCase()} has already been transferred to ${receiver}`, displayButton: false, isResponse: true }]);
   };
   const handleInputOnKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputDemand === '') return;
