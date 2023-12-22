@@ -86,7 +86,9 @@ const DemandChat = () => {
         const aimAddress = targetAddress.receiver;
         console.log(username);
         setInputDemand('');
-        const userDemand = `Current moonbeam balance: ${balanceData}USDC, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        console.log(balanceData);
+
+        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
         const result: Result = await crossChainAbstractionDemand(userDemand);
         if (result.detail.ops == null) {
           setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: false, isResponse: true }]);
@@ -107,11 +109,11 @@ const DemandChat = () => {
 
   const txPolka = async () => {
     messageBox();
-    const BlockChain_Config = BlockChains["Moonbase"];
-    const amount = ops.amount as string
-    const receiver = ops.receiver as string 
-    const token = ops.token as string
-    onSameBlockChainTransfer({BlockChain_Config, amount, receiver, token})
+    const BlockChain_Config = BlockChains['moonbase'];
+    const amount = ops.amount as string;
+    const receiver = ops.receiver as string;
+    const token = ops.token as string;
+    onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
   };
   const handleInputOnKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputDemand === '') return;
