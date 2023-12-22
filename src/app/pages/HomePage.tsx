@@ -44,7 +44,7 @@ class HomePage extends React.Component<{}, HomePageState> {
   }
 
   componentDidMount(): void {
-    this.setState({ intervalId: setInterval(this.flushAsset, 10000) });
+    this.setState({ intervalId: setInterval(this.flushAsset, 30000) });
     this.init();
   }
 
