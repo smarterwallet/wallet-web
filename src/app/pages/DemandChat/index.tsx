@@ -74,7 +74,7 @@ const DemandChat = () => {
         const userName = user[1];
         const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
         const targetAddress: contactType | null = storedCon.filter((item) => item.name === userName)[0];
-        if (!targetAddress.receiver) {
+        if (!targetAddress?.receiver) {
           message.open({
             content: 'Cannot find the user, please add it to the Contact',
             type: 'error',
