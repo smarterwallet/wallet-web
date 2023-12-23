@@ -9,9 +9,19 @@
 }
 
 .adm-tabs-content {
-    background: rgba(217, 217, 217, 0.7),
+    background: rgba(217, 217, 217, 0.7);
+    height: 600px;
 }
 
 .contacts{
     height: 100%;
+}
+
+.select-selector-font {
+    font: 24px!important;
+    text-align: center;
+}
+
+.border-radius_3xl {
+    border-radius: 1.5rem!important;
 }
