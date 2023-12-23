@@ -214,7 +214,7 @@ const Contacts: React.FC<Props> = () => {
               </div>
             </div>
             {/* Send Btn*/}
-            <div className="flex-auto px-5 mb-[140px]">
+            <div className="h-1/5 px-5" style={{ minHeight: '250px'}}>
               {tradingMode && <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} />}
             </div>
           </main>
