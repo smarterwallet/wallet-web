@@ -97,7 +97,6 @@ const Contacts: React.FC<Props> = () => {
     if (isTrading === true) return;
     try {
       const { address, amount, source, receiver, target, token } = transactionDetail;
-      infoMessageBox('Error Checking..');
       const errorMessage = await SendErrorCheck(transactionDetail, balanceData);
       if (errorMessage !== null) {
         console.error(errorMessage);
