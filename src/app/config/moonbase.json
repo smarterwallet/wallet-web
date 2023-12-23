@@ -5,7 +5,7 @@
     "address_entrypoint": "0xA02867e1b8410a810Ca3b4875A7A33C89846Ea10"
   },
   "api": {
-    "blockchain_scan": "https://moonscan.io/tx/",
+    "blockchain_scan": "https://moonbase.moonscan.io/tx/",
     "backend_api": "https://smarter-api-moonbase.web3idea.xyz/be/api/v1",
     "auto_trading_api": "https://smarter-api-at.web3idea.xyz",
     "rpc_api": "https://moonbase.unitedbloc.com",
