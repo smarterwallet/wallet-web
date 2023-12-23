@@ -218,7 +218,7 @@ const DemandChat = () => {
                 />
               ))}
             </div>
-            <div className="other-demand">
+            <div className="other-demand-chat">
               <div className="txt">
                 <Input
                   type="text"
