@@ -90,7 +90,7 @@ const DemandChat = () => {
         setInputDemand('');
         console.log(balanceData);
 
-        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbase on moonbase`;
         messageApi.open({content:"Generating transfer operation information.",type:'loading'});
         const result: Result = await crossChainAbstractionDemand(userDemand);
         if (result.detail.ops == null) {
