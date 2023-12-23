@@ -1,5 +1,5 @@
 :root {
-  --page-color: #F5F2F2;
+  --page-color: #f5f2f2;
   --section-color: rgb(83, 53, 4);
   --section-header-color: rgb(101, 70, 7);
   --item-color: rgb(32, 33, 37);
@@ -8,25 +8,25 @@
   --header-menu-color: rgb(117, 81, 11);
   --button-color: rgb(44, 86, 155);
   --button-hover-color: rgb(43, 101, 195);
-  --gray-color: #D9D9D9;
+  --gray-color: #d9d9d9;
   --link-color: rgb(98, 98, 216);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-size: 24px;
+  font-size: 24px;
   background: var(--body-color);
 }
 
 h2 {
-    font-size: 50px;
-    /*line-height: 1.5;*/
-    margin-bottom: 20px;
+  font-size: 50px;
+  /*line-height: 1.5;*/
+  margin-bottom: 20px;
 }
 
 input {
@@ -39,7 +39,8 @@ input {
   padding: 0 10px;
 }
 
-.input:disabled, input[disabled] {
+.input:disabled,
+input[disabled] {
   border: 1px solid lightgray;
   cursor: not-allowed;
 }
@@ -54,8 +55,9 @@ textarea {
   padding: 5px 10px 5px 10px;
 }
 
-[data-lastpass-icon-root] { display: none !important; }
-
+[data-lastpass-icon-root] {
+  display: none !important;
+}
 
 button {
   font-size: inherit;
@@ -69,7 +71,8 @@ button {
   min-width: 80px;
 }
 
-.button:disabled, button[disabled] {
+.button:disabled,
+button[disabled] {
   background-color: gray;
   cursor: not-allowed;
 }
@@ -82,7 +85,8 @@ select {
   padding: 0 10px;
 }
 
-.select:disabled, select[disabled] {
+.select:disabled,
+select[disabled] {
   background-color: var(--page-color);
   cursor: not-allowed;
 }
@@ -114,11 +118,11 @@ a {
 /* app styles */
 
 .app-container {
-    position: relative;
+  position: relative;
   height: 100vh;
   max-width: 750px;
   margin: auto;
-    background: url("../assets/inner_bg.png") no-repeat center / 100% 100%;
+  background: url('../assets/inner_bg.png') no-repeat center / 100% 100%;
 }
 
 .app-page {
@@ -127,13 +131,17 @@ a {
   /*background-color: var(--page-color);*/
 }
 
+.app-page >div:first-child{
+  padding-bottom: 160px;
+}
+
 .app-navbar {
-    position: fixed;
-    left: 50%;
-    width: 750px;
-    margin-left: -375px;
-    bottom: 0;
-    /*transform: translate3d(-50%, 0, 0);*/
+  position: fixed;
+  left: 50%;
+  width: 750px;
+  margin-left: -375px;
+  bottom: 0;
+  /*transform: translate3d(-50%, 0, 0);*/
 }
 
 /* @media (max-width: 850px) {

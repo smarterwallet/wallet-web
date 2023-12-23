@@ -156,7 +156,7 @@ const Contacts: React.FC<Props> = () => {
           fees={crossDetial.fees}
         />
       ) : (
-        <div>
+        <div className='contacts'>
           {contextHolder}
           <div className="">
             <BackBtn />
@@ -214,7 +214,7 @@ const Contacts: React.FC<Props> = () => {
               </div>
             </div>
             {/* Send Btn*/}
-            <div className="flex-auto h-1/5 px-5">
+            <div className="flex-auto px-5 mb-[140px]">
               {tradingMode && <SendBtn handleTransfer={handleTransfer} isTrading={isTrading} />}
             </div>
           </main>
