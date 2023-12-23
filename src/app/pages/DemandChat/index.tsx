@@ -37,6 +37,8 @@ interface Result {
   };
 }
 
+const AddressRegex = /^0x[a-fA-F0-9]{40}$/;
+
 const DemandChat = () => {
   const [inputDemand, setInputDemand] = useState<string>('');
   const [conversation, setConversation] = useState<Conversations[]>([
@@ -57,7 +59,7 @@ const DemandChat = () => {
     message.open({
       content: 'starting to transfer,please wait a second.',
       type: 'loading',
-      duration: 0.75,
+      duration: 1,
     });
   };
 
@@ -68,13 +70,13 @@ const DemandChat = () => {
       setConversation((pre) => [...pre, question]);
       const user = inputDemand.match(/to (\w+)$/);
       const inputWithoutName = inputDemand.match(/^(.*?) to \w+$/);
-      console.log(user);
+      const inputIsAddress = AddressRegex.test(user[1]);
 
-      if (user && inputWithoutName) {
+      if (user && inputWithoutName && !inputIsAddress) {
         const userName = user[1];
         const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
-        const targetAddress: contactType | null = storedCon.filter((item) => item.name === userName)[0];
-        if (!targetAddress.receiver) {
+        const targetAddress = storedCon.filter((item) => item.name === userName)[0];
+        if (!targetAddress?.receiver) {
           message.open({
             content: 'Cannot find the user, please add it to the Contact',
             type: 'error',
@@ -86,7 +88,10 @@ const DemandChat = () => {
         const aimAddress = targetAddress.receiver;
         console.log(username);
         setInputDemand('');
-        const userDemand = `Current moonbeam balance: ${balanceData}USDC, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        console.log(balanceData);
+
+        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        messageApi.open({content:"Generating transfer operation information.",type:'loading'});
         const result: Result = await crossChainAbstractionDemand(userDemand);
         if (result.detail.ops == null) {
           setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: false, isResponse: true }]);
@@ -94,24 +99,36 @@ const DemandChat = () => {
           setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: true, isResponse: true }]);
           setOps(result.detail.ops[0]);
         }
-      } else {
-        message.open({
-          content: 'Cannot find the user, please add it to the Contact',
-          type: 'error',
-          duration: 0.75,
-        });
-        return;
+      }
+      if( user && inputWithoutName && inputIsAddress) {
+        console.log('the user input is a address');
+        const aimAddress = user[1];
+        const demand = inputWithoutName[1];
+
+        setInputDemand('');
+
+        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        messageApi.open({content:"Generating transfer operation information.",type:'loading'});
+        const result: Result = await crossChainAbstractionDemand(userDemand);
+        if (result.detail.ops == null) {
+          setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: false, isResponse: true }]);
+        } else if (result.detail.ops) {
+          setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: true, isResponse: true }]);
+          setOps(result.detail.ops[0]);
+        }
       }
     }
   };
 
   const txPolka = async () => {
-    messageBox();
-    const BlockChain_Config = BlockChains["Moonbase"];
-    const amount = ops.amount as string
-    const receiver = ops.receiver as string 
-    const token = ops.token as string
-    onSameBlockChainTransfer({BlockChain_Config, amount, receiver, token})
+    const BlockChain_Config = BlockChains['moonbase'];
+    const amount = ops.amount as string;
+    const receiver = ops.receiver as string;
+    const token = ops.token as string;
+    messageApi.open({content:'Processing....',type:'loading'})
+    await onSameBlockChainTransfer({ BlockChain_Config, amount, receiver, token });
+    messageApi.open({content:'Success',type:'success',duration:1})
+    setConversation((pre) => [...pre, { content: `${amount} ${token.toUpperCase()} has already been transferred to ${receiver}`, displayButton: false, isResponse: true }]);
   };
   const handleInputOnKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (inputDemand === '') return;

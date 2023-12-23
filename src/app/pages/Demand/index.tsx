@@ -64,7 +64,7 @@ const Demand = () => {
       </div>
       <div className="other-demand">
         <div className="txt">
-          <Input type="text" placeholder="What else do you want?" onKeyDown={inputDemand} />
+          <Input type="text" placeholder="What else do you want?" onClick={inputDemand} />
         </div>
         {/*<div className="icon-wrap">*/}
         {/*  {IconMicrophone}*/}
