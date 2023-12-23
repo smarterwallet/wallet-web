@@ -90,9 +90,10 @@ const DemandChat = () => {
         setInputDemand('');
         console.log(balanceData);
 
-        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        const userDemand = `Current moonbase balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbase to moonbase`;
         messageApi.open({content:"Generating transfer operation information.",type:'loading'});
         const result: Result = await crossChainAbstractionDemand(userDemand);
+        console.log(`demand response is ${result.detail.reply}`);
         if (result.detail.ops == null) {
           setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: false, isResponse: true }]);
         } else if (result.detail.ops) {
@@ -107,9 +108,10 @@ const DemandChat = () => {
 
         setInputDemand('');
 
-        const userDemand = `Current moonbeam balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbeam on moonbase`;
+        const userDemand = `Current moonbase balance: ${balanceData.swt}SWT, moonbase balance: 0USDC. ${demand} ${aimAddress} on moonbase on moonbase`;
         messageApi.open({content:"Generating transfer operation information.",type:'loading'});
         const result: Result = await crossChainAbstractionDemand(userDemand);
+        console.log(`demand response is ${result.detail.reply}`);
         if (result.detail.ops == null) {
           setConversation((pre) => [...pre, { content: result.detail.reply, displayButton: false, isResponse: true }]);
         } else if (result.detail.ops) {
