@@ -26,5 +26,11 @@
     border-radius: 1.5rem!important;
 }
 .ant-select-single {
-    height: none;
+    height: none!important;
+}
+
+.ant-select-single .ant-select-selector{
+    font-size: 3rem/* 48px */;
+    line-height: 1;
+    display:block!important;
 }
