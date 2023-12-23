@@ -2,7 +2,7 @@ import { Button, Input, Picker } from 'antd-mobile';
 import { useState, useEffect } from 'react';
 import { TransactionDetail } from '../..';
 import './styles.scss';
-import { message } from 'antd';
+import { Select } from 'antd';
 import { ErrorCheck } from '../../utils/RErrorCheck';
 import { blockchainColumns } from '../../utils/blockchainConfig';
 import { useMessageBox } from '../../utils/useMessageBox';
@@ -21,13 +21,25 @@ const useNewContact = () => {
   const [name, setName] = useState('');
   const [newReciver, setNewReciver] = useState('');
   const [BlockChainValue, setBlockChainValue] = useState('');
-  return {name, setName, newReciver, setNewReciver, BlockChainValue, setBlockChainValue};
-}
+  return { name, setName, newReciver, setNewReciver, BlockChainValue, setBlockChainValue };
+};
 
 const usePicker = () => {
   const [visible, setVisible] = useState(false);
   const [blockchain, setBlockChain] = useState<(string | null)[]>(['']);
-  return {visible, setVisible, blockchain, setBlockChain};
+  return { visible, setVisible, blockchain, setBlockChain };
+};
+
+function capitalizeFirstLetter(inputString: string) {
+  return inputString.replace(/^\w/, (match) => match.toUpperCase());
+}
+
+function loadContactsData() : [stroedCon: contactType[] | null, selectGroup: {value: string, lable: string}[] ] {
+  const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
+  const selectGroup = storedCon.map((item) => {
+    return { value: item.name, lable: capitalizeFirstLetter(item.name) };
+  });
+  return [storedCon, selectGroup];
 }
 
 const ReceiptForm: React.FC<Props> = ({
@@ -43,18 +55,21 @@ const ReceiptForm: React.FC<Props> = ({
   // 渲染From
   const [isAddingNewContact, setAddNewContact] = useState(false);
   // 用於添加聯繫人 與父頁面隔離
-  const { name,setName,newReciver, setNewReciver, BlockChainValue, setBlockChainValue } = useNewContact();
+  const { name, setName, newReciver, setNewReciver, BlockChainValue, setBlockChainValue } = useNewContact();
   // picker显示
-  const { visible, setVisible, blockchain, setBlockChain} = usePicker();
+  const { visible, setVisible, blockchain, setBlockChain } = usePicker();
   // Contacts from loaclstorage数据
   const [storedContacts, setStoredContacts] = useState<contactType[] | null>([]);
+  // Select Contact Data
+  const [selectContacts, setSelectContacts] = useState([]);
   // 消息框
-  const [successMessageBox, errorMessageBox, ,contextHolder] = useMessageBox();
+  const [successMessageBox, errorMessageBox, , contextHolder] = useMessageBox();
   // load Contact first time
   useEffect(() => {
     try {
-      const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
+      const [storedCon, selectGroup] = loadContactsData();
       setStoredContacts(storedCon);
+      setSelectContacts(selectGroup);
     } catch (e) {
       console.log(e);
     }
@@ -90,7 +105,7 @@ const ReceiptForm: React.FC<Props> = ({
     }
   }, [name, isAddingNewContact]);
 
-  const cleanInput= () => {
+  const cleanInput = () => {
     // setNewContant => false
     setAddNewContact(false);
     // clear input info
@@ -98,11 +113,11 @@ const ReceiptForm: React.FC<Props> = ({
     setBlockChainValue('');
     setNewReciver('');
     setTradingMode(true);
-  }
+  };
 
   const hanldCancelClick = () => {
     try {
-      cleanInput()
+      cleanInput();
     } catch (e) {
       console.log(e);
       setAddNewContact(false);
@@ -114,7 +129,7 @@ const ReceiptForm: React.FC<Props> = ({
       const newContact: contactType = { name: name, receiver: newReciver, target: BlockChainValue };
       // error check
       const result = ErrorCheck(newContact);
-      if(result != null){
+      if (result != null) {
         errorMessageBox(result);
         throw new Error(result);
       }
@@ -122,10 +137,11 @@ const ReceiptForm: React.FC<Props> = ({
       const storedContacts: string | null = localStorage.getItem('contacts');
       const oldContacts: contactType[] = storedContacts ? JSON.parse(storedContacts) : [];
       localStorage.setItem('contacts', JSON.stringify([...oldContacts, newContact]));
-      successMessageBox("The new Contact is saved.")
+      successMessageBox('The new Contact is saved.');
       // reload
-      const storedCon: contactType[] | null = JSON.parse(localStorage.getItem('contacts')) ?? [];
-      setStoredContacts(storedCon)
+      const [storedCon, selectGroup] = loadContactsData();
+      setStoredContacts(storedCon);
+      setSelectContacts(selectGroup);
       // reset state
       cleanInput();
     } catch (e) {
@@ -137,27 +153,23 @@ const ReceiptForm: React.FC<Props> = ({
     <div className="bg-transparent h-[30rem] flex flex-col">
       {contextHolder}
       {/*  */}
-      <div className="grow flex flex-col px-16 justify-center">
-        <div className="mb-2">
-          <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
-            Name:
-          </h1>
-        </div>
-        <div className="bg-white rounded-3xl px-5 shadow-xl">
-          <Input
-            className="text-4xl"
-            style={{ '--font-size': '2rem' }}
-            value={name}
-            clearable
-            onChange={(v) => {
-              setName(v);
-            }}
-          ></Input>
-        </div>
-      </div>
       {!isAddingNewContact ? (
-        <div className=" grow flex flex-col px-16 justify-center">
+        <div className=" grow flex flex-col px-16">
           <div className="mb-2">
+            <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
+              Name:
+            </h1>
+          </div>
+          <div className="bg-white shadow-xl border-radius_3xl">
+            <Select
+              className="w-full border-none text-5xl text-center flex-none leading-normal font-bold"
+              bordered={false}
+              placeholder={'Search to Select'}
+              options={selectContacts}
+              onChange={(value) => setName(value)}
+            />
+          </div>
+          <div className="mb-7">
             <h1 className="font-bold text-4xl opacity-0" style={{ color: '#0A3D53' }}>
               ----opacity---- just for the height
             </h1>
@@ -167,6 +179,7 @@ const ReceiptForm: React.FC<Props> = ({
               onClick={() => {
                 setAddNewContact(true);
                 setTradingMode(false);
+                setName('');
               }}
               placeholder="Add Contact +"
               style={{
@@ -175,7 +188,7 @@ const ReceiptForm: React.FC<Props> = ({
                 fontSize: '1.5rem',
                 lineHeight: '2rem',
                 '--font-size': '2rem',
-                fontWeight: 'bold',
+                fontWeight: '700',
               }}
             />
           </div>
@@ -183,7 +196,25 @@ const ReceiptForm: React.FC<Props> = ({
       ) : (
         <div className="grow flex flex-col px-16 justify-center">
           {/* address */}
-          <div className="grow flex flex-col  justify-center">
+          <div className="grow flex flex-col justify-center mb-7">
+            <div className="mb-2">
+              <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
+                Name:
+              </h1>
+            </div>
+            <div className="bg-white rounded-3xl px-5 shadow-xl">
+              <Input
+                className="text-4xl"
+                style={{ '--font-size': '2rem' }}
+                value={name}
+                clearable
+                onChange={(v) => {
+                  setName(v);
+                }}
+              ></Input>
+            </div>
+          </div>
+          <div className="grow flex flex-col  justify-center mb-7">
             <div className="mb-2">
               <h1 className="font-bold text-4xl" style={{ color: '#053346' }}>
                 Address:
@@ -193,7 +224,7 @@ const ReceiptForm: React.FC<Props> = ({
               <Input className="text-4xl" clearable value={newReciver} onChange={(v) => setNewReciver(v)}></Input>
             </div>
           </div>
-          <div className=" grow flex flex-col  justify-center">
+          <div className=" grow flex flex-col  justify-center mb-7">
             <div className="mb-2">
               <h1 className="font-bold text-4xl" style={{ color: '#053346' }}>
                 Blockchain:
@@ -226,6 +257,8 @@ const ReceiptForm: React.FC<Props> = ({
                 }}
               ></Picker>
             </div>
+          </div>
+          <div className="grow flex flex-col justify-center ">
             <div className="flex flex-row mt-5 space-x-20">
               <Button
                 className="grow rounded-2xl h-20 font-bold text-4xl "
