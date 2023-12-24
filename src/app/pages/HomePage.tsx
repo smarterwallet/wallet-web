@@ -27,7 +27,7 @@ interface HomePageState {
   asset: { [key: string]: AssetInfo };
   intervalId: NodeJS.Timeout | null;
   totalBalance: number | string;
-  loading: boolean
+  loading: boolean;
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
@@ -66,20 +66,20 @@ class HomePage extends React.Component<{}, HomePageState> {
 
     await this.flushAsset();
   }
-  
+
   flushAsset = async () => {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       localStorage.setItem(Config.CURRENT_CHAIN_NAME.toLowerCase() + 'Address', Global.account.contractWalletAddress);
       let promises = [];
-      this.setState({ totalBalance: 0, loading : true })
+      this.setState({ totalBalance: 0, loading: true });
       for (let key in Config.TOKENS) {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
           promises.push(
             Global.account.getBalanceOf(Config.TOKENS[key]).then((balance) => {
-             // console.log('key', key, balance, Global.account);
-              this.setState( { 
-                totalBalance: parseFloat(this.state.totalBalance.toString()) + parseFloat(balance.toString())
-            })
+              // console.log('key', key, balance, Global.account);
+              this.setState({
+                totalBalance: parseFloat(this.state.totalBalance.toString()) + parseFloat(balance.toString()),
+              });
               return {
                 key: key,
                 asset: Config.TOKENS[key],
@@ -198,7 +198,7 @@ class HomePage extends React.Component<{}, HomePageState> {
               try {
                 await this.flushConfigAndAsset(event.target.value);
               } catch (error) {
-                console.error(error)
+                console.error(error);
               }
               this.setState({ alert: '' });
             }}
@@ -212,9 +212,11 @@ class HomePage extends React.Component<{}, HomePageState> {
         </div>
 
         <div className="home-page-balance-container">
-          {this.state.loading && <div className="home-page-balance">Loading...</div> }
+          {this.state.loading && <div className="home-page-balance">Loading...</div>}
           {!this.state.loading && <div className="home-page-balance-title">Account Balance</div>}
-          {!this.state.loading && <div className="home-page-balance">$ {parseFloat(this.state.totalBalance.toString()).toFixed(4)}</div>}
+          {!this.state.loading && (
+            <div className="home-page-balance">$ {parseFloat(this.state.totalBalance.toString()).toFixed(4)}</div>
+          )}
         </div>
 
         <div>
