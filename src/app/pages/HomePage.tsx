@@ -26,6 +26,8 @@ interface HomePageState {
   alert: string;
   asset: { [key: string]: AssetInfo };
   intervalId: NodeJS.Timeout | null;
+  totalBalance: number | string;
+  loading: boolean
 }
 
 class HomePage extends React.Component<{}, HomePageState> {
@@ -37,6 +39,8 @@ class HomePage extends React.Component<{}, HomePageState> {
       alert: '',
       asset: {},
       intervalId: null,
+      totalBalance: 0,
+      loading: false,
     };
 
     this.onQuestionYes = this.onQuestionYes.bind(this);
@@ -67,11 +71,15 @@ class HomePage extends React.Component<{}, HomePageState> {
     if (Global.account.contractWalletAddress != null && Global.account.contractWalletAddress !== '') {
       localStorage.setItem(Config.CURRENT_CHAIN_NAME.toLowerCase() + 'Address', Global.account.contractWalletAddress);
       let promises = [];
+      this.setState({ totalBalance: 0, loading : true })
       for (let key in Config.TOKENS) {
         if (Config.TOKENS[key] !== undefined && Config.TOKENS[key] !== null) {
           promises.push(
             Global.account.getBalanceOf(Config.TOKENS[key]).then((balance) => {
              // console.log('key', key, balance, Global.account);
+              this.setState( { 
+                totalBalance: parseFloat(this.state.totalBalance.toString()) + parseFloat(balance.toString())
+            })
               return {
                 key: key,
                 asset: Config.TOKENS[key],
@@ -89,7 +97,7 @@ class HomePage extends React.Component<{}, HomePageState> {
         newAsset[result.key] = result;
       }
 
-      this.setState({ asset: newAsset });
+      this.setState({ asset: newAsset, loading: false });
     } else {
       console.log("first login can't read global.account.contractWalletAddress");
     }
@@ -112,7 +120,7 @@ class HomePage extends React.Component<{}, HomePageState> {
           <div className="home-page-asset-name">{name}</div>
           <div>
             <div className="home-page-asset-amount">
-              {Number.isNaN(Number(amount)) ? amount : Number(amount).toFixed(2)}
+              {Number.isNaN(Number(amount)) ? amount : parseFloat(amount).toFixed(4)}
             </div>
             <div className="home-page-asset-usd">${usd.toFixed(2)}</div>
           </div>
@@ -204,8 +212,9 @@ class HomePage extends React.Component<{}, HomePageState> {
         </div>
 
         <div className="home-page-balance-container">
-          <div className="home-page-balance-title">Account Balance</div>
-          <div className="home-page-balance">$ 0.00</div>
+          {this.state.loading && <div className="home-page-balance">Loading...</div> }
+          {!this.state.loading && <div className="home-page-balance-title">Account Balance</div>}
+          {!this.state.loading && <div className="home-page-balance">$ {parseFloat(this.state.totalBalance.toString()).toFixed(4)}</div>}
         </div>
 
         <div>
