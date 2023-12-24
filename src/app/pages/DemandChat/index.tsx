@@ -205,9 +205,9 @@ const DemandChat = () => {
     <>
       {contextHolder}
       {!isCross ? (
-        <div className="ww-page-container page-demand">
-          <div>
-            <HeaderBar text="Demand" returnable={false} />
+        <div className="ww-page-container page-demand-chat">
+          <div className="page-demand-container">
+            <HeaderBar text="Demand" returnable={true} />
             <div>{confirSuccessMessageHolder}</div>
             <div className="chat-content" ref={chatContentRef}>
               {conversation.map((item, index) => (

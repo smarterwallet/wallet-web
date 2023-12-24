@@ -16,7 +16,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ content, displayButton, isRes
           <div className="flex-1 w-[90%]">
             <div className="inline-block rounded-lg">
               <div
-                className={`w-full bg-[#13b6ea4d] whitespace-normal m-0 p-2 text-lg ${
+                className={`w-full bg-[#13b6ea4d] whitespace-normal m-0 p-4  text-[40px] ${
                   displayButton ? 'rounded-t-lg' : 'rounded-lg'
                 }`}
               >
@@ -38,7 +38,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ content, displayButton, isRes
         <div className="flex flex-col mb-3 ml-2">          
           <div className="flex-1">
             <div className="flex justify-end">
-              <div className="inline-block bg-white p-2 whitespace-normal rounded-lg text-[#053346] text-lg">{content}</div>
+              <div className="inline-block bg-white p-4 whitespace-normal rounded-lg text-[#053346] text-[40px]">{content}</div>
             </div>
           </div>
         </div>
