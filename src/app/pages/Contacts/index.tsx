@@ -163,14 +163,14 @@ const Contacts: React.FC<Props> = () => {
 
           <main className="flex flex-col pt-0" style={{ height: '80vh' }}>
             {/* Send Form*/}
-            <div className="flex-auto p-8 ">
+            <div className="h-1/5 p-8 mb-5">
               <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
                 Send
               </h1>
               <SendForm {...transactionDetail} onChange={handleTransactionDetail} />
             </div>
             {/* To Form*/}
-            <div className="h-3/5" style={{ minHeight: '800px' }}>
+            <div className="h-3/5 mb-5" style={{  }}>
               <div className="flex-auto h-16 px-8 py-4" style={{}}>
                 <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
                   To
