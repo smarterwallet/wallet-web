@@ -150,11 +150,12 @@ const ReceiptForm: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-transparent h-[30rem] flex flex-col">
+    <div className="bg-transparent h-[24rem] flex flex-col transition-all" style={isAddingNewContact ? { height: "600px"} : null}>
       {contextHolder}
       {/*  */}
       {!isAddingNewContact ? (
-        <div className=" grow flex flex-col px-16">
+      <>
+        <div className="grow flex flex-col px-16 justify-center">
           <div className="mb-2">
             <h1 className="font-bold text-4xl" style={{ color: '#0A3D53' }}>
               Name:
@@ -169,6 +170,8 @@ const ReceiptForm: React.FC<Props> = ({
               onChange={(value) => setName(value)}
             />
           </div>
+        </div>
+        <div className="grow flex flex-col px-16 justify-center">
           <div className="mb-7">
             <h1 className="font-bold text-4xl opacity-0" style={{ color: '#0A3D53' }}>
               ----opacity---- just for the height
@@ -193,6 +196,7 @@ const ReceiptForm: React.FC<Props> = ({
             />
           </div>
         </div>
+      </>
       ) : (
         <div className="grow flex flex-col px-16 justify-center">
           {/* address */}
