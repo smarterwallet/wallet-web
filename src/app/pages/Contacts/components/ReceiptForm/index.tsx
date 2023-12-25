@@ -150,7 +150,7 @@ const ReceiptForm: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-transparent h-[30rem] flex flex-col transition-all" style={isAddingNewContact ? { height: "600px"} : null}>
+    <div className="bg-transparent h-[24rem] flex flex-col transition-all" style={isAddingNewContact ? { height: "600px"} : null}>
       {contextHolder}
       {/*  */}
       {!isAddingNewContact ? (

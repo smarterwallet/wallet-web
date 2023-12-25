@@ -155,22 +155,22 @@ const Contacts: React.FC<Props> = () => {
           fees={crossDetial.fees}
         />
       ) : (
-        <div className='contacts'>
+        <div className='contacts' style={{ minHeight: '10vh'}}>
           {contextHolder}
           <div className="">
             <BackBtn />
           </div>
 
-          <main className="flex flex-col pt-0" style={{ height: '80vh' }}>
+          <main className="flex flex-col pt-0" style={{ minHeight: '80vh' }}>
             {/* Send Form*/}
-            <div className="h-1/5 p-8 mb-5">
+            <div className="h-1/5 p-8 mb-5" style={{ minHeight:" 240px "}}>
               <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
                 Send
               </h1>
               <SendForm {...transactionDetail} onChange={handleTransactionDetail} />
             </div>
             {/* To Form*/}
-            <div className="h-3/5 mb-5" style={{  }}>
+            <div className="h-3/5 mb-5" style={{ }}>
               <div className="flex-auto h-16 px-8 py-4" style={{}}>
                 <h1 className="text-5xl" style={{ color: '#0A3D53' }}>
                   To

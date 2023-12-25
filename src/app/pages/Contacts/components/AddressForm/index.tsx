@@ -21,7 +21,7 @@ const AddressForm: React.FC<Props> = ({ source, target, address, receiver, amoun
   
   
   return (
-    <div className="bg-transparent h-[30rem] flex flex-col">
+    <div className="bg-transparent h-[24rem] flex flex-col">
       {/* address */}
       <div className="grow flex flex-col px-16 justify-center">
         <div className="mb-2">
