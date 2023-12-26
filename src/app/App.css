@@ -18,9 +18,15 @@
   box-sizing: border-box;
 }
 
+html,
+#root {
+  height: 100%;
+}
+
 body {
   font-size: 24px;
   background: var(--body-color);
+  height: 100%;
 }
 
 h2 {
@@ -119,19 +125,20 @@ a {
 
 .app-container {
   position: relative;
-  height: 100vh;
+  height: 100%;
   max-width: 750px;
+  box-sizing: content-box;
   margin: auto;
   background: url('../assets/inner_bg.png') no-repeat center / 100% 100%;
 }
 
 .app-page {
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
   /*background-color: var(--page-color);*/
 }
 
-.app-page >div:first-child{
+.app-page > div:first-child {
   padding-bottom: 160px;
 }
 

@@ -1,4 +1,4 @@
-import { Input } from 'antd';
+import { Input, InputRef } from 'antd';
 import HeaderBar from '../../elements/HeaderBar';
 import './styles.scss';
 import { useState, useRef, useEffect } from 'react';
@@ -52,6 +52,7 @@ const DemandChat = () => {
   const [confirSuccessMessage, confirSuccessMessageHolder] = message.useMessage();
   const [username, setUsername] = useState('');
   const [balanceData] = useBalance();
+  const inputRef = useRef<InputRef>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -200,6 +201,10 @@ const DemandChat = () => {
     const address = Global.account.contractWalletAddress;
     getBalance();
     console.log(`address is ${address}`);
+
+    inputRef.current!.focus({
+      cursor: 'end',
+    });
   }, []);
   return (
     <>
@@ -223,6 +228,7 @@ const DemandChat = () => {
             <div className="other-demand-chat">
               <div className="txt">
                 <Input
+                  ref={inputRef}
                   type="text"
                   placeholder="What else do you want?"
                   value={inputDemand}
