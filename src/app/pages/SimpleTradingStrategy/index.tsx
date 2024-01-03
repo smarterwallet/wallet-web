@@ -102,17 +102,17 @@ const SimpleTradingStrategy = () => {
   const getTokenToAmount = () => {
     // for buy, swap to amount = BuyInQuantity
     if (selectedRadio === '1') {
-      return BigNumber.from(form.getFieldValue('buyInQuantity'));
+      return BigNumber.from(form.getFieldValue('buyInQuantity') * 1e18 + '');
     }
     // for sell, swap to amount = sellOutQuantity
-    return BigNumber.from(form.getFieldValue('sellOutQuantity'));
+    return BigNumber.from(form.getFieldValue('sellOutQuantity') * 1e18 + '');
   };
 
   const getTokenToNumDIffThreshold = () => {
     if (selectedRadio === '1') {
-      return BigNumber.from(form.getFieldValue('buy-fluctuation'));
+      return BigNumber.from(form.getFieldValue('buy-fluctuation') * 1e18 + '');
     }
-    return BigNumber.from(form.getFieldValue('sell-fluctuation'));
+    return BigNumber.from(form.getFieldValue('sell-fluctuation') * 1e18 + '');
   };
 
   const createStrategy = async () => {
